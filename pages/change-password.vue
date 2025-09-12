@@ -1,14 +1,14 @@
 <template>
-  <div class="login">
-    <div class="login__container">
-      <div class="login__header">
-        <div class="login__logo">
+  <div class="change-password">
+    <div class="change-password__container">
+      <div class="change-password__header">
+        <div class="change-password__logo">
           <p>Fazenda</p>
         </div>
-        <div class="login__text"> 
-          <h2 class="login__title">Вход в систему</h2>
-          <p class="login__subtitle">
-            Забыли пароль? Обратитесь к&nbsp;администратору для восстановления пароля.
+        <div class="change-password__text"> 
+          <h2 class="change-password__title">Смена пароля</h2>
+          <p class="change-password__subtitle">
+            Задайте собственный пароль для входа в систему
           </p>
         </div>
       </div>
@@ -16,7 +16,7 @@
       <BaseAlert v-if="error">{{ error }}</BaseAlert>
 
       <FormComponent
-        @login="handleLogin"
+        @change-password="changePassword"
         :loading="loading"
       />
     </div>
@@ -27,7 +27,13 @@
 import { useRouter } from 'vue-router';
 import { useUserStore } from "~/stores/user";
 import BaseAlert from '~/components/UI/BaseAlert.vue';
-import FormComponent from '~/components/Login/FormComponent.vue';
+import FormComponent from '~/components/ChangePassword/FormComponent.vue';
+
+
+definePageMeta({
+  middleware: ['auth']
+});
+
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -35,40 +41,44 @@ const userStore = useUserStore();
 const error = ref('');
 const loading = ref(false);
 
-type LoginData = {
-  login: string;
-  password: string;
-};
-
-const handleLogin = async ({ login, password }: LoginData) => {
+const changePassword = async (password: string) => {
   error.value = '';
   loading.value = true;
 
+  if (!userStore.user) {
+    error.value = 'Произошла ошибка при смене пароля';
+    return;
+  }
+
   try {
-    const success = await userStore.login(login, password);
+    const oldPassword = localStorage.getItem('old_pass');
+
+    if (!oldPassword) {
+      router.push('/auth');
+      return;
+    }
+
+    const success = await userStore.changePassword(oldPassword, password);
 
     if (success) {
-      const user = await userStore.fetchUserInfo();
-      if (!user.is_need_to_change_password) {
-        router.push('/dashboard');
-      } else {
-        localStorage.setItem('old_pass', password);
-        router.push('/change-password');
-      }
+      localStorage.clear();
+      userStore.user.is_need_to_change_password = false;
+      router.push('/dashboard');
     } else {
-      error.value = 'Неверный логин или пароль';
+      error.value = 'Не удалось сменить пароль';
     }
   } catch (err) {
-    console.error('Ошибка при входе:', err);
-    error.value = 'Произошла ошибка при входе в систему';
+    console.error('Ошибка при смене пароля:', err);
+    error.value = 'Произошла ошибка при смене пароля';
   } finally {
     loading.value = false;
   }
 };
+
 </script>
 
 <style>
-.login {
+.change-password {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -77,12 +87,12 @@ const handleLogin = async ({ login, password }: LoginData) => {
 }
 
 @media screen and (max-width: 520px) {
-  .login {
+  .change-password {
     padding: var(--size-6);
   }
 }
 
-.login__container {
+.change-password__container {
   max-width: 30rem;
   width: 100%;
   padding: 5rem;
@@ -95,34 +105,34 @@ const handleLogin = async ({ login, password }: LoginData) => {
 }
 
 @media screen and (max-width: 520px) {
-  .login__container {
+  .change-password__container {
     padding: 2rem;
     padding-top: 1.5rem;
   }
   
 }
 
-.login__header {
+.change-password__header {
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
 }
 
-.login__logo {
+.change-password__logo {
   max-width: 7.875rem;
   max-height: 1.875rem;
   margin-left: auto;
   margin-right: auto;
 }
 
-.login__logo img {
+.change-password__logo img {
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
 
-.login__text {
+.change-password__text {
   display: flex;
   flex-direction: column;
   gap: var(--size-2);
@@ -130,7 +140,7 @@ const handleLogin = async ({ login, password }: LoginData) => {
   color: var(--color-typo-primary);
 }
 
-.login__title {
+.change-password__title {
   font-size: var(--font-size-3xl);
   line-height: 100%;
   font-weight: 600;
@@ -138,13 +148,13 @@ const handleLogin = async ({ login, password }: LoginData) => {
 }
 
 @media screen and (max-width: 520px) {
-  .login__title {
+  .change-password__title {
     font-size: var(--font-size-2xl);
   }
   
 }
 
-.login__subtitle {
+.change-password__subtitle {
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs-tight);
   font-weight: 400;

@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-// import { useUserStore } from '~/stores/user';
+import { useUserStore } from '~/stores/user';
 import {navigateTo} from "#app";
 import NotificationToasts from "~/components/UI/NotificationToasts.vue";
 import SidebarComponent from "~/components/Dashboard/SidebarComponent.vue";
@@ -23,22 +23,22 @@ const toggleSidebar = () => {
   isSidebarOpen.value = !isSidebarOpen.value;
 };
 
-// const userStore = useUserStore();
+const userStore = useUserStore();
 
-// onMounted(async () => {
-//   if (!userStore.user) {
-//     await userStore.fetchUserInfo();
-//   }
-//   if (userStore.user && userStore.user?.is_need_to_change_password) {
-//     return navigateTo('/change-password');
-//   }
-// })
+onMounted(async () => {
+  if (!userStore.user) {
+    await userStore.fetchUserInfo();
+  }
+  if (userStore.user && userStore.user?.is_need_to_change_password) {
+    return navigateTo('/change-password');
+  }
+})
 
 
-// const logout = () => {
-//   userStore.logout();
-//   navigateTo('/auth');
-// }
+const logout = () => {
+  userStore.logout();
+  navigateTo('/auth');
+}
 </script>
 
 <style>
