@@ -21,8 +21,8 @@
         @click="togglePassword"
         tabindex="-1"
       >
-        <img v-if="!showPassword" src="/icons/main/eye.svg" alt="Показать">
-        <img v-else src="/icons/main/eye-off.svg" alt="Скрыть">
+        <EyeIcon v-if="!showPassword" alt="Показать"/>
+        <EyeOffIcon v-else alt="Скрыть"/>
       </button>
     </div>
     <input
@@ -55,6 +55,8 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import EyeIcon from '~/assets/img/eye.svg';
+import EyeOffIcon from '~/assets/img/eye-off.svg';
 
 const props = defineProps({
   id: {

@@ -71,7 +71,6 @@ export default defineNuxtPlugin((nuxtApp) => {
       })
       const result = await handleResponse<T>(response).then(res => res.data)
       return result
-      // return handleResponse<T>(response).then(res => res.data)
     },
 
     put: async <T>(endpoint: string, data?: any, options: ApiRequestOptions = {}) => {

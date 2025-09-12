@@ -5,7 +5,6 @@ import ChartBar from '@/assets/img/chart-bar.svg?component'
 // @ts-ignore
 import Users from '@/assets/img/users.svg?component'
 // @ts-ignore
-import Notebook from '@/assets/img/notebook.svg?component'
 
 
 export function useSidebarMenu() {
@@ -19,7 +18,28 @@ export function useSidebarMenu() {
         label: "Главная",
         to: "/dashboard",
         iconComponent: IconHouse,
-        showFor: ["SA", "CA", "CO"],
+        showFor: ["KSU", "KSF"],
+      },
+      {
+        id: "users",
+        label: "Управление пользователями",
+        to: "/users",
+        iconComponent: Users,
+        showFor: ["KSU", "KSF"],
+      },
+      {
+        id: "llm-review",
+        label: "AI анализ",
+        to: "/llm-review",
+        iconComponent: ChartBar,
+        showFor: ["KSU", "KSF"],
+      },
+      {
+        id: "reports",
+        label: "Отчеты",
+        to: "/reports",
+        iconComponent: ChartBar,
+        showFor: ["KSU", "KSF"],
       },
       {
         id: "grafana",
@@ -27,21 +47,7 @@ export function useSidebarMenu() {
         href: grafanaUrl,
         iconComponent: ChartBar,
         external: true,
-        showFor: ["SA", "CA", "CO"],
-      },
-      {
-        id: "users",
-        label: "Управление пользователями",
-        to: "/users",
-        iconComponent: Users,
-        showFor: ["SA", "CA"],
-      },
-      {
-        id: "context",
-        label: "Управления контекстами",
-        to: "/context",
-        iconComponent: Notebook,
-        showFor: ["SA", "CA"],
+        showFor: ["KSU", "KSF"],
       },
     ]
 

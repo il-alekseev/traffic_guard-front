@@ -64,18 +64,6 @@ export const getFormattedDatetime = (datetime: string | undefined): string => {
     hour12: false,
   });
 };
-export function isTokenExpiringSoon(thresholdMs: number = 60 * 1000): boolean {
-  if (!process) return false;
-
-  const tokenExpRaw = localStorage.getItem("auth_token_exp");
-
-  if (!tokenExpRaw) return true;
-
-  const tokenExp = parseInt(tokenExpRaw);
-  const now = Date.now();
-
-  return tokenExp < now + thresholdMs;
-}
 
 export function getJwtExpMs(token: string | null | undefined): number | null {
   if (!token) return null;

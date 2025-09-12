@@ -62,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-// import { useUserStore } from '~/stores/user';
+import { useUserStore } from '~/stores/user';
 import { useSidebarMenu } from '~/composables/useSidebarMenu';
 import UserCircleIcon from '~/assets/img/user-circle.svg';
 import HideSidebarIcon from '~/assets/img/hide-sidebar.svg';
@@ -77,11 +77,12 @@ defineProps({
   }
 });
 
-// const userStore = useUserStore();
+const userStore = useUserStore();
 const { getMenuForRole } = useSidebarMenu();
 
-// const role = computed(() => userStore.role);
-// const menuItems = computed(() => getMenuForRole(role.value));
+const role = computed(() => userStore.role);
+const menuItems = computed(() => getMenuForRole(role.value));
+// const menuItems = computed(() => getMenuForRole('KSF'));
 </script>
 
 <style>
