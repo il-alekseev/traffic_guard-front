@@ -3,7 +3,7 @@
     <div class="change-password__container">
       <div class="change-password__header">
         <div class="change-password__logo">
-          <p>Fazenda</p>
+          <FazendaLogo />
         </div>
         <div class="change-password__text"> 
           <h2 class="change-password__title">Смена пароля</h2>
@@ -28,6 +28,7 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from "~/stores/user";
 import BaseAlert from '~/components/UI/BaseAlert.vue';
 import FormComponent from '~/components/ChangePassword/FormComponent.vue';
+import FazendaLogo from "~/assets/img/logo.svg"
 
 
 definePageMeta({
@@ -83,25 +84,21 @@ const changePassword = async (password: string) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-white);
+  background: #FAFAFA;
 }
 
 @media screen and (max-width: 520px) {
   .change-password {
-    padding: var(--size-6);
+    padding: 1.5rem;
   }
 }
 
 .change-password__container {
   max-width: 30rem;
   width: 100%;
-  padding: 5rem;
-  padding-top: 4rem;
-  background-color: var(--color-white-tertiary);
-  border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2.5rem;
 }
 
 @media screen and (max-width: 520px) {
@@ -116,12 +113,12 @@ const changePassword = async (password: string) => {
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 1.25rem;
 }
 
 .change-password__logo {
-  max-width: 7.875rem;
-  max-height: 1.875rem;
+  max-width: 3rem;
+  max-height: 3rem;
   margin-left: auto;
   margin-right: auto;
 }
@@ -135,28 +132,27 @@ const changePassword = async (password: string) => {
 .change-password__text {
   display: flex;
   flex-direction: column;
-  gap: var(--size-2);
+  gap: 0.5rem;
   text-align: center;
-  color: var(--color-typo-primary);
+  color: #3F3F46;
 }
 
 .change-password__title {
-  font-size: var(--font-size-3xl);
-  line-height: 100%;
-  font-weight: 600;
-  line-height: 2.125rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
 }
 
 @media screen and (max-width: 520px) {
   .change-password__title {
-    font-size: var(--font-size-2xl);
+    font-size: 1.5rem;
   }
   
 }
 
 .change-password__subtitle {
-  font-size: var(--font-size-xs);
-  line-height: var(--line-height-xs-tight);
+  font-size: 1rem;
+  line-height: 1.5rem;
   font-weight: 400;
 }
 </style>

@@ -19,7 +19,6 @@ defineProps({
   display: flex;
   align-items: flex-start;
   padding: 0.75rem;
-  margin-bottom: 1rem;
   border-radius: var(--radius-md);
   border-left: 0.25rem solid;
 }

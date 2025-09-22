@@ -28,7 +28,7 @@
     <div class="change-password-form__actions">
       <BaseButton
         type="submit"
-        variant="primary"
+        variant="login"
         :loading="props.loading"
         loadingText="Смена пароля..."
       >
@@ -72,9 +72,6 @@ const validateForm = () => {
   if (!form.password.trim()) {
     errors.password = 'Пожалуйста, введите новый пароль';
     isValid = false;
-  } else if (form.password.length < 8) {
-    errors.password = 'Пароль должен содержать не менее 8 символов';
-    isValid = false;
   }
 
   if (!form.passwordRepeat.trim()) {
@@ -99,15 +96,19 @@ const handleSubmit = async () => {
 
 <style>
 .change-password-form {
+  padding: 3rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
+  background-color: #FFFFFF;
+  box-shadow: 0px 1px 3px 0px #0000001A;
+  border-radius: 1.5rem;
 }
 
 .change-password-form__group {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .change-password-form__actions {

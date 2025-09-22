@@ -3,14 +3,9 @@
     <div class="login__container">
       <div class="login__header">
         <div class="login__logo">
-          <p>Fazenda</p>
+          <FazendaLogo />
         </div>
-        <div class="login__text"> 
-          <h2 class="login__title">Вход в систему</h2>
-          <p class="login__subtitle">
-            Забыли пароль? Обратитесь к&nbsp;администратору для восстановления пароля.
-          </p>
-        </div>
+        <h2 class="login__title">Вход в Fazenda</h2>
       </div>
 
       <BaseAlert v-if="error">{{ error }}</BaseAlert>
@@ -28,6 +23,7 @@ import { useRouter } from 'vue-router';
 import { useUserStore } from "~/stores/user";
 import BaseAlert from '~/components/UI/BaseAlert.vue';
 import FormComponent from '~/components/Login/FormComponent.vue';
+import FazendaLogo from "~/assets/img/logo.svg"
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -36,16 +32,16 @@ const error = ref('');
 const loading = ref(false);
 
 type LoginData = {
-  login: string;
+  email: string;
   password: string;
 };
 
-const handleLogin = async ({ login, password }: LoginData) => {
+const handleLogin = async ({ email, password }: LoginData) => {
   error.value = '';
   loading.value = true;
 
   try {
-    const success = await userStore.login(login, password);
+    const success = await userStore.login(email, password);
 
     if (success) {
       const user = await userStore.fetchUserInfo();
@@ -73,25 +69,21 @@ const handleLogin = async ({ login, password }: LoginData) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-white);
+  background: #FAFAFA;
 }
 
 @media screen and (max-width: 520px) {
   .login {
-    padding: var(--size-6);
+    padding: 1.5rem;
   }
 }
 
 .login__container {
   max-width: 30rem;
   width: 100%;
-  padding: 5rem;
-  padding-top: 4rem;
-  background-color: var(--color-white-tertiary);
-  border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2.5rem;
 }
 
 @media screen and (max-width: 520px) {
@@ -106,12 +98,12 @@ const handleLogin = async ({ login, password }: LoginData) => {
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 1.25rem;
 }
 
 .login__logo {
-  max-width: 7.875rem;
-  max-height: 1.875rem;
+  max-width: 3rem;
+  max-height: 3rem;
   margin-left: auto;
   margin-right: auto;
 }
@@ -122,19 +114,11 @@ const handleLogin = async ({ login, password }: LoginData) => {
   object-fit: contain;
 }
 
-.login__text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--size-2);
-  text-align: center;
-  color: var(--color-typo-primary);
-}
-
 .login__title {
-  font-size: var(--font-size-3xl);
-  line-height: 100%;
-  font-weight: 600;
-  line-height: 2.125rem;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+  color: #3F3F46;
 }
 
 @media screen and (max-width: 520px) {
