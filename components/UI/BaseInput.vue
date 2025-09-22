@@ -122,23 +122,27 @@ const togglePassword = () => {
 }
 
 .base-label {
-  font-size: var(--font-size-sm);
-  font-weight: 400;
-  line-height: 20px;
-  color: var(--color-typo-primary);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  color: #3F3F46;
 }
 
 .base-input {
   width: 100%;
-  padding: 0.625rem;
-  font-size: var(--font-size-sm);
-  line-height: 20px;
-  color: var(--color-typo-primary);
-  background-color: var(--color-white);
-  outline: 1px solid var(--color-border-primary);
-  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  font-size: 1rem;
+  line-height: 1rem;
+  color: #3F3F46;
+  background-color: #FFFFFF;
+  outline: 1px solid #D4D4D8;
+  border-radius: 5px;
   border: 0;
-  transition: all var(--transition);
+  transition: all 0.2s ease;
+}
+
+.base-input:focus {
+  box-shadow: 0 0 0 0.125rem #cbd5e1, 0 0 0 0.25rem rgba(255, 255, 255, 0.8);
 }
 
 .base-input--error {
@@ -146,7 +150,7 @@ const togglePassword = () => {
 }
 
 .base-input--disabled {
-  background-color: var(--color-gray-disabled);
+  background-color: #EDF1F2;
 }
 
 .base-input--error:focus {
@@ -154,7 +158,7 @@ const togglePassword = () => {
 }
 
 .base-input::placeholder {
-  color: var(--color-typo-placeholder);
+  color: #848F93;
 }
 
 .base-password-container {
@@ -168,27 +172,27 @@ const togglePassword = () => {
   transform: translateY(-50%);
   background: none;
   border: none;
-  font-size: var(--font-size-xs);
   cursor: pointer;
-  padding: 0.25rem;
-  transition: all var(--transition);
+  transition: all 0.2s ease;
+  width: 1rem;
+  height: 1rem;
 }
 
 .base-form-error-text {
-  font-size: var(--font-size-xs);
+  font-size: 1rem;
   color: #EF4444;
 }
 
 .base-form-hint-text {
-  font-size: var(--font-size-xs);
-  line-height: 12px;
-  color: var(--color-typo-secondary);
+  font-size: 0.75rem;
+  line-height: 0.75rem;
+  color: #848F93;
 }
 
 .not-requires-msg {
-  color: var(--color-typo-placeholder);
-  font-size: var(--font-size-sm);
-  line-height: 20px;
+  color: #848F93;
+  font-size: 1rem;
+  line-height: 1.25rem;
   font-weight: 400;
 }
 </style>

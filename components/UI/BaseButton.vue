@@ -2,7 +2,7 @@
   <button
     :type="type"
     class="base-button"
-    :class="[`base-button--${variant}`, { 'base-button--loading': loading }, { 'base-button_red': danger }]"
+    :class="[`base-button--${variant}`, `base-button--${extras}`, { 'base-button--loading': loading }]"
     :disabled="disabled || loading"
   >
     <span v-if="loading">{{ loadingText }}</span>
@@ -17,12 +17,12 @@ defineProps({
     default: 'button'
   },
   variant: {
-    type: String as () => 'primary' | 'secondary' | 'outline',
+    type: String as () => 'primary' | 'secondary' | 'extra' | 'danger' | 'login',
     default: 'primary'
   },
-  danger: {
-    type: Boolean,
-    default: false,
+  extras: {
+    type: String as () => 'default' | 'small',
+    default: 'default'
   },
   disabled: {
     type: Boolean,
@@ -42,33 +42,15 @@ defineProps({
 <style>
 .base-button {
   width: 100%;
-  max-height: 2.5rem;
+  max-height: 2.25rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-block: 0.625rem;
-  border-radius: var(--radius-sm);
   border-width: 0;
-  font-size: var(--font-size-sm);
-  line-height: 20px;
-  font-weight: 500;
-  transition: all var(--transition);
+  transition: all 0.2s ease;
   cursor: pointer;
-}
-
-.base-button--primary {
-  color: var(--color-white);
-  background-color: var(--color-blue-main);
-}
-
-.base-button--primary:hover:not(:disabled) {
-  filter: brightness(85%);
-}
-
-.base-button--secondary {
-  color: var(--color-typo-primary);
-  background-color: var(--color-white);
-  border: 1px solid var(--color-border-primary);
+  border-radius: 6px;
+  box-shadow: 0px 1px 2px 0px #0000000D;
 }
 
 .base-button:disabled {
@@ -76,13 +58,63 @@ defineProps({
   cursor: not-allowed;
 }
 
-.base-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 0.125rem var(--color-slate-300), 0 0 0 0.25rem rgba(255, 255, 255, 0.8);
+.base-button--primary {
+  padding-block: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  background-color: #2563EB;
+  color: #FFFFFF;
 }
 
-.base-button_red {
-  color: var(--color-white);
-  background-color: #E5381A;
+.base-button--primary:hover:not(:disabled) {
+  filter: brightness(85%);
+}
+
+.base-button--secondary {
+  outline: 1px solid #E4E4E7;
+  padding-block: 0.5rem;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  background-color: #FFFFFF;
+  color: #101828;
+}
+
+.base-button--login {
+  line-height: 1.25rem;
+  padding-block: 0.375rem;
+  border-radius: 999px;
+  color: #FFFFFF;
+  background-color: #2563EB;
+
+}
+
+.base-button--extra {
+  padding-block: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  background-color: #EFF6FF;
+  color: #2563EB;
+}
+
+.base-button--danger {
+  padding-block: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+  background-color: #FFE2E2;
+  color: #C10007;
+}
+
+
+.base-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.125rem #cbd5e1, 0 0 0 0.25rem rgba(255, 255, 255, 0.8);
+}
+
+.base-button--small {
+  font-size: 0.875rem;
 }
 </style>

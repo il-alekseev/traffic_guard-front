@@ -2,13 +2,13 @@
   <form class="login-form" @submit.prevent="handleSubmit">
     <div class="login-form-group">
       <BaseInput
-        id="login"
-        name="login"
-        label="Логин"
-        v-model="form.login"
-        :error="errors.login"
-        placeholder="Username"
-        autocomplete="username"
+        id="email"
+        name="email"
+        type="email"
+        label="Электронная почта"
+        v-model="form.email"
+        :error="errors.email"
+        autocomplete="email"
       />
 
       <BaseInput
@@ -26,7 +26,7 @@
     <div class="login-form-actions">
       <BaseButton
         type="submit"
-        variant="primary"
+        variant="login"
         :loading="props.loading"
         loadingText="Вход..."
       >
@@ -51,12 +51,12 @@ const props = defineProps({
 const emit = defineEmits(['login']);
 
 const form = reactive({
-  login: '',
+  email: '',
   password: ''
 });
 
 const errors = reactive({
-  login: '',
+  email: '',
   password: ''
 });
 
@@ -67,14 +67,11 @@ const validateForm = () => {
     errors[key] = '';
   });
 
-  if (!form.login.trim()) {
-    errors.login = 'Пожалуйста, введите логин';
+  if (!form.email.trim()) {
+    errors.email = 'Пожалуйста, введите почту';
     isValid = false;
-  } else if (form.login.length < 3) {
-    errors.login = 'Логин должен содержать не менее 3 символов';
-    isValid = false;
-  } else if (!/^[a-zA-Z0-9_-]+$/.test(form.login)) {
-    errors.login = 'Логин может содержать только латинские буквы, цифры и символ подчеркивания';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    errors.email = 'Пожалуйста, введите корректную почту';
     isValid = false;
   }
 
@@ -91,7 +88,7 @@ const handleSubmit = async () => {
   }
 
   emit('login', {
-    login: form.login,
+    email: form.email,
     password: form.password
   });
 };
@@ -99,15 +96,19 @@ const handleSubmit = async () => {
 
 <style>
 .login-form {
+  padding: 3rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
+  background-color: #FFFFFF;
+  box-shadow: 0px 1px 3px 0px #0000001A;
+  border-radius: 1.5rem;
 }
 
 .login-form-group {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .login-form-actions {
