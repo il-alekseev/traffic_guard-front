@@ -109,7 +109,7 @@ import ChangePasswordIcon from '~/assets/img/change-password.svg';
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth']
+  // middleware: ['auth']
 });
 
 const userStore = useUserStore();

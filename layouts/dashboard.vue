@@ -1,9 +1,13 @@
   <template>
   <div class="dashboard">
-    <div class="dashboard__content">
-      <SidebarComponent :is-open="isSidebarOpen" @logout="logout"/>
+    <div class="dashboard__container">
+      <SidebarComponent />
       <main class="dashboard__main">
-        <slot />
+        <HeaderComponent @logout="logout"/>
+        <div class="dashboard__content">
+          <slot />
+        </div>
+
       </main>
     </div>
     <NotificationToasts />
@@ -15,23 +19,17 @@ import { useUserStore } from '~/stores/user';
 import {navigateTo} from "#app";
 import NotificationToasts from "~/components/UI/NotificationToasts.vue";
 import SidebarComponent from "~/components/Dashboard/SidebarComponent.vue";
-
-const isProfileMenuOpen = ref(false);
-const isSidebarOpen = ref(true);
-
-const toggleSidebar = () => {
-  isSidebarOpen.value = !isSidebarOpen.value;
-};
+import HeaderComponent from "~/components/Dashboard/HeaderComponent.vue";
 
 const userStore = useUserStore();
 
 onMounted(async () => {
-  if (!userStore.user) {
-    await userStore.fetchUserInfo();
-  }
-  if (userStore.user && userStore.user?.is_need_to_change_password) {
-    return navigateTo('/change-password');
-  }
+  // if (!userStore.user) {
+  //   await userStore.fetchUserInfo();
+  // }
+  // if (userStore.user && userStore.user?.is_need_to_change_password) {
+  //   return navigateTo('/change-password');
+  // }
 })
 
 
@@ -44,22 +42,32 @@ const logout = () => {
 <style>
 .dashboard {
   min-height: 100vh;
-  background-color: var(--color-white-tertiary);
+  
 }
 
-.dashboard__content {
+.dashboard__container {
   display: flex;
   min-height: 100%;
   position: relative;
 }
 
 .dashboard__main {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  transition: margin-left var(--transition);
-  margin: 20px 20px 20px 12px;
-  padding: 32px 24px 13px 24px;
-  background-color: var(--color-white);
-  outline: 0.8px solid var(--color-border-secondary);
-  border-radius: var(--radius-md);
+}
+
+.dashboard__content {
+  flex: 1;
+  background-color: #F4F4F5;
+  border-top-left-radius: 28px;
+  padding: 2rem;
+}
+
+.page-title {
+  font-weight: 500;
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  color: #3F3F46;
 }
 </style>

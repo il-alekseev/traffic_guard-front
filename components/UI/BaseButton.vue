@@ -49,7 +49,7 @@ defineProps({
   border-width: 0;
   transition: all 0.2s ease;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 0.375rem;
   box-shadow: 0px 1px 2px 0px #0000000D;
 }
 

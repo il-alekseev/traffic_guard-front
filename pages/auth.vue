@@ -108,7 +108,7 @@ const handleLogin = async ({ email, password }: LoginData) => {
   margin-right: auto;
 }
 
-.login__logo img {
+.login__logo svg {
   width: 100%;
   height: 100%;
   object-fit: contain;
