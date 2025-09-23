@@ -1,15 +1,19 @@
 <template>
-  <aside :class="['sidebar', { 'sidebar--closed': !isOpen }]">
+  <aside class="sidebar">
     <div class="sidebar__logo">
       <NuxtLink to="/dashboard" class="sidebar__logo-link">
-        Fazenda
+        <div class="sidebar__logo-link-icon">
+          <FazendaLogo />
+        </div>
+        <span class="sidebar__logo-link-name">
+          Fazenda
+        </span>
       </NuxtLink>
     </div>
     <div class="sidebar__content">
       <nav class="sidebar__nav">
         <template v-for="item in menuItems" :key="item.label">
           <NuxtLink
-            v-if="!item.external"
             :to="item.to"
             class="sidebar__item"
             :class="{ 'sidebar__item--active': $route.path === item.to }"
@@ -19,7 +23,7 @@
             </div>
             <p class="sidebar__item-link">{{ item.label }}</p>
           </NuxtLink>
-          <a
+          <!-- <a
             v-else
             :href="item.href"
             class="sidebar__item"
@@ -30,33 +34,21 @@
               <component :is="item.iconComponent" class="sidebar__item-icon-img" />
             </div>
             <p class="sidebar__item-link">{{ item.label }}</p>
-          </a>
+          </a> -->
         </template>
       </nav>
     </div>
     <div class="sidebar__footer">
       <NuxtLink
-        :class="['sidebar__user', { 'sidebar__item--active': $route.path === '/profile/edit' }]"
-        to="/profile/edit"
+        to="/settings"
+        class="sidebar__item"
+        :class="{ 'sidebar__item--active': $route.path === '/settings' }"
       >
-        <div class="sidebar__user-avatar">
-          <UserCircleIcon />
+        <div class="sidebar__item-icon">
+          <SettingsIcon />
         </div>
-        <div class="sidebar__user-info">
-          <p class="sidebar__user-name">{{ userStore.fullName }}</p>
-        </div>
+        <p class="sidebar__item-link">Настройки</p>
       </NuxtLink>
-      <div class="sidebar__extra">
-        <div class="sidebar__toggle" @click="emit('logout')">
-          <div class="sidebar__toggle-button">
-            <HideSidebarIcon />
-          </div>
-          <p>Выйти</p>
-        </div>
-        <div class="sidebar__info">
-          <p>v.1.0.0.1</p>
-        </div>
-      </div>
     </div>
   </aside>
 </template>
@@ -64,210 +56,132 @@
 <script setup lang="ts">
 import { useUserStore } from '~/stores/user';
 import { useSidebarMenu } from '~/composables/useSidebarMenu';
-import UserCircleIcon from '~/assets/img/user-circle.svg';
-import HideSidebarIcon from '~/assets/img/hide-sidebar.svg';
-import { computed } from 'vue';
+import FazendaLogo from "~/assets/img/logo.svg"
+import SettingsIcon from "~/assets/img/settings.svg"
 
 const emit = defineEmits(['logout']);
-
-defineProps({
-  isOpen: {
-    type: Boolean,
-    default: true
-  }
-});
 
 const userStore = useUserStore();
 const { getMenuForRole } = useSidebarMenu();
 
 const role = computed(() => userStore.role);
-const menuItems = computed(() => getMenuForRole(role.value));
-// const menuItems = computed(() => getMenuForRole('KSF'));
+// const menuItems = computed(() => getMenuForRole(role.value));
+const menuItems = computed(() => getMenuForRole('KSF'));
 </script>
 
 <style>
 .sidebar {
-  width: 255px;
+  width: 18rem;
   height: 100vh;
   position: sticky;
   top: 0;
-  background-color: var(--color-white-tertiary);
+  background-color: #FFFFFF;
   display: flex;
   flex-direction: column;
-  padding-inline: var(--size-3);
+  padding-inline: 1.5rem;
+  padding-block: 1rem;
   z-index: 5;
   overflow: hidden;
 }
 
-.sidebar--closed {
-  width: 0;
-  margin-left: -256px;
-}
-
-@media (min-width: 768px) {
-  .sidebar--closed {
-    margin-left: 0;
-  }
-}
-
 .sidebar__logo {
-  padding-top: 21px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--color-border-tertiary);
+  margin-bottom: 2.25rem;
 }
 
 .sidebar__logo-link {
-  width: 100%;
+  width: fit-content;
   height: 100%;
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
 }
 
-.sidebar__logo-img {
-  height: 20px;
-  width: auto;
+.sidebar__logo-link-icon {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar__logo-link-icon svg{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.sidebar__logo-link-name {
+  font-weight: 400;
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  color: #3F3F46;
 }
 
 .sidebar__content {
   flex: 1;
   overflow-y: auto;
-  padding: var(--size-4) 0;
 }
 
 .sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: var(--size-2);
 }
 
 .sidebar__item {
   display: flex;
   align-items: center;
-  gap: var(--size-3);
-  padding: 7px 12px 7px 8px;
-  transition: all var(--transition-fast);
-  border-left: 2px solid transparent;
-  border-radius: var(--radius-sm);
+  gap: 0.5rem;
+  padding: 0.75rem 0rem 0.75rem 1.25rem;
+  transition: all 0.2s ease;
+  border-radius: 999px;
   text-decoration: none;
+  background: #FFFFFF;
 }
 
-.sidebar__item:hover {
-  background: var(--color-gray-active);
+.sidebar__item:not(.sidebar__item--active):hover {
+  background: #E8E8E8;
 }
 
 .sidebar__item--active {
-  background: var(--color-gray-active);
-  border-left: 2px solid var(--color-blue-accent);
-  border-radius: var(--radius-sm);
+  background: #18181B;
 }
 
 .sidebar__item-icon {
-  width: 16px;
-  height: 16px;
+  width: 1.5rem;
+  height: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-typo-placeholder);
+  color: #A1A1AA;
 }
 
 .sidebar__item--active .sidebar__item-icon {
-  color: var(--color-blue-accent);
+  color: #FFFFFF;
 }
 
 .sidebar__item-icon img{
   width: 100%;
   height: 100%;
   object-fit: contain;
-  
 }
 
 .sidebar__item-link {
-  font-size: var(--font-size-xs);
-  line-height: 18px;
   font-weight: 400;
-  color: var(--color-typo-primary);
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #3F3F46;
   text-decoration: none;
 }
 
-
-.router-link-active {
-  border-left-color: var(--color-blue-main);
+.sidebar__item--active .sidebar__item-link {
+  color: #FFFFFF;
 }
 
 .sidebar__footer {
-  padding-block: var(--size-4);
-  border-top: 1px solid var(--color-border-tertiary);
   display: flex;
   flex-direction: column;
-  gap: var(--size-2);
+  gap: 0.5rem;
   margin-top: auto;
-}
-
-.sidebar__user {
-  display: flex;
-  gap: var(--size-3);
-  align-items: center;
-  cursor: pointer;
-  padding: 7px 12px 7px 8px;
-  text-decoration: none;
-}
-
-.sidebar__user-avatar {
-  width: 16px;
-  height: 16px;
-  color: var(--color-typo-placeholder);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.sidebar__user-info {
-  max-width: 190px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: var(--font-size-xs);
-  line-height: 18px;
-  font-weight: 400;
-  color: var(--color-typo-primary);
-  text-decoration: none;
-}
-
-.sidebar__extra {
-  display: flex;
-  justify-content: space-between;
-  padding: 7px 12px 7px 8px;
-}
-
-.sidebar__toggle {
-  display: flex;
-  align-items: center;
-  gap: var(--size-3);
-  cursor: pointer;
-}
-
-.sidebar__toggle p {
-  font-size: var(--font-size-xs);
-  line-height: 18px;
-  font-weight: 400;
-  color: var(--color-typo-primary);
-  text-decoration: none;
-}
-
-.sidebar__toggle-button {
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-typo-placeholder);
-}
-
-.sidebar__info p {
-  font-size: var(--font-size-xs);
-  line-height: 18px;
-  font-weight: 400;
-  color: var(--color-typo-primary);
-  text-decoration: none;
 }
 </style>

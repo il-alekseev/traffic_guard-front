@@ -1,10 +1,15 @@
 // @ts-ignore
-import IconHouse from '@/assets/img/house.svg?component';
+import HouseIcon from '@/assets/img/home.svg?component';
 // @ts-ignore
-import ChartBar from '@/assets/img/chart-bar.svg?component'
+import NetworkShield from '@/assets/img/security-shield.svg?component';
 // @ts-ignore
-import Users from '@/assets/img/users.svg?component'
+import ChartRose from '@/assets/img/chart-rose.svg?component';
 // @ts-ignore
+import CodeIcon from '@/assets/img/code.svg?component';
+// @ts-ignore
+import UsersGroup from '@/assets/img/user-group.svg?component';
+// @ts-ignore
+import LogsIcon from '@/assets/img/logs.svg?component';
 
 
 export function useSidebarMenu() {
@@ -15,40 +20,54 @@ export function useSidebarMenu() {
     const fullMenu = [
       {
         id: "main",
-        label: "Главная",
+        label: "Dashboard",
         to: "/dashboard",
-        iconComponent: IconHouse,
+        iconComponent: HouseIcon,
         showFor: ["KSU", "KSF"],
       },
       {
-        id: "users",
-        label: "Управление пользователями",
-        to: "/users",
-        iconComponent: Users,
-        showFor: ["KSU", "KSF"],
-      },
-      {
-        id: "llm-review",
-        label: "AI анализ",
-        to: "/llm-review",
-        iconComponent: ChartBar,
+        id: "detections",
+        label: "Выявления",
+        to: "/detections",
+        iconComponent: NetworkShield,
         showFor: ["KSU", "KSF"],
       },
       {
         id: "reports",
         label: "Отчеты",
         to: "/reports",
-        iconComponent: ChartBar,
+        iconComponent: ChartRose,
         showFor: ["KSU", "KSF"],
       },
       {
-        id: "grafana",
-        label: "Статистика",
-        href: grafanaUrl,
-        iconComponent: ChartBar,
-        external: true,
+        id: "sessions",
+        label: "Сессии",
+        to: "/sessions",
+        iconComponent: CodeIcon,
         showFor: ["KSU", "KSF"],
       },
+      {
+        id: "users",
+        label: "Пользователи",
+        to: "/users",
+        iconComponent: UsersGroup,
+        showFor: ["KSU", "KSF"],
+      },
+      {
+        id: "logs",
+        label: "Логи",
+        to: "/logs",
+        iconComponent: LogsIcon,
+        showFor: ["KSU", "KSF"],
+      },
+      // {
+      //   id: "grafana",
+      //   label: "Статистика",
+      //   href: grafanaUrl,
+      //   iconComponent: ChartBar,
+      //   external: true,
+      //   showFor: ["KSU", "KSF"],
+      // },
     ]
 
     return fullMenu.filter((item) => item.showFor.includes(role))
