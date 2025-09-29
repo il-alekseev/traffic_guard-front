@@ -1,7 +1,10 @@
 <template>
   <transition name="slide-fade">
     <div v-if="modelValue" class="side-modal">
-      <div class="side-modal__overlay"></div>
+      <div class="side-modal__overlay">
+        <div class="side-modal__overlay-blur"></div>
+      </div>
+      
       <div class="side-modal__content">
         <div class="side-modal__header">
           <div class="side-modal__title-container">
@@ -46,46 +49,54 @@ const emit = defineEmits(['close']);
   inset: 0;
   background: transparent;
 }
+.side-modal__overlay-blur {
+  z-index: 9999;
+  position: absolute;
+  top: 0;
+  width: calc(100vw - 18rem);
+  margin-left: 18rem;
+  height: calc(100vh - 4rem);
+  margin-top: 4rem;
+  background: #D7D7D766;
+  backdrop-filter: blur(10px);
+  border-top-left-radius: 1.75rem;
+}
 .side-modal__content {
+  z-index: 99999;
   position: relative;
-  width: 500px;
-  height: calc(100vh - 15px);
+  width: 28rem;
+  height: calc(100vh - 4rem);
   margin-top: auto;
-  margin-bottom: auto;
-  margin-right: 15px;
-  background: var(--color-white);
+  background: #FFFFFF;
   display: flex;
   flex-direction: column;
-  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0px 8px 8px rgba(0, 32, 51, 0.04), 0px 12px 28px rgba(0, 32, 51, 0.12);
+  box-shadow: 0px 20px 25px -5px #0000001A;
 }
 .side-modal__header {
-  padding: 24px 16px;
+  padding: 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--color-border-secondary);
 }
 .side-modal__title-container {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   align-items: center;
 }
 .side-modal__title {
-  font-weight: 600;
-  font-size: var(--font-size-3xl);
-  line-height: 34px;
-  color: var(--color-typo-primary);
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #3F3F46;
 }
 .side-modal__steps {
   font-weight: 600;
   font-size: var(--font-size-3xl);
-  line-height: 34px;
+  line-height: 2.125rem;
   color: var(--color-typo-placeholder);
 }
 .side-modal__body {
-  padding: 24px 16px;
   overflow-y: auto;
   flex: 1;
   height: 100%;
@@ -95,9 +106,9 @@ const emit = defineEmits(['close']);
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  width: 20px;
-  height: 20px;
-  color: var(--color-typo-secondary);
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #A1A1AA;
 }
 .slide-fade-enter-active {
   transition: all 0.3s ease;

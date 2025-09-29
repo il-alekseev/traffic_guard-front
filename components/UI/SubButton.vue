@@ -39,7 +39,7 @@ const props = defineProps({
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-border-primary);
   font-size: var(--font-size-sm);
-  line-height: 20px;
+  line-height: 1.25rem;
   font-weight: 500;
   transition: all var(--transition);
   cursor: pointer;
@@ -77,8 +77,8 @@ const props = defineProps({
   justify-content: center;
   align-items: center;
   color: var(--color-icon-primary);
-  width: 16px;
-  height: 16px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .sub-button--white .sub-button__icon {

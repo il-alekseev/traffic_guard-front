@@ -4,6 +4,7 @@
       <SidebarComponent />
       <main class="dashboard__main">
         <HeaderComponent @logout="logout"/>
+        <!-- <div class="dashboard__content-blur-layer"></div> -->
         <div class="dashboard__content">
           <slot />
         </div>
@@ -52,6 +53,7 @@ const logout = () => {
 }
 
 .dashboard__main {
+  width: 80%;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -62,6 +64,11 @@ const logout = () => {
   background-color: #F4F4F5;
   border-top-left-radius: 28px;
   padding: 2rem;
+}
+
+.dashboard__content-blur-layer {
+  background: #D7D7D766;
+  backdrop-filter: blur(10px);
 }
 
 .page-title {

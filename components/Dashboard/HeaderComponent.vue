@@ -56,7 +56,7 @@ const toggleIsMenuOpen = () => {
 
 <style>
 .header {
-  height: 64px;
+  height: 4rem;
   position: sticky;
   background-color: #FFFFFF;
 }
@@ -115,7 +115,7 @@ const toggleIsMenuOpen = () => {
 
 .header__user-menu {
   position: absolute;
-  top: 48px;
+  top: 3rem;
   right: 0;
   background-color: #FFFFFF;
   padding: 0.5rem;

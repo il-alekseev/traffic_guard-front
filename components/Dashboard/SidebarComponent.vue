@@ -71,7 +71,9 @@ const menuItems = computed(() => getMenuForRole('KSF'));
 
 <style>
 .sidebar {
-  width: 18rem;
+  width: 15%;
+  min-width: 18rem;
+  max-width: 18rem;
   height: 100vh;
   position: sticky;
   top: 0;

@@ -31,7 +31,7 @@ const notificationStore = useNotificationStore();
 <style scoped>
 .notifications-wrapper {
   position: fixed;
-  bottom: 66px;
+  bottom: 4rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 9999;
@@ -42,8 +42,8 @@ const notificationStore = useNotificationStore();
 }
 
 .toast {
-  padding: 14px 30px;
-  border-radius: 8px;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
   box-shadow: 0px 4px 4px rgba(0, 32, 51, 0.04), 0px 8px 24px rgba(0, 32, 51, 0.12);
   animation: fade-in-out 2s ease forwards;
 }
@@ -51,7 +51,7 @@ const notificationStore = useNotificationStore();
 .toast__body {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 1rem;
 }
 
 .toast__icon-container {
@@ -65,14 +65,14 @@ const notificationStore = useNotificationStore();
 }
 
 .toast__icon {
-  width: 24px;
-  height: 24px;
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .toast__text {
   font-weight: 400;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 1rem;
+  line-height: 1.5rem;
   color: #FFFFFF;
 }
 

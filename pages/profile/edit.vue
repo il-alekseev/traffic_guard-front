@@ -162,7 +162,7 @@ onMounted(async () => {
 
 .profile-control__title {
   font-size: var(--font-size-3xl);
-  line-height: 34px;
+  line-height: 2rem;
   font-weight: 600;
   color: var(--color-typo-primary);
   margin-block: var(--size-1);
@@ -174,12 +174,12 @@ onMounted(async () => {
   border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
-  max-width: 440px;
+  max-width: 27.5rem;
 }
 
 .profile-card__title {
   font-size: var(--font-size-lg);
-  line-height: 22px;
+  line-height: 1.5rem;
   font-weight: 600;
   color: var(--color-typo-primary);
   margin-bottom: var(--size-4);

@@ -6,7 +6,14 @@
     :disabled="disabled || loading"
   >
     <span v-if="loading">{{ loadingText }}</span>
-    <span v-else><slot /></span>
+    <template v-else>
+      <span v-if="$slots.icon" class="base-button__icon">
+        <slot name="icon" />
+      </span>
+      <span class="base-button__text">
+        <slot />
+      </span>
+    </template>
   </button>
 </template>
 
@@ -51,6 +58,7 @@ defineProps({
   cursor: pointer;
   border-radius: 0.375rem;
   box-shadow: 0px 1px 2px 0px #0000000D;
+  padding-inline: 0.75rem;
 }
 
 .base-button:disabled {
@@ -116,5 +124,19 @@ defineProps({
 
 .base-button--small {
   font-size: 0.875rem;
+}
+
+.base-button__icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-icon-primary);
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.375rem;
+}
+
+.base-button--primary .base-button__icon {
+  color: #FFFFFF;
 }
 </style>

@@ -23,12 +23,11 @@ export interface UsersTable {
 
 export interface UserForm {
   login: string;
-  email: string;
   first_name: string;
   last_name: string;
   patronymic: string;
   role: DropdownItem;
-  area: DropdownItem;
+  email: string;
 }
 
 export interface UserState {
