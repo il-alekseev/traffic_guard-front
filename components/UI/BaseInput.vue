@@ -136,7 +136,7 @@ const togglePassword = () => {
   color: #3F3F46;
   background-color: #FFFFFF;
   outline: 1px solid #D4D4D8;
-  border-radius: 5px;
+  border-radius: 0.3125rem;
   border: 0;
   transition: all 0.2s ease;
 }
@@ -186,11 +186,11 @@ const togglePassword = () => {
 .base-form-hint-text {
   font-size: 0.75rem;
   line-height: 0.75rem;
-  color: #848F93;
+  color: #71717A;
 }
 
 .not-requires-msg {
-  color: #848F93;
+  color: #71717A;
   font-size: 1rem;
   line-height: 1.25rem;
   font-weight: 400;
