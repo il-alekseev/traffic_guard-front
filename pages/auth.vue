@@ -32,16 +32,16 @@ const error = ref('');
 const loading = ref(false);
 
 type LoginData = {
-  email: string;
+  login: string;
   password: string;
 };
 
-const handleLogin = async ({ email, password }: LoginData) => {
+const handleLogin = async ({ login, password }: LoginData) => {
   error.value = '';
   loading.value = true;
 
   try {
-    const success = await userStore.login(email, password);
+    const success = await userStore.login(login, password);
 
     if (success) {
       const user = await userStore.fetchUserInfo();
