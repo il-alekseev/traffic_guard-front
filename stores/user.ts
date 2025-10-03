@@ -151,14 +151,14 @@ export const useUserStore = defineStore("user", {
       }
     },
 
-    async login(email: string, password: string): Promise<boolean> {
+    async login(login: string, password: string): Promise<boolean> {
       try {
         const { $api } = useNuxtApp();
         const response = await $api.post<{
           access_token: string;
           expires_in: number;
           refresh_token: string | undefined;
-        }>("/auth/sign-in", { email: email, password: password });
+        }>("/auth/sign-in", { login: login, password: password });
 
         if (response && response.access_token) {
           this.setToken(

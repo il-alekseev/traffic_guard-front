@@ -2,13 +2,11 @@
   <form class="login-form" @submit.prevent="handleSubmit">
     <div class="login-form-group">
       <BaseInput
-        id="email"
-        name="email"
-        type="email"
-        label="Электронная почта"
-        v-model="form.email"
-        :error="errors.email"
-        autocomplete="email"
+        id="login"
+        name="login"
+        label="Логин"
+        v-model="form.login"
+        :error="errors.login"
       />
 
       <BaseInput
@@ -51,12 +49,12 @@ const props = defineProps({
 const emit = defineEmits(['login']);
 
 const form = reactive({
-  email: '',
+  login: '',
   password: ''
 });
 
 const errors = reactive({
-  email: '',
+  login: '',
   password: ''
 });
 
@@ -67,11 +65,16 @@ const validateForm = () => {
     errors[key] = '';
   });
 
-  if (!form.email.trim()) {
-    errors.email = 'Пожалуйста, введите почту';
+  if (!form.login.trim()) {
+    errors.login = 'Пожалуйста, введите логин';
     isValid = false;
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = 'Пожалуйста, введите корректную почту';
+  } else if (form.login.length < 3) {
+    errors.login = 'Логин должен содержать не менее 3 символов';
+    isValid = false;
+  } else if (form.login.length > 255) {
+    errors.login = 'Логин должен содержать менее 255 символов';
+  } else if (!/^[a-zA-Z0-9_-]+$/.test(form.login)) {
+    errors.login = 'Логин может содержать только латинские буквы, цифры и символ подчеркивания';
     isValid = false;
   }
 
@@ -88,7 +91,7 @@ const handleSubmit = async () => {
   }
 
   emit('login', {
-    email: form.email,
+    login: form.login,
     password: form.password
   });
 };
