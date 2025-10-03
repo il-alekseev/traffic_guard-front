@@ -13,15 +13,25 @@
         </div>
         <div
           v-if="isMenuOpen"
-          class="header__user-menu">
+          class="header__user-menu user-menu">
           <ul>
             <li>
-              <NuxtLink to="/profile/edit">
-                <span class="header__user-menu-link">Профиль</span>
+              <NuxtLink to="/profile/edit" @click="toggleIsMenuOpen">
+                <div class="user-menu__item">
+                  <div class="user-menu__icon">
+                    <UserIcon />
+                  </div>
+                  <span class="user-menu__link">Профиль</span>
+                </div>
               </NuxtLink>
             </li>
             <li @click="emit('logout')">
-              <span class="header__user-menu-link">Выход</span>
+              <div class="user-menu__item user-menu__item_red">
+                <div class="user-menu__icon">
+                  <LogoutIcon />
+                </div>
+                <span class="user-menu__link">Выход</span>
+              </div>
             </li>
           </ul>
         </div>
@@ -35,6 +45,8 @@
 import { useUserStore } from '~/stores/user';
 import UserCircleIcon from "~/assets/img/user-circle.svg";
 import ArrowIcon from "~/assets/img/arrow-down.svg";
+import UserIcon from "~/assets/img/user.svg";
+import LogoutIcon from "~/assets/img/logout.svg"
 
 
 const emit = defineEmits(['logout']);
@@ -115,29 +127,61 @@ const toggleIsMenuOpen = () => {
 
 .header__user-menu {
   position: absolute;
-  top: 3rem;
+  top: 3.5rem;
   right: 0;
+  width: 15rem;
   background-color: #FFFFFF;
-  padding: 0.5rem;
-  padding-inline: 1rem;
   border-radius: 0.375rem;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+  box-shadow: 0px 1px 2px 0px #0000000D;
+  border: 1px solid #E4E4E7;
 }
 
 .header__user-menu ul {
   list-style-type:  none;
   display: flex;
   flex-direction: column;
+}
+
+.header__user-menu ul li {
+  padding-left: 1.25rem;
+  padding-block: 0.75rem;
+  border-top: 1px solid #E4E4E7;
+}
+
+.header__user-menu ul li:first-child {
+  border-top: none;
+}
+
+.user-menu__item {
+  display: flex;
   gap: 0.5rem;
 }
 
-.header__user-menu-link {
+.user-menu__item_red {
+  color: #C10007;
+}
+
+.user-menu__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: cover;
+  color: #9CA3AF;
+}
+
+.user-menu__item_red .user-menu__icon {
+  color: #C10007;
+}
+
+.user-menu__link {
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.5rem;
   color: #3F3F46;
   text-decoration: none;
+}
+
+.user-menu__item_red .user-menu__link {
+  color: #C10007;
 }
 
 .header__user-menu li {
