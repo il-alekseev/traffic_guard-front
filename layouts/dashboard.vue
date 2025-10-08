@@ -77,4 +77,23 @@ const logout = () => {
   line-height: 2.25rem;
   color: #3F3F46;
 }
+
+.page-subtitle-block {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #A1A1AA;
+}
+
+.page-subtitle {
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.page-refresh-btn {
+  cursor: pointer;
+  width: 1.25rem;
+  height: 1.25rem;
+}
 </style>

@@ -10,7 +10,7 @@
       {{ isGenerating ? 'Генерация...' : 'Скачать отчёт' }}
     </button>
 
-    <div>
+    <div class="hidden-report">
       <WelcomePage 
         ref="welcomePageRef"
         :logo-url="reportConfig.logoUrl"

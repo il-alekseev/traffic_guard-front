@@ -1,3 +1,5 @@
+import type { ResourceCategory, StatusType } from "~/types/statistics";
+
 export const getTokenHeaders = (token: string): {
   headers: {
     Authorization: string;
@@ -74,5 +76,29 @@ export function getJwtExpMs(token: string | null | undefined): number | null {
     return typeof json?.exp === "number" ? json.exp * 1000 : null;
   } catch {
     return null;
+  }
+}
+
+export function getModificatorByCategory(category: ResourceCategory): string {
+  switch (category) {
+    case 'Экстремизм':
+      return 'extremism'
+    case 'Наркотики':
+      return 'drugs'
+    default:
+      return ''
+  }
+}
+
+export function getStatusType(status: StatusType): string {
+  switch (status) {
+    case 'blocked':
+      return 'Заблокировано'
+    case 'blocking':
+      return 'Рекомендуется блокировка'
+    case 'verification':
+      return 'Требуется проверка'
+    default:
+      return ''
   }
 }
