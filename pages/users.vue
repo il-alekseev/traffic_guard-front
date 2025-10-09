@@ -144,6 +144,7 @@
       v-if="showTempPasswordUserModal"
       :user="selectedUser"
       :password="tempPassword"
+      :type="tempPasswordType"
       @close="closeTempPasswordUserModal"
     />
   </div>
@@ -184,6 +185,7 @@ const tempPassword = ref('');
 const showCreateUserModal = ref(false);
 const showEditUserModal = ref(false);
 const showTempPasswordUserModal = ref(false);
+const tempPasswordType = ref<'create' | 'reset'>('create')
 
 const users = ref<User[]>([]);
 const currentPage = ref(1);
@@ -295,7 +297,7 @@ const closeCreateUserModal = () => {
 const handleUserCreated = (newUser: User, password: string) => {
   usersControlStore.addUser(newUser);
   closeCreateUserModal();
-  openTempPasswordUserModal(newUser, password);
+  openTempPasswordUserModal(newUser, password, 'create');
 };
 
 const openEditUserModal = (user: User) => {
@@ -331,14 +333,15 @@ const manageUser = (opType: 'create' | 'update', user: User, password: string | 
 const handlePasswordReset = (userId: string, password: string) => {
   const user: User | undefined = users.value.find(u => u.user_id === userId);
   if (!user) return;
-  openTempPasswordUserModal(user, password);
+  openTempPasswordUserModal(user, password, 'reset');
 };
 
-const openTempPasswordUserModal = (user: User, password: string) => {
+const openTempPasswordUserModal = (user: User, password: string, tempPassType: 'create' | 'reset') => {
   toggleLockBodyScroll(true);
   selectedUser.value = { ...user };
   tempPassword.value = password;
   showTempPasswordUserModal.value = true;
+  tempPasswordType.value = tempPassType;
 };
 
 const closeTempPasswordUserModal = () => {

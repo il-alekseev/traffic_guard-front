@@ -1,12 +1,16 @@
 <template>
   <BaseModal @close="closeModal">
     <template #header>
-      <h2 class="modal__title">Временный пароль</h2>
-      <p class="modal__text">
-        Отправьте временный пароль пользователю
-        <span class="modal__text-full-name">{{ props.user?.last_name + ' ' + props.user?.first_name + ' ' + (props.user?.patronymic || '')}} ({{ props.user?.login }})</span>
-        После закрытия этого окна пароль будет недоступен для просмотра.
-      </p>
+      <div class="modal__image modal-password-image">
+        <SuccesCheckImage />
+      </div>
+      <div class="modal__header-title-block">
+        <h3 class="modal__title">{{ props.type === 'create' ? 'Пользователь создан!' : 'Пароль успешно сброшен!' }}</h3>
+        <p class="modal__text">
+          {{ props.type === 'create' ? 'Направьте временный пароль пользователю' : 'Направьте новый пароль пользователю' }}
+          
+        </p>
+      </div>
     </template>
 
     <template #main>
@@ -21,15 +25,18 @@
             <CheckIcon v-else class="password__copy-icon_green" />
           </div>
         </div>
-        <p v-if="copied" class="password__note">
+        <!-- <p v-if="copied" class="password__note">
           Пароль скопирован в буфер обмена
-        </p>
+        </p> -->
       </div>
     </template>
 
     <template #footer>
       <BaseButton type="button" variant="secondary" :disabled="false" @click="closeModal">
         Закрыть
+      </BaseButton>
+      <BaseButton type="button" variant="primary" :disabled="false" @click="copyToClipboard">
+        Скопировать
       </BaseButton>
     </template>
   </BaseModal>
@@ -40,10 +47,12 @@ import type { User } from '~/types/user';
 import BaseModal from '~/components/UI/BaseModal.vue';
 import BaseButton from '~/components/UI/BaseButton.vue';
 import CheckIcon from '~/assets/img/check.svg';
+import SuccesCheckImage from "~/assets/img/succes-check-image.svg"
 
 const props = defineProps<{
   user: User | null;
   password: string;
+  type: 'create' | 'reset'
 }>();
 
 const emit = defineEmits(['close']);
@@ -74,6 +83,11 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.modal-password-image {
+  width: 3rem;
+  height: 3rem;
+}
+
 .modal__text-full-name {
   font-weight: 600;
 }
@@ -81,40 +95,50 @@ onMounted(() => {
 .password {
   display: flex;
   flex-direction: column;
-  gap: var(--size-2);
+  gap: 0.5rem;
 }
 
 .password__value-container {
   display: flex;
   align-items: center;
+  text-align: center;
   justify-content: space-between;
-  background-color: #f3f4f6;
+  background-color: #FFFFFF;
   padding: 0.625rem;
-  border-radius: var(--radius-sm);
+  border-radius: 6px;
   cursor: pointer;
+  outline: 1px solid #D4D4D8;
 }
 
 .password__value {
-  font-size: var(--font-size-sm);
-  font-weight: 400;
+  text-align: center;
+  width: 100%;
+  font-size: 1rem;
   line-height: 1.25rem;
-  color: var(--color-typo-primary);
+  font-weight: 400;
+  color: #3F3F46;
 }
 
 .password__copy-icon {
-  color: var(--color-typo-primary);
+  color: #A1A1AA;
   width: 1rem;
   height: 1rem;
+}
+
+.password__copy-icon svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .password__copy-icon_green {
   color: #3E9B4F;
 }
-
+/* 
 .password__note {
   font-weight: 400;
-  font-size: var(--font-size-xs);
-  line-height: 1.25rem;
-  color: var(--color-typo-secondary);
-}
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: #A1A1AA;
+} */
 </style>
