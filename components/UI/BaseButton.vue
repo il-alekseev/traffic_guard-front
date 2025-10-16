@@ -126,6 +126,10 @@ defineProps({
   font-size: 0.875rem;
 }
 
+.base-button--secondary.base-button--small {
+  outline: 1px solid #D4D4D8;
+}
+
 .base-button__icon {
   display: flex;
   justify-content: center;
