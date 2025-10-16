@@ -1,3 +1,4 @@
+import type { SessionStatus } from "~/types/sessionControl";
 import type { ResourceCategory, StatusType } from "~/types/statistics";
 
 export const getTokenHeaders = (token: string): {
@@ -102,3 +103,33 @@ export function getStatusType(status: StatusType): string {
       return ''
   }
 }
+
+export function getBadgeClassByStatus(status: SessionStatus): string {
+  switch (status) {
+    case ('allowed'):
+      return 'session-status-badge_greeen'
+    case ('ban'):
+      return 'session-status-badge_red'
+    case ('waiting'):
+      return 'session-status-badge_yellow'
+    default:
+      return ''
+  }
+}
+
+export function getStatusText(status: SessionStatus): string {
+  switch (status) {
+    case ('allowed'):
+      return 'Разрешен'
+    case ('ban'):
+      return 'Запрещён'
+    case ('waiting'):
+      return 'Ожидает'
+    default:
+      return ''
+  }
+}
+
+export const getNgfwBadgeClass = (ngfw: number) => {
+  return `sessions__table-cell__badge sessions__table-cell__badge--${ngfw}`;
+};

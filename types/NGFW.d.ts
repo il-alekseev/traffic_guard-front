@@ -1,0 +1,1 @@
+export type NGFWType = 'ngfw-1' | 'ngfw-2';

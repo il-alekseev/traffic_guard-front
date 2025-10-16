@@ -9,12 +9,7 @@
           placeholder="Поиск"
           @search="applyFilters"
         />
-        <button class="users__filter-button">
-          <div class="users__filter-button-icon">
-            <FilterIcon />
-          </div>
-          <span class="users__filter-button-text">Фильтр</span>
-        </button>
+        <FilterButton @click="console.log('openFilter')"/>
         <BaseButton
           @click.stop="openCreateUserModal"
           type="button"
@@ -28,10 +23,7 @@
       </div>
     </div>
 
-    <div v-if="fetchError !== ''" class="users__error">
-      {{ fetchError }}
-    </div>
-
+    <ErrorBlock v-if="fetchError !== ''" :fetch-error="fetchError" />
 
     <div v-if="fetchError === ''"  class="users__table-container" ref="tableRef">
       <table class="users__table">
@@ -57,7 +49,7 @@
           </td>
         </tr>
         <template v-else>
-          <tr v-for="(user, index) in users" :key="user.user_id" class="users__table-row">
+          <tr v-for="(user, _index) in users" :key="user.user_id" class="users__table-row">
             <td class="users__table-cell-id">{{ user.user_id }}</td>
             <td class="users__table-cell-login">{{ user.login }}</td>
             <td class="users__table-cell-role">{{ user.role }}</td>
@@ -160,10 +152,11 @@ import BaseButton from '~/components/UI/BaseButton.vue';
 import SideModal from '~/components/UI/SideModal.vue';
 import ManageUserForm from '~/components/users/ManageUserForm.vue';
 import TempPasswordUserModal from '~/components/users/TempPasswordUserModal.vue';
+import FilterButton from '~/components/UI/FilterButton.vue';
+import ErrorBlock from '~/components/UI/ErrorBlock.vue';
 import PlusIcon from "~/assets/img/plus.svg";
 import EditDataIcon from '~/assets/img/edit.svg';
 import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
-import FilterIcon from "~/assets/img/filter-icon.svg"
 
 
 definePageMeta({
@@ -216,12 +209,9 @@ const pagesToShow = computed(() => {
 
   return pages
 })
-
-
 const startIndex = computed(() => {
   return (currentPage.value - 1) * itemsPerPage.value + 1;
 });
-
 const endIndex = computed(() => {
   const end = currentPage.value * itemsPerPage.value;
   return end > totalUsers.value ? totalUsers.value : end;
@@ -253,24 +243,6 @@ const fetchUsers = async () => {
   } finally {
     loading.value = false;
   }
-};
-
-const handleDotsClick = (dotsPosition: 'left' | 'right') => {
-  const total = totalPages.value;
-  const current = currentPage.value;
-
-  if (dotsPosition === 'left') {
-    changePage(Math.max(1, current - 3));
-  } else {
-    changePage(Math.min(total, current + 3));
-  }
-}
-
-
-const changePage = (page: number) => {
-  if (page < 1 || page > totalPages.value) return;
-  currentPage.value = page;
-  updateUrlParams();
 };
 
 const toggleLockBodyScroll = (isLock: boolean) => {
@@ -357,6 +329,23 @@ const handleUserDeleted = (userId: string) => {
   usersControlStore.removeUser(userId);
 };
 
+const handleDotsClick = (dotsPosition: 'left' | 'right') => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+
+  if (dotsPosition === 'left') {
+    changePage(Math.max(1, current - 3));
+  } else {
+    changePage(Math.min(total, current + 3));
+  }
+}
+
+const changePage = (page: number) => {
+  if (page < 1 || page > totalPages.value) return;
+  currentPage.value = page;
+  updateUrlParams();
+};
+
 const initFiltersFromUrl = async () => {
   const query = route.query;
 
@@ -404,8 +393,7 @@ watch(
 
 </script>
 
-<style>
-
+<style scoped>
 .users__header {
   display: flex;
   gap: 1.5rem;
@@ -422,58 +410,15 @@ watch(
   gap: 0.5rem;
 }
 
-.users__error {
-  padding: 1.25rem;
-  background-color: #FFE2E2;
-  color: #C10007;
-  border-radius: 0.375rem;
-  font-size: 1rem;
-  line-height: 1.5rem;
-}
-
 .users__search {
   max-width: 47.25rem;
   min-width: 16rem;
   width: 100%;
 }
 
-.users__filter-button {
-  background-color: #FFFFFF;
-  box-shadow: 0px 1px 2px 0px #0000000D;
-  padding: 0.5rem 0.75rem;
-  display: flex;
-  align-items: center;
-  gap: 0.375rem;
-  border: none;
-  border-radius: 0.375rem;
-}
-
-.users__filter-button-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 1.25rem;
-  height: 1.25rem;
-  color: #A1A1AA;
-}
-
-.users__filter-button-icon svg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.users__filter-button-text {
-  font-weight: 500;
-  font-size: 1rem;
-  line-height: 1.25rem;
-  color: #3F3F46;
-}
-
 .users__create-button {
   width: 14.5rem;
 }
-
 
 .users__table-container {
   overflow-x: auto;
