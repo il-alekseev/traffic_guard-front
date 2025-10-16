@@ -47,22 +47,29 @@ const closeModal = () => {
 .modal {
   background-color: white;
   width: 100%;
-  max-width: 33.5rem;
-  padding: 2rem;
-  box-shadow: 0px 2px 2px rgba(0, 32, 51, 0.02),
-              0px 2px 8px rgba(0, 32, 51, 0.16);
+  max-width: 24rem;
+  padding: 1.5rem;
+  box-shadow: 0px 8px 10px -6px #0000001A;
+  box-shadow: 0px 20px 25px -5px #0000001A;
+
   border-radius: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: var(--size-5);
+  gap: 1.5rem;
 }
 
 .modal__header {
   display: flex;
   flex-direction: column;
-  gap: var(--size-3);
+  gap: 1.25rem;
   align-items: center;
   text-align: center;
+}
+
+.modal__header-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .modal__image {
@@ -78,20 +85,21 @@ const closeModal = () => {
 .modal__footer {
   display: flex;
   justify-content: flex-end;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .modal__title {
-  font-size: 1.5rem;
-  line-height: 100%;
-  font-weight: 500;
-  color: #002033;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  font-weight: 600;
+  color: #101828;
   margin: 0;
 }
 
 .modal__text {
   font-weight: 400;
-  font-size: 1rem;
+  font-size: 0.875rem;
   line-height: 1.25rem;
+  color: #6A7282;
 }
 </style>
