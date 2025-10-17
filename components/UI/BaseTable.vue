@@ -44,7 +44,6 @@
                 @click="$emit('action-click', item)"
               >
                 <slot name="action-button" :item="item">
-                  <component :class="`${prefix}__action-icon table__action-icon`" />
                 </slot>
               </button>
             </td>
@@ -98,9 +97,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import ArrowLeftIcon from '~/assets/img/arrow-left.svg';
-import ErrorBlock from '~/components/UI/ErrorBlock.vue';
 
 interface Column {
   key: string;
@@ -175,17 +172,25 @@ const changePage = (page: number) => {
 };
 
 const handleDotsClick = (index: number) => {
-  const total = props.totalPages;
-  const current = props.currentPage;
-
-  const isLeftDots = index === 1 || (index === 3 && current <= 3);
+  const total = props.totalPages
+  const current = props.currentPage
+  
+  let isLeftDots = false
+  
+  if (current <= 3) {
+    isLeftDots = false
+  } else if (current >= total - 2) {
+    isLeftDots = true
+  } else {
+    isLeftDots = index === 1
+  }
   
   if (isLeftDots) {
-    changePage(Math.max(1, current - 3));
+    changePage(Math.max(1, current - 3))
   } else {
-    changePage(Math.min(total, current + 3));
+    changePage(Math.min(total, current + 3))
   }
-};
+}
 </script>
 
 <style scoped>
