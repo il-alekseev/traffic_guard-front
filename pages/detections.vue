@@ -35,31 +35,212 @@
       </div>
 
     </div>
-    <div class="resources-grid">
-      <ResourceCard
-        v-for="resource in mockResources" 
-        :item="resource"
-        @confirm="handleConfirm(resource.id)"
-        @reject="handleReject(resource.id)"
-      />
+    <div class="detections-data">
+      <ErrorBlock v-if="fetchError !== ''" :fetch-error="fetchError" />
+
+      <div v-if="loading" class="detections__loading">
+        Загрузка выявлений...
+      </div>
+
+      <div v-else-if="detections.length === 0" class="detections__empty">
+        Выявления не найдены
+      </div>
+
+      <div v-else class="resources-grid">
+        <ResourceCard
+          v-for="resource in detections"
+          :item="resource"
+          @confirm="handleConfirm(resource.id)"
+          @reject="handleReject(resource.id)"
+        />
+      </div>
+      <div v-if="fetchError == ''" class="detections__footer">
+        <div class="detections__info">
+          <p>Показано от {{ startIndex }} до {{ endIndex }} из {{ totalDetections }} результатов</p>
+        </div>
+        <div class="detections__pagination">
+          <div
+            class="detections__pagination-item detections__pagination-back"
+            :class="currentPage === 1 ? 'detections__pagination-item_disabled' : ''"
+            @click="currentPage !== 1 ? handleChangePage(currentPage - 1) : null"
+          >
+            <ArrowLeftIcon class="arrow-icon" />
+          </div>
+
+          <div
+            v-for="(page, index) in pagesToShow"
+            :key="index"
+            class="detections__pagination-item"
+            :class="[
+              page === currentPage ? 'detections__pagination-item_active' : '',
+              page === '...' ? 'detections__pagination-item_dots' : ''
+            ]"
+            @click="typeof page === 'number' ? handleChangePage(page) : handleDotsClick(index === 1 ? 'left' : 'right')"
+          >
+            {{ page }}
+          </div>
+
+          <div
+            class="detections__pagination-item detections__pagination-next"
+            :class="currentPage === totalPages ? 'detections__pagination-item_disabled' : ''"
+            @click="currentPage !== totalPages ? handleChangePage(currentPage + 1) : null"
+          >
+            <ArrowLeftIcon class="arrow-icon" />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { definePageMeta } from '#imports';
+import type { Detection, DetectionTable } from '~/types/detectionsControl';
+import { useDetectionsControlStore } from '~/stores/detectionsControl';
+import type { StatItem } from '~/types/statistics';
 import StatsComponent from '~/components/DataDisplay/StatsComponent.vue';
-import type { Resource, StatItem } from '~/types/statistics';
-import ReloadIcon from "~/assets/img/reload.svg"
-import FilterIcon from "~/assets/img/filter-icon.svg"
 import ResourceCard from '~/components/ResourceCards/ResourceCard.vue';
 import DatePicker from '~/components/UI/DatePicker.vue';
 import DownloadButton from '~/components/UI/DownloadButton.vue';
+import ErrorBlock from '~/components/UI/ErrorBlock.vue';
+import ReloadIcon from "~/assets/img/reload.svg"
+import FilterIcon from "~/assets/img/filter-icon.svg"
+import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
+
 
 definePageMeta({
   layout: 'dashboard',
   // middleware: ['auth']
 });
+
+const route = useRoute();
+const router = useRouter();
+
+const detectionControlStore = useDetectionsControlStore();
+
+const loading = ref(true);
+const fetchError = ref('');
+
+const detections = ref<Detection[]>([]);
+const currentPage = ref(1);
+const itemsPerPage = ref(6);
+const tableMetaData = ref<{ total: number; pages: number } | null>(null);
+const totalDetections = computed(() =>
+  tableMetaData.value ? tableMetaData.value.total : detections.value.length
+);
+const totalPages = computed(() =>
+  tableMetaData.value ? tableMetaData.value.pages : 1
+);
+const pagesToShow = computed(() => {
+  const pages: (number | string)[] = [];
+  const total = totalPages.value;
+  const current = currentPage.value;
+
+  if (total <= 7) {
+    for (let i = 1; i <= total; i++) pages.push(i);
+  } else {
+    if (current <= 3) {
+      pages.push(1, 2, 3, '...', total - 2, total - 1, total);
+    } else if (current >= total - 2) {
+      pages.push(1, 2, '...', total - 2, total - 1, total);
+    } else {
+      pages.push(1, '...', current - 1, current, current + 1, '...', total);
+    }
+  }
+
+  return pages;
+});
+const startIndex = computed(() => {
+  return (currentPage.value - 1) * itemsPerPage.value + 1;
+});
+const endIndex = computed(() => {
+  const end = currentPage.value * itemsPerPage.value;
+  return end > totalDetections.value ? totalDetections.value : end;
+});
+
+const handleDotsClick = (dotsPosition: 'left' | 'right') => {
+  const total = totalPages.value;
+  const current = currentPage.value;
+
+  if (dotsPosition === 'left') {
+    handleChangePage(Math.max(1, current - 3));
+  } else {
+    handleChangePage(Math.min(total, current + 3));
+  }
+}
+
+const fetchDetections = async () => {
+  loading.value = true;
+  fetchError.value = '';
+
+  try {
+    const result: DetectionTable = await detectionControlStore.fetchDetections(
+      currentPage.value,
+      itemsPerPage.value,
+    );
+
+    if (result) {
+      detections.value = result.data;
+      tableMetaData.value = result.meta;
+    } else {
+      detections.value = [];
+    }
+  } catch (error) {
+    console.error('Ошибка при загрузке выявлений:', error);
+    fetchError.value = 'Произошла ошибка при загрузке выявлений';
+  } finally {
+    loading.value = false;
+  }
+};
+
+const handleChangePage = (page: number) => {
+  if (page < 1 || page > totalPages.value) return;
+  currentPage.value = page;
+  updateUrlParams();
+};
+
+const initFiltersFromUrl = async () => {
+  const query = route.query;
+
+  currentPage.value = Number(query.page) || 1;
+  itemsPerPage.value = Number(query.per_page) || 11;
+};
+
+const updateUrlParams = () => {
+  const query: Record<string, string | number> = {};
+
+  if (currentPage.value > 1) query.page = currentPage.value;
+  if (itemsPerPage.value !== 11) query.per_page = itemsPerPage.value;
+
+  router.replace({ query });
+};
+
+const applyFilters = () => {
+  currentPage.value = 1;
+  updateUrlParams();
+};
+
+onMounted(async () => {
+  await initFiltersFromUrl();
+  await fetchDetections();
+});
+watch(
+  () => route.query,
+  async (newQuery, oldQuery) => {
+    const withoutCreate = (q: typeof newQuery) => {
+      const { create, ...rest } = q;
+      return JSON.stringify(rest);
+    };
+
+    if (withoutCreate(newQuery) === withoutCreate(oldQuery)) {
+      return;
+    }
+
+    initFiltersFromUrl();
+    await fetchDetections();
+  },
+  { deep: true }
+);
 
 const dateRange = ref<{ start: Date | null; end: Date | null }>({
   start: new Date(2025, 7, 1),
@@ -98,93 +279,6 @@ const mockStats: StatItem[] = [
   },
 ]
 
-const mockResources = ref<Resource[]>([
-  {
-    id: 1,
-    name: 'CorgiSecret-1x.dog',
-    category: 'Экстремизм',
-    date: '24.09.2025, 09:54',
-    description: 'Агрессия, расизм, терроризм',
-    country: 'Россия',
-    location: 'Раменский',
-    ipAddress: '89.151.191.14',
-    ngfw: 'ngfw-2',
-    requestCount: 26,
-    status: 'blocking',
-    isBlocked: false
-  },
-  {
-    id: 2,
-    name: 'CorgiSecret-1x.dog',
-    category: 'Наркотики',
-    date: '24.09.2025, 09:54',
-    description: 'Зеркало заблокированного ресурса',
-    country: 'Россия',
-    location: 'Раменский',
-    ipAddress: '89.151.191.14',
-    ngfw: 'ngfw-2',
-    requestCount: 10,
-    status: 'verification',
-    isBlocked: false
-  },
-  {
-    id: 3,
-    name: 'CorgiSecret-1x.dog',
-    category: 'Экстремизм',
-    date: '24.09.2025, 09:54',
-    description: 'Прокси и анонимайзеры',
-    country: 'Россия',
-    location: 'Раменский',
-    ipAddress: '89.151.191.14',
-    ngfw: 'ngfw-1',
-    requestCount: 12,
-    status: 'blocking',
-    isBlocked: false
-  },
-  {
-    id: 4,
-    name: 'CorgiSecret-1x.dog',
-    category: 'Экстремизм',
-    date: '24.09.2025, 09:54',
-    description: 'Реестр запрещенных сайтов',
-    country: 'Россия',
-    location: 'Раменский',
-    ipAddress: '89.151.191.14',
-    ngfw: 'ngfw-1',
-    requestCount: 26,
-    status: 'blocking',
-    isBlocked: false
-  },
-  {
-    id: 5,
-    name: 'CorgiSecret-1x.dog',
-    category: 'Наркотики',
-    date: '24.09.2025, 09:54',
-    description: 'Азартные игры',
-    country: 'Россия',
-    location: 'Раменский',
-    ipAddress: '89.151.191.14',
-    ngfw: 'ngfw-1',
-    requestCount: 10,
-    status: 'verification',
-    isBlocked: false
-  },
-  {
-    id: 6,
-    name: 'CorgiSecret-1x.dog',
-    category: 'Наркотики',
-    date: '24.09.2025, 09:54',
-    description: 'Интернет-магазины',
-    country: 'Россия',
-    location: 'Раменский',
-    ipAddress: '89.151.191.14',
-    ngfw: 'ngfw-2',
-    requestCount: 10,
-    status: 'verification',
-    isBlocked: true
-  }
-])
-
 const handleConfirm = (id: number) => {
   console.log('Подтверждено:', id)
 }
@@ -201,6 +295,20 @@ const handleReject = (id: number) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.detections__loading,
+.detections__empty {
+  text-align: center;
+  padding: 2rem;
+  color: #3F3F46;
+}
+
+.detections-data {
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+  min-height: calc(100vh - 21rem);
 }
 
 .resources-grid {
@@ -305,4 +413,76 @@ const handleReject = (id: number) => {
     }
   }
 }
+
+
+.detections__footer {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-bottom: 1px;
+}
+
+.detections__info {
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  color: #3F3F46;
+}
+
+.detections__pagination {
+  display: flex;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.detections__pagination-item {
+  cursor: pointer;
+  min-width: 2.5rem;
+  height: 2.25rem;
+  background: #FFFFFF;
+  outline: 1px solid #E4E4E7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.25rem;
+  color: #3F3F46;
+}
+
+.detections__pagination-back {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.detections__pagination-item_active {
+  background: #2563EB;
+  outline: 1px solid #2563EB;
+  color: #FFFFFF;
+}
+
+.arrow-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #A1A1AA;
+}
+
+.detections__pagination-next {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.detections__pagination-next .arrow-icon {
+  transform: scaleX(-1);
+}
+
+.detections__pagination-item_disabled {
+  cursor: not-allowed;
+}
+
 </style>

@@ -61,7 +61,7 @@
         <div
           :class="[
             `${prefix}__pagination-item table__pagination-item`,
-            `${prefix}__pagination-prev table__pagination-prev`,
+            `${prefix}__pagination-prev table__pagination-back`,
             { [`${prefix}__pagination-item_disabled table__pagination-item_disabled`]: currentPage === 1 }
           ]"
           @click="changePage(currentPage - 1)"
@@ -321,6 +321,11 @@ td.table__table-cell-button {
   transition: background-color 0.2s ease, outline-color 0.2s ease;
 }
 
+.table__pagination-back {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
 .table__pagination-item:hover:not(.table__pagination-item_disabled):not(.table__pagination-item_active) {
   background-color: #F4F4F5;
 }
@@ -340,6 +345,11 @@ td.table__table-cell-button {
   width: 1.25rem;
   height: 1.25rem;
   color: #A1A1AA;
+}
+
+.table__pagination-next {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
 }
 
 .table__pagination-next .arrow-icon {
