@@ -106,7 +106,7 @@ const mockResources = ref<Resource[]>([
     country: 'Россия',
     location: 'Раменский',
     ipAddress: '89.151.191.14',
-    badge: 'ngfw-2',
+    ngfw: 'ngfw-2',
     requestCount: 26,
     status: 'blocking',
     isBlocked: false
@@ -120,7 +120,7 @@ const mockResources = ref<Resource[]>([
     country: 'Россия',
     location: 'Раменский',
     ipAddress: '89.151.191.14',
-    badge: 'ngfw-2',
+    ngfw: 'ngfw-2',
     requestCount: 10,
     status: 'verification',
     isBlocked: false
@@ -134,7 +134,7 @@ const mockResources = ref<Resource[]>([
     country: 'Россия',
     location: 'Раменский',
     ipAddress: '89.151.191.14',
-    badge: 'ngfw-1',
+    ngfw: 'ngfw-1',
     requestCount: 12,
     status: 'blocking',
     isBlocked: false
@@ -148,7 +148,7 @@ const mockResources = ref<Resource[]>([
     country: 'Россия',
     location: 'Раменский',
     ipAddress: '89.151.191.14',
-    badge: 'ngfw-1',
+    ngfw: 'ngfw-1',
     requestCount: 26,
     status: 'blocking',
     isBlocked: false
@@ -162,7 +162,7 @@ const mockResources = ref<Resource[]>([
     country: 'Россия',
     location: 'Раменский',
     ipAddress: '89.151.191.14',
-    badge: 'ngfw-1',
+    ngfw: 'ngfw-1',
     requestCount: 10,
     status: 'verification',
     isBlocked: false
@@ -176,7 +176,7 @@ const mockResources = ref<Resource[]>([
     country: 'Россия',
     location: 'Раменский',
     ipAddress: '89.151.191.14',
-    badge: 'ngfw-2',
+    ngfw: 'ngfw-2',
     requestCount: 10,
     status: 'verification',
     isBlocked: true

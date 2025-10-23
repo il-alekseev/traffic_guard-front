@@ -31,8 +31,8 @@
         <a :href="`https://${item.ipAddress}`" class="resource-card__ip">{{ item.ipAddress }}</a>
       </div>
       <div class="resource-card__meta">
-        <span :class="['resource-card__badge', `resource-card__badge--${item.badge}`]">
-          {{ item.badge }}
+        <span :class="['resource-card__badge', `resource-card__badge--${item.ngfw}`]">
+          {{ item.ngfw }}
         </span>
         <span class="resource-card__requests">
           Количество обращений: <strong>{{ item.requestCount }}</strong>

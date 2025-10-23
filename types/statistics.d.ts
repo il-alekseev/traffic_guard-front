@@ -1,3 +1,6 @@
+import type { NGFWType } from "~/types/NGFW";
+
+
 export interface StatItem {
   name: string
   stat: string
@@ -7,8 +10,6 @@ export interface StatItem {
 }
 
 export type ResourceCategory = 'Экстремизм' | 'Наркотики' | 'Другое';
-
-export type BadgeType = 'ngfw-1' | 'ngfw-2';
 
 export type StatusType = 'blocking' | 'verification' | 'blocked'
 
@@ -21,7 +22,7 @@ export interface Resource {
   country: string
   location: string
   ipAddress: string
-  badge: BadgeType
+  ngfw: NGFWType
   requestCount: number
   status: StatusType
   isBlocked?: boolean
