@@ -2,15 +2,23 @@
   <div class="header">
     <div class="header__content">
       <div class="header__user">
-        <div class="header__user-avatar">
-          <UserCircleIcon />
+        <div class="header__notification">
+          <div class="header__notification-icon">
+            <NotificationIcon />
+          </div>
         </div>
-        <div class="header__user-info">
-          <p class="header__user-name">{{ fullName }}</p>
+        <div class="header__user-data">
+          <div class="header__user-avatar">
+            <UserCircleIcon />
+          </div>
+          <div class="header__user-info">
+            <p class="header__user-name">{{ fullName }}</p>
+          </div>
+          <div class="header__user-arrow"  @click="toggleIsMenuOpen">
+            <ArrowIcon />
+          </div>
         </div>
-        <div class="header__user-arrow"  @click="toggleIsMenuOpen">
-          <ArrowIcon />
-        </div>
+
         <div
           v-if="isMenuOpen"
           class="header__user-menu user-menu">
@@ -47,6 +55,7 @@ import UserCircleIcon from "~/assets/img/user-circle.svg";
 import ArrowIcon from "~/assets/img/arrow-down.svg";
 import UserIcon from "~/assets/img/user.svg";
 import LogoutIcon from "~/assets/img/logout.svg"
+import NotificationIcon from "~/assets/img/notification-active.svg"
 
 
 const emit = defineEmits(['logout']);
@@ -82,6 +91,25 @@ const toggleIsMenuOpen = () => {
 }
 
 .header__user {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.header__notification {
+  padding-right: 1.5rem;
+  border-right: 1px solid #E4E4E7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header__notification-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header__user-data {
   display: flex;
   gap: 0.5rem;
   align-items: center;
