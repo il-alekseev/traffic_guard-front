@@ -47,7 +47,7 @@
     <p v-if="props.extraInfo" class="base-form-hint-text">
       {{ props.extraInfo }}
     </p>
-    <p v-if="error" class="base-form-error-text">
+    <p v-if="error && showTextError" class="base-form-error-text">
       {{ error }}
     </p>
   </div>
@@ -86,6 +86,10 @@ const props = defineProps({
   error: {
     type: String,
     default: ''
+  },
+  showTextError: {
+    type: Boolean,
+    default: true
   },
   disabled: {
     type: Boolean,

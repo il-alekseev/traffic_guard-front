@@ -6,9 +6,10 @@
           <FazendaLogo />
         </div>
         <div class="change-password__text"> 
-          <h2 class="change-password__title">Смена пароля</h2>
+          <h2 class="change-password__title">Смена временного пароля</h2>
           <p class="change-password__subtitle">
-            Задайте собственный пароль для входа в систему
+            Ваш текущий пароль является временным.<br>
+            Задайте новый пароль для продолжения работы.
           </p>
         </div>
       </div>
@@ -113,7 +114,8 @@ const changePassword = async (password: string) => {
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
+  max-width: 28rem;
 }
 
 .change-password__logo {
@@ -123,7 +125,7 @@ const changePassword = async (password: string) => {
   margin-right: auto;
 }
 
-.change-password__logo img {
+.change-password__logo svg {
   width: 100%;
   height: 100%;
   object-fit: contain;
@@ -132,7 +134,7 @@ const changePassword = async (password: string) => {
 .change-password__text {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 1.5rem;
   text-align: center;
   color: #3F3F46;
 }
@@ -147,12 +149,12 @@ const changePassword = async (password: string) => {
   .change-password__title {
     font-size: 1.5rem;
   }
-  
 }
 
 .change-password__subtitle {
-  font-size: 1rem;
-  line-height: 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
   font-weight: 400;
+  color: #6A7282;
 }
 </style>

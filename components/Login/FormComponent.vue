@@ -16,7 +16,7 @@
         label="Пароль"
         v-model="form.password"
         :error="errors.password"
-        placeholder="••••••••"
+        placeholder=""
         autocomplete="current-password"
       />
     </div>
