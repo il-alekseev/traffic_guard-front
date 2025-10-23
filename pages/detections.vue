@@ -25,11 +25,12 @@
               <span :class="['resource-card__badge resource-card__badge_small', `resource-card__badge--ngfw-2`]">
                 NGFW-2
               </span>
-              <span :class="['resource-card__badge', `resource-card__badge--ngfw-1`]">
+              <span :class="['resource-card__badge resource-card__badge_small', `resource-card__badge--ngfw-1`]">
                 NGFW-1
               </span>
             </div>
           </button>
+          <DownloadButton />
         </div>
       </div>
 
@@ -53,6 +54,7 @@ import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
 import ResourceCard from '~/components/ResourceCards/ResourceCard.vue';
 import DatePicker from '~/components/UI/DatePicker.vue';
+import DownloadButton from '~/components/UI/DownloadButton.vue';
 
 definePageMeta({
   layout: 'dashboard',
@@ -260,6 +262,23 @@ const handleReject = (id: number) => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.detections__download-btn {
+  padding: 0.5rem;
+  background-color: #FFFFFF;
+  box-shadow: 0px 1px 2px 0px #0000000D;
+  border-radius: 6px;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detections__download-btn svg {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
 }
 
 .resource-card {
