@@ -98,7 +98,7 @@ const handleLogin = async ({ login, password }: LoginData) => {
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.5rem;
 }
 
 .login__logo {

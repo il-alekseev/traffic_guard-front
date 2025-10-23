@@ -8,7 +8,8 @@
         label="Введите новый пароль"
         v-model="form.password"
         :error="errors.password"
-        placeholder="••••••••"
+        :showTextError="showTextErrors.password"
+        placeholder=""
         autocomplete="current-password"
       />
 
@@ -17,12 +18,34 @@
         id="passwordRepeat"
         name="passwordRepeat"
         type="password"
-        label="Подтвердите новый пароль"
+        label="Подтверждение пароля"
         v-model="form.passwordRepeat"
         :error="errors.passwordRepeat"
-        placeholder="••••••••"
+        :showTextError="showTextErrors.passwordRepeat"
+        placeholder=""
         autocomplete="current-password"
       />
+    </div>
+
+    <div class="password-rules">
+      <div class="password-rules__header">
+        <div class="password-rules__icon" :class="allPasswordRulesPassed ? 'password-rules__icon_blue' : ''">
+          <CheckMarkCircleIcon />
+        </div>
+        <div class="password-rules__title">
+          Пароль должен содержать:
+        </div>
+      </div>
+      <div class="password-rules__list">
+        <div
+          class="password-rules__rule"
+          v-for="(value, ruleKey) in passwordRules"
+          :key="ruleKey"
+          :class="{ 'password-rules__rule_valid': value === true, 'password-rules__rule_invalid': value === false }"
+        >
+          {{ getNameOfPasswordRule(ruleKey as PasswordRuleKey) }}
+        </div>
+      </div>
     </div>
 
     <div class="change-password-form__actions">
@@ -32,7 +55,7 @@
         :loading="props.loading"
         loadingText="Смена пароля..."
       >
-        Сменить пароль
+        Сохранить
       </BaseButton>
     </div>
   </form>
@@ -42,6 +65,7 @@
 import { reactive } from 'vue';
 import BaseInput from '~/components/UI/BaseInput.vue';
 import BaseButton from '~/components/UI/BaseButton.vue';
+import CheckMarkCircleIcon from '~/assets/img/checkmark-circle.svg'
 
 const props = defineProps({
   loading: {
@@ -51,6 +75,37 @@ const props = defineProps({
 });
 
 const emit = defineEmits(['change-password']);
+
+interface PasswordRules {
+  minLength: undefined | boolean,
+  lettersUpperAndLowerCase: undefined | boolean,
+  numbers: undefined | boolean,
+  specialSymbols: undefined | boolean,
+}
+
+type PasswordRuleKey = keyof PasswordRules;
+
+const passwordRuleLabels: Record<PasswordRuleKey, string> = {
+  minLength: 'Не менее 8 символов',
+  lettersUpperAndLowerCase: 'Буквы верхнего и нижнего регистра',
+  numbers: 'Цифры',
+  specialSymbols: 'Специальные символы'
+};
+
+const getNameOfPasswordRule = (ruleKey: PasswordRuleKey): string => {
+  return passwordRuleLabels[ruleKey];
+};
+
+const passwordRules = reactive<PasswordRules>({
+  minLength: undefined,
+  lettersUpperAndLowerCase: undefined,
+  numbers: undefined,
+  specialSymbols: undefined
+})
+
+const allPasswordRulesPassed = computed(() => {
+  return Object.values(passwordRules).every((val) => val === true)
+})
 
 const form = reactive({
   password: '',
@@ -62,6 +117,27 @@ const errors = reactive({
   passwordRepeat: ''
 });
 
+const showTextErrors = reactive({
+  password: true,
+  passwordRepeat: true
+})
+
+const validatePasswordDetail = (password: string) => {
+  const pwd = password.trim();
+  showTextErrors.password = false;
+
+  passwordRules.minLength = pwd.length >= 8;
+  passwordRules.lettersUpperAndLowerCase = /[a-z]/.test(pwd) && /[A-Z]/.test(pwd);
+  passwordRules.numbers = /\d/.test(pwd);
+  passwordRules.specialSymbols = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd);
+
+  if (!allPasswordRulesPassed.value) {
+    errors.password = 'Пожалуйста, введите корректный пароль';
+  } else {
+    errors.password = '';
+  }
+}
+
 const validateForm = () => {
   let isValid = true;
 
@@ -69,21 +145,44 @@ const validateForm = () => {
     errors[key] = '';
   });
 
-  if (!form.password.trim()) {
+  const pwd = form.password.trim()
+  if (!pwd) {
+    showTextErrors.password = true;
     errors.password = 'Пожалуйста, введите новый пароль';
     isValid = false;
+  } else {
+    showTextErrors.password = false;
+
+    passwordRules.minLength = pwd.length >= 8;
+    passwordRules.lettersUpperAndLowerCase = /[a-z]/.test(pwd) && /[A-Z]/.test(pwd);
+    passwordRules.numbers = /\d/.test(pwd);
+    passwordRules.specialSymbols = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(pwd);
+
+    if (!allPasswordRulesPassed.value) {
+      errors.password = 'Пожалуйста, введите корректный пароль';
+      isValid = false;
+    }
   }
 
   if (!form.passwordRepeat.trim()) {
+    showTextErrors.passwordRepeat = true;
     errors.passwordRepeat = 'Пожалуйста, подтвердите пароль';
     isValid = false;
   } else if (form.password !== form.passwordRepeat) {
+    showTextErrors.passwordRepeat = true;
     errors.passwordRepeat = 'Пароли не совпадают';
     isValid = false;
   }
 
   return isValid;
 };
+
+watch(
+  () => form.password,
+  (newPassword, _oldPassword) => {
+    validatePasswordDetail(newPassword);
+  }
+);
 
 const handleSubmit = async () => {
   if (!validateForm()) {
@@ -109,6 +208,68 @@ const handleSubmit = async () => {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+.password-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.password-rules__header {
+  display: flex;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+.password-rules__icon {
+  max-width: 1.5rem;
+  max-height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #A1A1AA;
+}
+
+.password-rules__icon svg {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.password-rules__icon_blue {
+  color: #2563EB;
+}
+
+.password-rules__title {
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+.password-rules__list {
+  display: flex;
+  flex-direction: column;
+  padding-left: 1.875rem;
+}
+
+.password-rules__rule {
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  color: #A1A1AA;
+}
+
+.password-rules__rule_valid {
+  text-decoration: line-through;
+  font-weight: 500;
+  color: #2563EB;
+}
+
+.password-rules__rule_invalid {
+  text-decoration: none;
+  color: #C10007;
+
 }
 
 .change-password-form__actions {
