@@ -1,5 +1,5 @@
 import type { SessionStatus } from "~/types/sessionControl";
-import type { ResourceCategory, StatusType } from "~/types/statistics";
+import type { ResourceCategory, StatusType } from "~/types/detectionsControl";
 
 export const getTokenHeaders = (token: string): {
   headers: {
@@ -132,4 +132,19 @@ export function getStatusText(status: SessionStatus): string {
 
 export const getNgfwBadgeClass = (ngfw: number) => {
   return `sessions__table-cell__badge sessions__table-cell__badge--${ngfw}`;
+};
+
+export const getCurrentDateWithOffset = (
+  offset: number = 0,
+  unit: 'ms' | 's' | 'm' | 'h' | 'd' = 'ms'
+): Date => {
+  const multipliers = {
+    ms: 1,
+    s: 1000,
+    m: 60 * 1000,
+    h: 60 * 60 * 1000,
+    d: 24 * 60 * 60 * 1000,
+  } as const;
+
+  return new Date(Date.now() + offset * multipliers[unit]);
 };

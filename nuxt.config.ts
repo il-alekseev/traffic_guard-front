@@ -1,4 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+import { config as dotenvConfig } from 'dotenv'
+import { resolve } from 'path'
+
+const nodeEnv = process.env.NODE_ENV || 'development'
+const envPath = resolve(
+  nodeEnv === 'production' ? '.env.production' : '.env.development'
+)
+dotenvConfig({ path: envPath })
+
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {

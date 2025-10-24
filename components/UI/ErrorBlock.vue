@@ -16,6 +16,7 @@ const props = defineProps<{
 <style>
 .error {
   margin-top: 1rem;
+  margin-bottom: 1rem;
   padding: 1.25rem;
   background-color: #FFE2E2;
   color: #C10007;

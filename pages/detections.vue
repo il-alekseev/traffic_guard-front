@@ -304,9 +304,9 @@ watch(
   { deep: true }
 );
 
-const dateRange = ref<{ start: Date | null; end: Date | null }>({
-  start: new Date(2025, 7, 1),
-  end: new Date(2025, 8, 1)
+const dateRange = ref<{ from: Date | null; to: Date | null }>({
+  from: new Date(2025, 7, 1),
+  to: new Date(2025, 8, 1)
 })
 
 const formatDate = (date: Date) => {

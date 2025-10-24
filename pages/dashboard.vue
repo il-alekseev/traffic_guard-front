@@ -20,14 +20,6 @@
               <FilterIcon />
             </div>
             <span class="dashboard__filter-button-text">Фильтр</span>
-            <!-- <div class="dashboard__filter-selected-area">
-              <span :class="['resource-card__badge resource-card__badge_small', `resource-card__badge--ngfw-2`]">
-                NGFW-2
-              </span>
-              <span :class="['resource-card__badge resource-card__badge_small', `resource-card__badge--ngfw-1`]">
-                NGFW-1
-              </span>
-            </div> -->
           </button>
           <DownloadButton />
         </div>
@@ -86,13 +78,10 @@ definePageMeta({
   // middleware: ['auth']
 });
 
-const dateRange = ref<{ start: Date | null; end: Date | null }>({
-  start: new Date(2025, 7, 1),
-  end: new Date(2025, 8, 1)
+const dateRange = ref<{ from: Date | null; to: Date | null }>({
+  from: new Date(2025, 7, 1),
+  to: new Date(2025, 8, 1)
 })
-
-const userStore = useUserStore();
-const role = computed(() => userStore.role);
 
 const loading = ref(true);
 const fetchError = ref('');
@@ -106,13 +95,17 @@ const fetchData = async () => {
 }
 
 const isShowFilters = ref(false);
+
 const showFilters = () => {
   isShowFilters.value = true;
 }
+
 const closeFilters = () => {
   isShowFilters.value = false;
 }
+
 const deviceFilter = ref<string | undefined>();
+
 const filtersData = computed<DashboardFilter | null>(() => {
   const device = deviceFilter.value ?? '';
 
@@ -176,6 +169,15 @@ watch(
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.dashboard__header-title-block {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.dashboard__subtitle-block {
+  align-self: flex-end;
 }
 
 .dashboard__loading,

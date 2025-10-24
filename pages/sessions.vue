@@ -9,6 +9,10 @@
           placeholder="Поиск"
           @search="applyFilters"
         />
+        <div class="dashboard__datepicker-container">
+          <DatePicker v-model="dateRange" />
+        </div>
+
         <FilterButton @click="console.log('openFilter')"/>
       </div>
     </div>
@@ -41,19 +45,22 @@
       <template #cell-url="{ value }">
         <span class="sessions__table-cell-url">{{ value }}</span>
       </template>
-      <template #cell-full_name="{ value, item }">
-        <span class="sessions__table-cell-full-name">
-          {{ value || item.ip || '—' }}
-        </span>
-      </template>
       <template #cell-type="{ value }">
         <span class="sessions__table-cell-type">{{ value }}</span>
       </template>
       <template #cell-category="{ value }">
         <span class="sessions__table-cell-category">{{ value }}</span>
       </template>
-      <template #cell-datetime="{ value }">
-        <span class="sessions__table-cell-datetime">{{ value }}</span>
+      <template #cell-datetime_utc="{ value }">
+        <span class="sessions__table-cell-datetime_utc">
+          {{ new Date(value).toLocaleString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          }) }}
+        </span>
       </template>
       <template #action-button="{ item }">
         <ContextMenuDotsIcon class="table__action-icon sessions__action-icon" />
@@ -65,14 +72,16 @@
 
 <script setup lang="ts">
 import {definePageMeta} from '#imports';
-import type { Session, SessionTable } from '~/types/sessionControl';
+import type { Session, SessionOrderType, SessionTable } from '~/types/sessionControl';
 import { useSessionsControlStore } from '~/stores/sessionControl';
-import { getBadgeClassByStatus, getStatusText, getNgfwBadgeClass } from '~/helpers/index';
+import { getBadgeClassByStatus, getStatusText, getNgfwBadgeClass, getCurrentDateWithOffset } from '~/helpers/index';
+import DatePicker from '~/components/UI/DatePicker.vue';
 import BaseSearch from '~/components/UI/BaseSearch.vue';
 import FilterButton from '~/components/UI/FilterButton.vue';
 import ErrorBlock from '~/components/UI/ErrorBlock.vue';
 import BaseTable from '~/components/UI/BaseTable.vue';
 import ContextMenuDotsIcon from '~/assets/img/context-menu-btn.svg';
+import type { OrderDir } from '~/types/otherTypes';
 
 
 definePageMeta({
@@ -80,10 +89,19 @@ definePageMeta({
   // middleware: ['auth']
 });
 
+const ORDER_BY: SessionOrderType = 'id';
+const ORDER_DIR: OrderDir = 'desc'
+
+
 const route = useRoute();
 const router = useRouter();
 
 const sessionsControlStore = useSessionsControlStore();
+
+const dateRange = ref<{ from: Date | null; to: Date | null }>({
+  from: getCurrentDateWithOffset(-1, 'd'),
+  to: getCurrentDateWithOffset()
+})
 
 const loading = ref(true);
 const fetchError = ref('');
@@ -92,12 +110,12 @@ const sessions = ref<Session[]>([]);
 const columns = [
   { key: 'status', label: 'Статус' },
   { key: 'url', label: 'URL' },
-  { key: 'ip', label: 'IP' },
-  { key: 'ngfw', label: 'NGFW' },
-  { key: 'full_name', label: 'ФИО' },
-  { key: 'type', label: 'Тип' },
+  { key: 'dst_ip', label: 'IP' },
+  { key: 'host_name', label: 'NGFW' },
+  { key: 'src_ip', label: 'IP SRC' },
+  { key: 'type', label: 'Тип сессии' },
   { key: 'category', label: 'Категория' },
-  { key: 'datetime', label: 'Дата и время' },
+  { key: 'datetime_utc', label: 'Дата и время' },
 ];
 const currentPage = ref(1);
 const itemsPerPage = ref(11);
@@ -117,8 +135,12 @@ const fetchSessions = async () => {
 
   try {
     const result: SessionTable = await sessionsControlStore.fetchSessions(
+      dateRange.value.from?.toISOString(),
+      dateRange.value.to?.toISOString(),
       currentPage.value,
       itemsPerPage.value,
+      ORDER_BY,
+      ORDER_DIR,
       searchQuery.value,
     );
 
@@ -153,6 +175,8 @@ const initFiltersFromUrl = async () => {
   currentPage.value = Number(query.page) || 1;
   itemsPerPage.value = Number(query.per_page) || 11;
   searchQuery.value = typeof query.search === 'string' ? query.search : '';
+  dateRange.value.from = typeof query.from === 'string' ? new Date(query.from) : getCurrentDateWithOffset(-1, 'd');
+  dateRange.value.to = typeof query.to === 'string' ? new Date(query.to) : getCurrentDateWithOffset();
 };
 
 const updateUrlParams = () => {
@@ -161,6 +185,8 @@ const updateUrlParams = () => {
   if (currentPage.value > 1) query.page = currentPage.value;
   if (itemsPerPage.value !== 11) query.per_page = itemsPerPage.value;
   if (searchQuery.value.trim()) query.search = searchQuery.value.trim();
+  if (dateRange.value.from) query.from = dateRange.value.from.toISOString();
+  if (dateRange.value.to) query.to = dateRange.value.to.toISOString();
 
   router.replace({ query });
 };
@@ -183,6 +209,10 @@ watch(
   },
   { deep: true }
 );
+
+watch(dateRange, () => {
+  applyFilters();
+})
 </script>
 
 <style scoped>
@@ -254,7 +284,7 @@ watch(
 
 :deep(.sessions__table-cell-url),
 :deep(.sessions__table-cell-category),
-:deep(.sessions__table-cell-datetime) {
+:deep(.sessions__table-cell-datetime_utc) {
   color: #3F3F46;
 }
 
@@ -272,27 +302,27 @@ watch(
   width: 7%;
 }
 :deep(.sessions__table-column-url) {
-  width: 15%;
+  width: 24%;
 }
-:deep(.sessions__table-column-ip) {
-  width: 9%;
+:deep(.sessions__table-column-dst_ip) {
+  width: 10%;
 }
-:deep(.sessions__table-column-ngfw) {
-  width: 6%;
+:deep(.sessions__table-column-host_name) {
+  width: 13%;
 }
-:deep(.sessions__table-column-fullName) {
-  width: 17.5%;
+:deep(.sessions__table-column-src_ip) {
+  width: 10%;
 }
 :deep(.sessions__table-column-type) {
-  width: 14%;
+  width: 11%;
 }
 :deep(.sessions__table-column-category) {
-  width: 13.5%;
+  width: 11%;
 }
-:deep(.sessions__table-column-datetime) {
-  width: 13.5%;
+:deep(.sessions__table-column-datetime_utc) {
+  width: 12%;
 }
 :deep(.sessions__table-column-button) {
-  width: 5%;
+  width: 7%;
 }
 </style>

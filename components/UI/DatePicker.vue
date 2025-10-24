@@ -95,18 +95,18 @@ interface CalendarDay {
 }
 
 const props = defineProps<{
-  modelValue?: { start: Date | null; end: Date | null }
+  modelValue?: { from: Date | null; to: Date | null }
 }>()
 
 const emit = defineEmits<{
-  'update:modelValue': [value: { start: Date | null; end: Date | null }]
+  'update:modelValue': [value: { from: Date | null; to: Date | null }]
 }>()
 
 const isCalendarOpen = ref(false)
 const isPeriodMenuOpen = ref(false)
 const currentDate = ref(new Date())
-const startDate = ref<Date | null>(props.modelValue?.start || null)
-const endDate = ref<Date | null>(props.modelValue?.end || null)
+const startDate = ref<Date | null>(props.modelValue?.from || null)
+const endDate = ref<Date | null>(props.modelValue?.to || null)
 const tempStartDate = ref<Date | null>(null)
 const tempEndDate = ref<Date | null>(null)
 const selectedPeriod = ref('Месяц')
@@ -238,7 +238,7 @@ const selectPeriod = (period: string) => {
   
   startDate.value = start
   endDate.value = end
-  emit('update:modelValue', { start: startDate.value, end: endDate.value })
+  emit('update:modelValue', { from: startDate.value, to: endDate.value })
 }
 
 const previousMonth = () => {
@@ -303,7 +303,7 @@ const clearDates = () => {
 const applyDates = () => {
   startDate.value = tempStartDate.value
   endDate.value = tempEndDate.value
-  emit('update:modelValue', { start: startDate.value, end: endDate.value })
+  emit('update:modelValue', { from: startDate.value, to: endDate.value })
   isCalendarOpen.value = false
 }
 
