@@ -9,7 +9,6 @@
       >
         <span v-if="modelValue.name !== ''" class="dropdown__selected-text" :class="{ 'dropdown__selected-text--error': validationError }">
           <p>{{ modelValue.name }}</p>
-          <CrossIcon class="dropdown__selected-cross-icon" @click.stop="selectItem({id: '', name: ''})" />
         </span>
         <span v-else class="dropdown__selected-text--placeholder">{{ mainPlaceholder }}</span>
         <span class="dropdown__icon-container">
@@ -204,7 +203,7 @@ watch(searchQuery, () => {
   position: relative;
   width: 100%;
   height: 2.25rem;
-  padding: 0.625rem 0.75rem;
+  padding: 0.375rem 0.75rem;
   text-align: left;
   cursor: pointer;
   color: var(--color-typo-primary);
@@ -224,20 +223,26 @@ watch(searchQuery, () => {
   outline-color: #EB5757;
 }
 
+.dropdown__selected-text_badge {
+  padding: 0.125rem 0.375rem;
+  background-color: var(--color-gray-disabled);
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1rem;
+}
+
 .dropdown__selected-text {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: fit-content;
-  padding: 0.125 0.375rem;
-  color: var(--color-typo-primary);
-  background-color: var(--color-gray-disabled);
-  font-size: var(--font-size-xs);
-  font-weight: 500;
-  line-height: 1.125rem;
-  display: flex;
-  gap: 0.25rem;
-  align-items: center;
+  color: #3F3F46;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5rem;
 }
 
 .dropdown__selected-text--error {

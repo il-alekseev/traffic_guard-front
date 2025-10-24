@@ -19,7 +19,7 @@ export const useDetectionsControlStore = defineStore("userControl", {
   },
 
   actions: {
-    async fetchDetections(page: number = 1, limit: number = 11): Promise<DetectionTable> {
+    async fetchDetections(page: number = 1, limit: number = 6, status: string | undefined, category: string | undefined, location: string | undefined, device: string | undefined): Promise<DetectionTable> {
       const mockdata: DetectionTable = {
         data: [
             {

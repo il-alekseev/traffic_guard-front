@@ -114,7 +114,7 @@ const emit = defineEmits(['close']);
   transition: all 0.3s ease;
 }
 .slide-fade-leave-active {
-  transition: all 0.6s ease;
+  transition: all 0.3s ease;
 }
 .slide-fade-enter-from,
 .slide-fade-leave-to {
