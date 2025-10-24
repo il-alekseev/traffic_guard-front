@@ -7,7 +7,7 @@
           <h1 class="detections__title page-title">У вас 5 нерешенных выявлений</h1>
           <div class="detections__subtitle-block page-subtitle-block">
             <p class="detections__subtitle page-subtitle">Обновлено 5 мин назад</p>
-            <div class="detections__refresh-btn page-refresh-btn">
+            <div class="detections__refresh-btn page-refresh-btn" @click="fetchDetections">
               <ReloadIcon />
             </div>
           </div>
@@ -16,25 +16,25 @@
           <div class="detections__datepicker-container">
             <DatePicker v-model="dateRange" />
           </div>
-          <button class="detections__filter-button">
+          <button class="detections__filter-button" @click="showFilters">
             <div class="detections__filter-button-icon">
               <FilterIcon />
             </div>
             <span class="detections__filter-button-text">Фильтр</span>
-            <div class="detections__filter-selected-area">
+            <!-- <div class="detections__filter-selected-area">
               <span :class="['resource-card__badge resource-card__badge_small', `resource-card__badge--ngfw-2`]">
                 NGFW-2
               </span>
               <span :class="['resource-card__badge resource-card__badge_small', `resource-card__badge--ngfw-1`]">
                 NGFW-1
               </span>
-            </div>
+            </div> -->
           </button>
           <DownloadButton />
         </div>
       </div>
-
     </div>
+
     <div class="detections-data">
       <ErrorBlock v-if="fetchError !== ''" :fetch-error="fetchError" />
 
@@ -90,6 +90,19 @@
         </div>
       </div>
     </div>
+
+    <SideModal
+      v-model="isShowFilters"
+      title="Фильтры"
+      @close="closeFilters"
+    >
+      <FilterForm
+        :filtersData="filtersData"
+        @close="closeFilters"
+        @setFilters="handleSetFilters"
+      />
+
+    </SideModal>
   </div>
 </template>
 
@@ -103,6 +116,8 @@ import ResourceCard from '~/components/ResourceCards/ResourceCard.vue';
 import DatePicker from '~/components/UI/DatePicker.vue';
 import DownloadButton from '~/components/UI/DownloadButton.vue';
 import ErrorBlock from '~/components/UI/ErrorBlock.vue';
+import SideModal from '~/components/UI/SideModal.vue';
+import FilterForm, { type DetectionsFilter } from '~/components/Filters/DetectionsFilterForm.vue';
 import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
 import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
@@ -177,6 +192,10 @@ const fetchDetections = async () => {
     const result: DetectionTable = await detectionControlStore.fetchDetections(
       currentPage.value,
       itemsPerPage.value,
+      statusFilter.value,
+      categoryFilter.value,
+      locationFilter.value,
+      deviceFilter.value
     );
 
     if (result) {
@@ -199,26 +218,69 @@ const handleChangePage = (page: number) => {
   updateUrlParams();
 };
 
+const isShowFilters = ref(false);
+const showFilters = () => {
+  isShowFilters.value = true;
+}
+const closeFilters = () => {
+  isShowFilters.value = false;
+}
+const statusFilter = ref<string | undefined>();
+const categoryFilter = ref<string | undefined>();
+const locationFilter = ref<string | undefined>();
+const deviceFilter = ref<string | undefined>();
+const filtersData = computed<DetectionsFilter | null>(() => {
+  const status = statusFilter.value ?? '';
+  const category = categoryFilter.value ?? '';
+  const location = locationFilter.value ?? '';
+  const device = deviceFilter.value ?? '';
+
+  if (!status && !category && !location && !device) {
+    return null;
+  }
+
+  return {
+    status: { id: status, name: status },
+    category: { id: category, name: category },
+    location: { id: location, name: location },
+    device: { id: device, name: device },
+  };
+});
+
 const initFiltersFromUrl = async () => {
   const query = route.query;
 
   currentPage.value = Number(query.page) || 1;
-  itemsPerPage.value = Number(query.per_page) || 11;
+  itemsPerPage.value = Number(query.per_page) || 6;
+  statusFilter.value = query.status != null ? String(query.status) : undefined;
+  categoryFilter.value = query.category != null ? String(query.category) : undefined;
+  locationFilter.value = query.location != null ? String(query.location) : undefined;
+  deviceFilter.value = query.device != null ? String(query.device) : undefined;
 };
 
 const updateUrlParams = () => {
   const query: Record<string, string | number> = {};
 
   if (currentPage.value > 1) query.page = currentPage.value;
-  if (itemsPerPage.value !== 11) query.per_page = itemsPerPage.value;
+  if (itemsPerPage.value !== 6) query.per_page = itemsPerPage.value;
+  if (statusFilter.value && statusFilter.value !== '') query.status = statusFilter.value;
+  if (categoryFilter.value && categoryFilter.value !== '') query.category = categoryFilter.value;
+  if (locationFilter.value && locationFilter.value !== '') query.location = locationFilter.value;
+  if (deviceFilter.value && deviceFilter.value !== '') query.device = deviceFilter.value;
 
   router.replace({ query });
 };
 
-const applyFilters = () => {
+const handleSetFilters = (filtersData: DetectionsFilter) => {
   currentPage.value = 1;
-  updateUrlParams();
-};
+
+  filtersData.status.id !== '' ? statusFilter.value = filtersData.status.id : statusFilter.value = undefined;
+  filtersData.category.id !== '' ? categoryFilter.value = filtersData.category.id : categoryFilter.value = undefined;
+  filtersData.location.id !== '' ? locationFilter.value = filtersData.location.id : locationFilter.value = undefined;
+  filtersData.device.id !== '' ? deviceFilter.value = filtersData.device.id : deviceFilter.value = undefined;
+
+  updateUrlParams()
+}
 
 onMounted(async () => {
   await initFiltersFromUrl();
