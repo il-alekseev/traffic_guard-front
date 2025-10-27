@@ -33,7 +33,14 @@
                 <polyline points="15 18 9 12 15 6"></polyline>
               </svg>
             </button>
-            <span class="calendar__title">{{ currentMonthYear }}</span>
+
+            <div class="calendar__title">
+              <span>{{ monthNames[currentDate.getMonth()] }}</span>
+              <select v-model="selectedYear" class="calendar__year-select" @change="changeYear">
+                <option v-for="year in yearsRange" :key="year" :value="year">{{ year }}</option>
+              </select>
+            </div>
+
             <button class="calendar__nav" @click="nextMonth">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <polyline points="9 18 15 12 9 6"></polyline>
@@ -273,6 +280,25 @@ const selectDate = (date: Date, isCurrentMonth: boolean) => {
   }
 }
 
+const selectedYear = ref(currentDate.value.getFullYear())
+
+const yearsRange = computed(() => {
+  const current = new Date().getFullYear()
+  const range: number[] = []
+  for (let y = current - 50; y <= current + 10; y++) {
+    range.push(y)
+  }
+  return range
+})
+
+const changeYear = () => {
+  currentDate.value = new Date(
+    selectedYear.value,
+    currentDate.value.getMonth(),
+    1
+  )
+}
+
 const isSelected = (date: Date): boolean => {
   if (!tempStartDate.value) return false
   const dateStr = date.toDateString()
@@ -473,9 +499,26 @@ const handleEscape = (e: KeyboardEvent) => {
   }
 
   &__title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 16px;
     font-weight: 600;
     color: #3F3F46;
+  }
+
+  &__year-select {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    color: #3F3F46;
+
+    &:hover {
+      background-color: #f9fafb;
+    }
   }
 
   &__weekdays {
