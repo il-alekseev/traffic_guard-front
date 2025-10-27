@@ -1,23 +1,29 @@
 import type { TableMeta } from "~/types/meta";
 import type { NGFWType } from "~/types/NGFW";
+import type { Categories } from "./categories";
 
-export type ResourceCategory = 'Экстремизм' | 'Наркотики' | 'Другое';
+export type StatusType = 'blocking' | 'verification' | 'blocked' | 'unknown'
 
-export type StatusType = 'blocking' | 'verification' | 'blocked'
+export interface DetectionStats {
+  accepted: number,
+  denied: number,
+  detected: number,
+  unresolved: number
+}
 
 export interface Detection {
-  id: number
-  name: string
-  category: ResourceCategory
-  date: string
-  description: string
-  country: string
-  location: string
-  ipAddress: string
-  ngfw: NGFWType
-  requestCount: number
-  status: StatusType
-  isBlocked?: boolean
+  id: number;
+  domain?: string;
+  ip: string;
+  country: string;
+  path: string;
+  access_count: number;
+  host_name: string;
+  category: Categories;
+  description: string;
+  decision: StatusType;
+  last_access_datetime: string;
+  is_blocked?: boolean
 }
 
 export interface DetectionTable {

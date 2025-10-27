@@ -1,12 +1,12 @@
 <template>
   <div class="detections-page">
     <div class="detections__header">
-      <StatsComponent :stats="mockStats" />
+      <StatsComponent :stats="stats" />
       <div class="detections__header-block">
         <div class="detections__header-title-block">
-          <h1 class="detections__title page-title">У вас 5 нерешенных выявлений</h1>
+          <h1 class="detections__title page-title">У вас {{ totalDetections }} нерешенных выявлений</h1>
           <div class="detections__subtitle-block page-subtitle-block">
-            <p class="detections__subtitle page-subtitle">Обновлено 5 мин назад</p>
+            <p class="detections__subtitle page-subtitle">Обновлено {{ minutesAgo }} мин назад</p>
             <div class="detections__refresh-btn page-refresh-btn" @click="fetchDetections">
               <ReloadIcon />
             </div>
@@ -21,14 +21,6 @@
               <FilterIcon />
             </div>
             <span class="detections__filter-button-text">Фильтр</span>
-            <!-- <div class="detections__filter-selected-area">
-              <span :class="['resource-card__badge resource-card__badge_small', `resource-card__badge--ngfw-2`]">
-                NGFW-2
-              </span>
-              <span :class="['resource-card__badge resource-card__badge_small', `resource-card__badge--ngfw-1`]">
-                NGFW-1
-              </span>
-            </div> -->
           </button>
           <DownloadButton />
         </div>
@@ -36,9 +28,9 @@
     </div>
 
     <div class="detections-data">
-      <ErrorBlock v-if="fetchError !== ''" :fetch-error="fetchError" />
+      <ErrorBlock v-if="fetchDetectionsError !== ''" :fetch-error="fetchDetectionsError" />
 
-      <div v-if="loading" class="detections__loading">
+      <div v-if="loadingDetections" class="detections__loadingDetections">
         Загрузка выявлений...
       </div>
 
@@ -54,7 +46,7 @@
           @reject="handleReject(resource.id)"
         />
       </div>
-      <div v-if="fetchError == ''" class="detections__footer">
+      <div v-if="fetchDetectionsError == ''" class="detections__footer">
         <div class="detections__info">
           <p>Показано от {{ startIndex }} до {{ endIndex }} из {{ totalDetections }} результатов</p>
         </div>
@@ -108,7 +100,7 @@
 
 <script setup lang="ts">
 import { definePageMeta } from '#imports';
-import type { Detection, DetectionTable } from '~/types/detectionsControl';
+import type { Detection, DetectionStats, DetectionTable } from '~/types/detectionsControl';
 import { useDetectionsControlStore } from '~/stores/detectionsControl';
 import type { StatItem } from '~/types/statistics';
 import StatsComponent from '~/components/DataDisplay/StatsComponent.vue';
@@ -121,6 +113,8 @@ import FilterForm, { type DetectionsFilter } from '~/components/Filters/Detectio
 import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
 import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
+import { getCurrentDateWithOffset, isCategory } from '~/helpers';
+import type { Categories } from '~/types/categories';
 
 
 definePageMeta({
@@ -133,8 +127,73 @@ const router = useRouter();
 
 const detectionControlStore = useDetectionsControlStore();
 
-const loading = ref(true);
-const fetchError = ref('');
+const loadingStats = ref(true);
+const fetchStatsError = ref('');
+const detectionStats = ref<{old: DetectionStats | null, current: DetectionStats | null}>({old: null, current: null})
+
+const stats = computed<StatItem[]>(() => {
+  const current = detectionStats.value.current;
+  const old = detectionStats.value.old;
+
+  const getValue = (obj: DetectionStats | null, key: keyof DetectionStats): number => {
+    return obj?.[key] ?? 0;
+  };
+
+  const formatStat = (value: number): string => value.toString();
+
+  const calculateChange = (currentVal: number, oldVal: number): { change: string; changeType: 'increase' | 'decrease' | 'neutral' } => {
+    if (oldVal === 0) {
+      if (currentVal === 0) {
+        return { change: '0%', changeType: 'neutral' };
+      } else {
+        return { change: '100%', changeType: 'increase' };
+      }
+    }
+
+    const diff = currentVal - oldVal;
+    const percent = Math.round((Math.abs(diff) / oldVal) * 100);
+
+    if (diff > 0) {
+      return { change: `${percent}%`, changeType: 'increase' };
+    } else if (diff < 0) {
+      return { change: `${percent}%`, changeType: 'decrease' };
+    } else {
+      return { change: '0%', changeType: 'neutral' };
+    }
+  };
+
+  const items = [
+    {
+      key: 'detected' as const,
+      name: 'Количество выявлений',
+    },
+    {
+      key: 'accepted' as const,
+      name: 'Разрешено',
+    },
+    {
+      key: 'denied' as const,
+      name: 'Заблокировано',
+    }
+  ];
+
+  return items.map(({ key, name }) => {
+    const currentVal = getValue(current, key);
+    const oldVal = getValue(old, key);
+    const { change, changeType } = calculateChange(currentVal, oldVal);
+
+    return {
+      name,
+      stat: formatStat(currentVal),
+      previousStat: formatStat(oldVal),
+      change,
+      changeType,
+    };
+  });
+});
+
+const loadingDetections = ref(true);
+const fetchDetectionsError = ref('');
 
 const detections = ref<Detection[]>([]);
 const currentPage = ref(1);
@@ -173,6 +232,17 @@ const endIndex = computed(() => {
   return end > totalDetections.value ? totalDetections.value : end;
 });
 
+const lastUpdated = ref<Date | null>(null);
+const minutesAgo = ref(0);
+let intervalId: ReturnType<typeof setInterval> | null = null;
+
+
+const handleChangePage = (page: number) => {
+  if (page < 1 || page > totalPages.value) return;
+  currentPage.value = page;
+  updateUrlParams();
+};
+
 const handleDotsClick = (dotsPosition: 'left' | 'right') => {
   const total = totalPages.value;
   const current = currentPage.value;
@@ -185,15 +255,17 @@ const handleDotsClick = (dotsPosition: 'left' | 'right') => {
 }
 
 const fetchDetections = async () => {
-  loading.value = true;
-  fetchError.value = '';
+  loadingDetections.value = true;
+  fetchDetectionsError.value = '';
 
   try {
     const result: DetectionTable = await detectionControlStore.fetchDetections(
+      dateRange.value.from?.toISOString(),
+      dateRange.value.to?.toISOString(),
       currentPage.value,
       itemsPerPage.value,
       statusFilter.value,
-      categoryFilter.value,
+      isCategory(categoryFilter.value) ? categoryFilter.value : undefined,
       locationFilter.value,
       deviceFilter.value
     );
@@ -206,29 +278,66 @@ const fetchDetections = async () => {
     }
   } catch (error) {
     console.error('Ошибка при загрузке выявлений:', error);
-    fetchError.value = 'Произошла ошибка при загрузке выявлений';
+    fetchDetectionsError.value = 'Произошла ошибка при загрузке выявлений';
   } finally {
-    loading.value = false;
+    loadingDetections.value = false;
+  }
+
+  lastUpdated.value = new Date();
+  updateMinutesAgo();
+};
+
+const fetchDetectionStats = async () => {
+  const { from, to } = dateRange.value;
+  if (!from || !to) return;
+
+  loadingStats.value = true;
+  fetchStatsError.value = '';
+
+  const duration = to.getTime() - from.getTime();
+
+  const oldTo = new Date(from.getTime() - 1);
+  const oldFrom = new Date(oldTo.getTime() - duration + 1);
+
+  try {
+    const [currentResult, oldResult] = await Promise.all([
+      detectionControlStore.fetchDetectionStats(from.toISOString(), to.toISOString()),
+      detectionControlStore.fetchDetectionStats(oldFrom.toISOString(), oldTo.toISOString())
+    ]);
+
+    detectionStats.value.current = currentResult || null;
+    detectionStats.value.old = oldResult || null;
+  } catch (error) {
+    console.error('Ошибка при загрузке статистики:', error);
+    fetchStatsError.value = 'Произошла ошибка при загрузке статистики';
+    detectionStats.value.current = null;
+    detectionStats.value.old = null;
+  } finally {
+    loadingStats.value = false;
   }
 };
 
-const handleChangePage = (page: number) => {
-  if (page < 1 || page > totalPages.value) return;
-  currentPage.value = page;
-  updateUrlParams();
-};
+const updateMinutesAgo = () => {
+  if (!lastUpdated.value) return;
+  const diffMs = Date.now() - lastUpdated.value.getTime();
+  minutesAgo.value = Math.floor(diffMs / 60000);
+}
 
 const isShowFilters = ref(false);
+
 const showFilters = () => {
   isShowFilters.value = true;
 }
+
 const closeFilters = () => {
   isShowFilters.value = false;
 }
+
 const statusFilter = ref<string | undefined>();
 const categoryFilter = ref<string | undefined>();
 const locationFilter = ref<string | undefined>();
 const deviceFilter = ref<string | undefined>();
+
 const filtersData = computed<DetectionsFilter | null>(() => {
   const status = statusFilter.value ?? '';
   const category = categoryFilter.value ?? '';
@@ -256,6 +365,8 @@ const initFiltersFromUrl = async () => {
   categoryFilter.value = query.category != null ? String(query.category) : undefined;
   locationFilter.value = query.location != null ? String(query.location) : undefined;
   deviceFilter.value = query.device != null ? String(query.device) : undefined;
+  dateRange.value.from = typeof query.from === 'string' ? new Date(query.from) : getCurrentDateWithOffset(-1, 'd');
+  dateRange.value.to = typeof query.to === 'string' ? new Date(query.to) : getCurrentDateWithOffset();
 };
 
 const updateUrlParams = () => {
@@ -267,25 +378,34 @@ const updateUrlParams = () => {
   if (categoryFilter.value && categoryFilter.value !== '') query.category = categoryFilter.value;
   if (locationFilter.value && locationFilter.value !== '') query.location = locationFilter.value;
   if (deviceFilter.value && deviceFilter.value !== '') query.device = deviceFilter.value;
+  if (dateRange.value.from) query.from = dateRange.value.from.toISOString();
+  if (dateRange.value.to) query.to = dateRange.value.to.toISOString();
 
   router.replace({ query });
 };
 
-const handleSetFilters = (filtersData: DetectionsFilter) => {
+const handleSetFilters = (filtersData?: DetectionsFilter) => {
   currentPage.value = 1;
 
-  filtersData.status.id !== '' ? statusFilter.value = filtersData.status.id : statusFilter.value = undefined;
-  filtersData.category.id !== '' ? categoryFilter.value = filtersData.category.id : categoryFilter.value = undefined;
-  filtersData.location.id !== '' ? locationFilter.value = filtersData.location.id : locationFilter.value = undefined;
-  filtersData.device.id !== '' ? deviceFilter.value = filtersData.device.id : deviceFilter.value = undefined;
-
+  if (filtersData) {
+    filtersData.status.id !== '' ? statusFilter.value = filtersData.status.id : statusFilter.value = undefined;
+    filtersData.category.id !== '' ? categoryFilter.value = filtersData.category.id : categoryFilter.value = undefined;
+    filtersData.location.id !== '' ? locationFilter.value = filtersData.location.id : locationFilter.value = undefined;
+    filtersData.device.id !== '' ? deviceFilter.value = filtersData.device.id : deviceFilter.value = undefined;
+  }
+  
   updateUrlParams()
 }
 
 onMounted(async () => {
   await initFiltersFromUrl();
+  await fetchDetectionStats();
   await fetchDetections();
+  intervalId = setInterval(updateMinutesAgo, 60 * 1000);
 });
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId);
+})
 watch(
   () => route.query,
   async (newQuery, oldQuery) => {
@@ -305,41 +425,9 @@ watch(
 );
 
 const dateRange = ref<{ from: Date | null; to: Date | null }>({
-  from: new Date(2025, 7, 1),
-  to: new Date(2025, 8, 1)
+  from: getCurrentDateWithOffset(-1, 'd'),
+  to: getCurrentDateWithOffset()
 })
-
-const formatDate = (date: Date) => {
-  return date.toLocaleDateString('ru-RU', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })
-}
-
-const mockStats: StatItem[] = [
-  {
-    name: 'Количество выявлений',
-    stat: '132',
-    previousStat: '116',
-    change: '12%',
-    changeType: 'increase',
-  },
-  {
-    name: 'Разрешено',
-    stat: '5',
-    previousStat: '4',
-    change: '1%',
-    changeType: 'increase',
-  },
-  {
-    name: 'Заблокировано',
-    stat: '95',
-    previousStat: '100',
-    change: '5%',
-    changeType: 'decrease',
-  },
-]
 
 const handleConfirm = (id: number) => {
   console.log('Подтверждено:', id)
@@ -349,6 +437,9 @@ const handleReject = (id: number) => {
   console.log('Отклонено:', id)
 }
 
+watch(dateRange, () => {
+  handleSetFilters();
+})
 </script>
 
 <style lang="scss" scoped>
@@ -359,7 +450,7 @@ const handleReject = (id: number) => {
   align-items: center;
 }
 
-.detections__loading,
+.detections__loadingDetections,
 .detections__empty {
   text-align: center;
   padding: 2rem;

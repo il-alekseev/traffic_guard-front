@@ -1,5 +1,6 @@
 import type { SessionStatus } from "~/types/sessionControl";
-import type { ResourceCategory, StatusType } from "~/types/detectionsControl";
+import type { StatusType } from "~/types/detectionsControl";
+import type { Categories } from "~/types/categories";
 
 export const getTokenHeaders = (token: string): {
   headers: {
@@ -80,12 +81,8 @@ export function getJwtExpMs(token: string | null | undefined): number | null {
   }
 }
 
-export function getModificatorByCategory(category: ResourceCategory): string {
+export function getModificatorByCategory(category: Categories): string {
   switch (category) {
-    case 'Экстремизм':
-      return 'extremism'
-    case 'Наркотики':
-      return 'drugs'
     default:
       return ''
   }
@@ -100,7 +97,7 @@ export function getStatusType(status: StatusType): string {
     case 'verification':
       return 'Требуется проверка'
     default:
-      return ''
+      return 'Неизвестно'
   }
 }
 
@@ -148,3 +145,40 @@ export const getCurrentDateWithOffset = (
 
   return new Date(Date.now() + offset * multipliers[unit]);
 };
+
+const CATEGORIES_LIST = [
+  'Агрессия',
+  'Расизм',
+  'Терроризм',
+  'Ботнеты',
+  'Веб-почта',
+  'Досуг и развлечения',
+  'Интернет-магазины',
+  'Компьютерные игры',
+  'Криптомайнинг',
+  'Наркотики',
+  'Порнография и секс',
+  'Прокси и анонимайзеры',
+  'Реестр запрещенных сайтов',
+  'Сайты для взрослых',
+  'Сайты, распространяющие вирусы',
+  'Социальные сети',
+  'Торренты и P2P-сети',
+  'Файловые архивы',
+  'Фильмы и видео онлайн',
+  'Фишинг',
+  'Чаты и мессенджеры',
+  'Дополнительно',
+  'Криптоджекинг',
+  'Реклама',
+  'Онлайн-игры',
+  'Игровые платформы',
+  'Вредоносное ПО',
+  'Азартные игры',
+  'Депрессивный контент и суицид',
+  'Алкоголь, табак',
+] as const satisfies readonly Categories[];
+
+export function isCategory(value: unknown): value is Categories {
+  return CATEGORIES_LIST.includes(value as Categories);
+}

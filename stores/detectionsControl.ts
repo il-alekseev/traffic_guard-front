@@ -4,7 +4,8 @@ import type { defaultResponse } from "~/types/api";
 
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
-import type { DetectionControlState, DetectionTable } from "~/types/detectionsControl";
+import type { DetectionControlState, DetectionStats, DetectionTable } from "~/types/detectionsControl";
+import type { Categories } from "~/types/categories";
 
 
 export const useDetectionsControlStore = defineStore("userControl", {
@@ -19,104 +20,7 @@ export const useDetectionsControlStore = defineStore("userControl", {
   },
 
   actions: {
-    async fetchDetections(page: number = 1, limit: number = 6, status: string | undefined, category: string | undefined, location: string | undefined, device: string | undefined): Promise<DetectionTable> {
-      const mockdata: DetectionTable = {
-        data: [
-            {
-              id: 1,
-              name: 'CorgiSecret-1x.dog',
-              category: 'Экстремизм',
-              date: '24.09.2025, 09:54',
-              description: 'Агрессия, расизм, терроризм',
-              country: 'Россия',
-              location: 'Раменский',
-              ipAddress: '89.151.191.14',
-              ngfw: 'ngfw-2',
-              requestCount: 26,
-              status: 'blocking',
-              isBlocked: false
-            },
-            {
-              id: 2,
-              name: 'CorgiSecret-1x.dog',
-              category: 'Наркотики',
-              date: '24.09.2025, 09:54',
-              description: 'Зеркало заблокированного ресурса',
-              country: 'Россия',
-              location: 'Раменский',
-              ipAddress: '89.151.191.14',
-              ngfw: 'ngfw-2',
-              requestCount: 10,
-              status: 'verification',
-              isBlocked: false
-            },
-            {
-              id: 3,
-              name: 'CorgiSecret-1x.dog',
-              category: 'Экстремизм',
-              date: '24.09.2025, 09:54',
-              description: 'Прокси и анонимайзеры',
-              country: 'Россия',
-              location: 'Раменский',
-              ipAddress: '89.151.191.14',
-              ngfw: 'ngfw-1',
-              requestCount: 12,
-              status: 'blocking',
-              isBlocked: false
-            },
-            {
-              id: 4,
-              name: 'CorgiSecret-1x.dog',
-              category: 'Экстремизм',
-              date: '24.09.2025, 09:54',
-              description: 'Реестр запрещенных сайтов',
-              country: 'Россия',
-              location: 'Раменский',
-              ipAddress: '89.151.191.14',
-              ngfw: 'ngfw-1',
-              requestCount: 26,
-              status: 'blocking',
-              isBlocked: false
-            },
-            {
-              id: 5,
-              name: 'CorgiSecret-1x.dog',
-              category: 'Наркотики',
-              date: '24.09.2025, 09:54',
-              description: 'Азартные игры',
-              country: 'Россия',
-              location: 'Раменский',
-              ipAddress: '89.151.191.14',
-              ngfw: 'ngfw-1',
-              requestCount: 10,
-              status: 'verification',
-              isBlocked: false
-            },
-            {
-              id: 6,
-              name: 'CorgiSecret-1x.dog',
-              category: 'Наркотики',
-              date: '24.09.2025, 09:54',
-              description: 'Интернет-магазины',
-              country: 'Россия',
-              location: 'Раменский',
-              ipAddress: '89.151.191.14',
-              ngfw: 'ngfw-2',
-              requestCount: 10,
-              status: 'verification',
-              isBlocked: true
-            }
-        ],
-          meta: {
-          limit: 6,
-          page: 1,
-          pages: 4,
-          total: 37,
-        },
-      }
-
-      return mockdata;
-
+    async fetchDetections(from: string = 'now-10m', to: string = 'now', page: number = 1, limit: number = 6, _status?: string | undefined, category?: Categories, _location?: string | undefined, hostname?: string): Promise<DetectionTable> {
       // const userStore = useUserStore();
       // try {
       //   await userStore.ensureValidToken();
@@ -136,29 +40,79 @@ export const useDetectionsControlStore = defineStore("userControl", {
       //   );
       // }
 
+      try {
+        const { $api } = useNuxtApp();
+
+        const params: Record<string, string | number> = {
+          from,
+          to,
+          page,
+          limit,
+          ...(hostname ? { hostname } : {}),
+          ...(category ? { category } : {}),
+        };
+
+        const detections = await $api.get<DetectionTable>('/detections/', {
+          params,
+          // ...getTokenHeaders(token)
+        });
+
+
+        if (detections) {
+          this.detections = detections.data;
+          return detections;
+        } else {
+          throw new Error("Не удалось получить список выявлений");
+        }
+      } catch (error: any) {
+        throw new Error(error.message || "Ошибка при получении списка выявлений");
+      }
+    },
+
+    async fetchDetectionStats(from: string = 'now-10m', to: string = 'now', hostname?: string, category?: Categories): Promise<DetectionStats> {
+      // const userStore = useUserStore();
       // try {
-      //   const { $api } = useNuxtApp();
-
-      //   const params: Record<string, string | number> = {
-      //     page,
-      //     limit,
-      //   };
-
-      //   const detections = await $api.get<DetectionTable>('/detections', {
-      //     params,
-      //     ...getTokenHeaders(token)
-      //   });
-
-
-      //   if (detections) {
-      //     this.detections = detections.data;
-      //     return detections;
-      //   } else {
-      //     throw new Error("Не удалось получить список выявлений");
-      //   }
-      // } catch (error: any) {
-      //   throw new Error(error.message || "Ошибка при получении списка выявлений");
+      //   await userStore.ensureValidToken();
+      // } catch {
+      //   userStore.clearToken();
+      //   throw new Error(
+      //     "Не удалось получить статистику по выявлениям. Пользователь неавторизован",
+      //   );
       // }
+
+      // const token = useCookie('auth_token').value;
+
+      // if (!token) {
+      //   userStore.clearToken();
+      //   throw new Error(
+      //     "Не удалось получить статистику по выявлениям. Пользователь неавторизован",
+      //   );
+      // }
+
+      try {
+        const { $api } = useNuxtApp();
+
+        const params: Record<string, string | number> = {
+          from,
+          to,
+          ...(hostname ? { hostname } : {}),
+          ...(category ? { category } : {}),
+        };
+
+        const detectionStats = await $api.get<DetectionStats>('/detections/stat', {
+          params,
+          // ...getTokenHeaders(token)
+        });
+
+
+        if (detectionStats) {
+          return detectionStats;
+        } else {
+          throw new Error("Не удалось получить статистику по выявлениям");
+        }
+      } catch (error: any) {
+        throw new Error(error.message || "Не удалось получить статистику по выявлениям");
+      }
     }
   },
 });

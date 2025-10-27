@@ -7,15 +7,37 @@
           <div class="stat-value-wrapper">
             <div v-if="!isLoading" class="stat-value">
               {{ item.stat }}
-              <span class="stat-previous">from {{ item.previousStat }}</span>
+              <span class="stat-previous">было {{ item.previousStat }}</span>
             </div>
             <div v-else class="skeleton skeleton-value"></div>
           </div>
 
-          <div v-if="!isLoading" :class="['stat-badge', item.changeType === 'increase' ? 'stat-badge--increase' : 'stat-badge--decrease']">
-            <ArrowIcon v-if="item.changeType === 'increase'" :size="20" class="stat-icon stat-icon--increase" />
-            <ArrowIcon v-else :size="20" class="stat-icon stat-icon--decrease" />
-            <span class="sr-only">{{ item.changeType === 'increase' ? 'Increased' : 'Decreased' }} by</span>
+          <div v-if="!isLoading" :class="[
+            'stat-badge',
+            {
+              'stat-badge--increase': item.changeType === 'increase',
+              'stat-badge--decrease': item.changeType === 'decrease',
+              'stat-badge--neutral': item.changeType === 'neutral'
+            }
+          ]">
+            <ArrowIcon
+              v-if="item.changeType !== 'neutral'"
+              :size="20"
+              :class="[
+                'stat-icon',
+                {
+                  'stat-icon--increase': item.changeType === 'increase',
+                  'stat-icon--decrease': item.changeType === 'decrease'
+                }
+              ]"
+            />
+            <span class="sr-only">
+              {{
+                item.changeType === 'increase' ? 'Increased' :
+                item.changeType === 'decrease' ? 'Decreased' :
+                'No change'
+              }} by
+            </span>
             {{ item.change }}
           </div>
           <div v-else class="skeleton skeleton-badge"></div>
@@ -133,11 +155,11 @@ withDefaults(defineProps<Props>(), {
     padding: 0.125rem 0.625rem;
     font-size: 0.875rem;
     font-weight: 500;
-    
+
     @media (min-width: 768px) {
       margin-top: 0.5rem;
     }
-    
+
     @media (min-width: 1024px) {
       margin-top: 0;
     }
@@ -151,6 +173,11 @@ withDefaults(defineProps<Props>(), {
       background-color: #fee2e2;
       color: #991b1b;
     }
+
+    &--neutral {
+      background-color: #f3f4f6;
+      color: #4b5563;
+    }
   }
 
   .stat-icon {
@@ -160,14 +187,15 @@ withDefaults(defineProps<Props>(), {
     margin-right: 0.125rem;
     flex-shrink: 0;
     align-self: center;
-    transform: rotate(180deg);
 
     &--increase {
       color: #10b981;
+      transform: rotate(180deg);
     }
 
     &--decrease {
       color: #ef4444;
+      transform: rotate(0deg);
     }
   }
 

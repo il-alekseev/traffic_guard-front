@@ -1,5 +1,5 @@
 <template>
-  <div class="resource-card" :class="item.isBlocked ? 'resource-card_transparent' : ''">
+  <div class="resource-card" :class="false ? 'resource-card_transparent' : ''">
     <div class="resource-card__header">
       <div class="resource-card__title-row">
         <span class="resource-card__label">Domain</span>
@@ -8,44 +8,55 @@
         <div class="resource-card__title-icon-block">
           <DetectionsIcon class="resource-card__title-icon" />
         </div>
-        <span class="resource-card__title">{{ item.name }}</span>
+        <span class="resource-card__title">{{ item?.domain || 'Неизвестно' }}</span>
         <span :class="['resource-card__category', `resource-card__category--${getModificatorByCategory(item.category)}`]">
-          {{ item.category }}
+          {{ item.category || 'Неизвестно' }}
         </span>
-        <span class="resource-card__date">{{ item.date }}</span>
+        <span class="resource-card__date">
+          {{
+            new Date(item.last_access_datetime).toLocaleString('ru-RU', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            })
+          }}
+        </span>
       </div>
     </div>
 
     <div class="resource-card__section">
       <div class="resource-card__label">Описание</div>
-      <div class="resource-card__description">{{ item.description }}</div>
+      <div class="resource-card__description">{{ item.description || '–' }}</div>
     </div>
 
     <div class="resource-card__section">
       <div class="resource-card__label">Host</div>
       <div class="resource-card__host">
-        <div class="resource-card__flag-icon-block">
-          <RussianFlagIcon class="resource-card__flag-icon" />
+        <div v-if="item.country !== 'private'" class="resource-card__flag-icon-block">
+          <EmojiFlag :code="item.country.toLowerCase()" />
+          <!-- <VueFlag :iso="item.country" class="resource-card__flag-icon" /> -->
         </div>
-        <span class="resource-card__description resource-card__description-location">{{ item.country }}, {{ item.location }}</span>
-        <a :href="`https://${item.ipAddress}`" class="resource-card__ip">{{ item.ipAddress }}</a>
+        <span class="resource-card__description resource-card__description-location">{{ item.country }}</span>
+        <a :href="`https://${item.ip}`" class="resource-card__ip">{{ item.ip }}</a>
       </div>
       <div class="resource-card__meta">
-        <span :class="['resource-card__badge', `resource-card__badge--${item.ngfw}`]">
-          {{ item.ngfw }}
+        <span :class="['resource-card__badge', `resource-card__badge--${item.host_name}`]">
+          {{ item.host_name }}
         </span>
         <span class="resource-card__requests">
-          Количество обращений: <strong>{{ item.requestCount }}</strong>
+          Количество обращений: <strong>{{ item.access_count }}</strong>
         </span>
       </div>
     </div>
 
     <div class="resource-card__footer">
-      <div :class="['resource-card__status', `resource-card__status--${item.status}`]">
+      <div :class="['resource-card__status', `resource-card__status--${item.decision || ''}`]">
         <span class="resource-card__status-dot"></span>
-        {{ getStatusType(item.status) }}
+        {{ getStatusType(item.decision) }}
       </div>
-      <div v-if="!item.isBlocked" class="resource-card__actions">
+      <div v-if="item.is_blocked !== undefined && !item.is_blocked" class="resource-card__actions">
         <BaseButton
           type="button"
           variant="primary"
@@ -63,8 +74,10 @@
           Отклонить
         </BaseButton>
       </div>
-      <div v-else="item.isBlocked" class="resource-card__blocked">
+      <div v-else-if="item.is_blocked !== undefined && item.is_blocked" class="resource-card__blocked">
         Заблокировано
+      </div>
+      <div v-else>
       </div>
     </div>
   </div>
@@ -72,14 +85,15 @@
 
 <script setup lang="ts">
 import { getModificatorByCategory, getStatusType } from '~/helpers';
-import type { Resource } from '~/types/statistics';
 import BaseButton from '~/components/UI/BaseButton.vue';
+import EmojiFlag from "~/components/UI/EmojiFlag.vue"
 import DetectionsIcon from "~/assets/img/detections.svg"
 import RussianFlagIcon from "~/assets/img/russian-flag.svg"
+import type { Detection } from '~/types/detectionsControl';
 
 
 interface Props {
-  item: Resource
+  item: Detection
 }
 
 defineProps<Props>()
@@ -160,7 +174,7 @@ defineEmits<{
       color: #FF6467;
     }
 
-    &--other {
+    &-- {
       background: #f3f4f6;
       color: #6b7280;
     }
@@ -196,7 +210,6 @@ defineEmits<{
     color: #3F3F46;
 
     &-location {
-      margin-left: 0.375rem;
       margin-right: 0.75rem;
     }
   }
@@ -209,6 +222,7 @@ defineEmits<{
   &__flag-icon-block {
     width: 1.25rem;
     height: 1.25rem;
+    margin-right: 0.375rem;
 
     & img {
       width: 100%;
@@ -292,6 +306,11 @@ defineEmits<{
     &--verification {
       background: #FEF9C2;
       color: #894B00;
+    }
+
+    &-- {
+      background: #E7E5E4;
+      color: #57534E;
     }
   }
 

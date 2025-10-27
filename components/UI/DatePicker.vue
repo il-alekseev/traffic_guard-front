@@ -109,7 +109,7 @@ const startDate = ref<Date | null>(props.modelValue?.from || null)
 const endDate = ref<Date | null>(props.modelValue?.to || null)
 const tempStartDate = ref<Date | null>(null)
 const tempEndDate = ref<Date | null>(null)
-const selectedPeriod = ref('Месяц')
+const selectedPeriod = ref('День')
 const periods = ['День', 'Неделя', 'Месяц', 'Год']
 const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']
 
