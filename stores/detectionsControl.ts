@@ -8,7 +8,7 @@ import type { DetectionControlState, DetectionStats, DetectionTable } from "~/ty
 import type { Categories } from "~/types/categories";
 
 
-export const useDetectionsControlStore = defineStore("userControl", {
+export const useDetectionsControlStore = defineStore("detectionControl", {
   state: (): DetectionControlState => {
     return {
       detections: null,

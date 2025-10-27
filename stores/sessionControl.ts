@@ -9,7 +9,7 @@ import type { TraficStatuses } from "~/types/traficStatuses";
 import type { OrderDir } from "~/types/otherTypes";
 
 
-export const useSessionsControlStore = defineStore("userControl", {
+export const useSessionsControlStore = defineStore("sessionsControl", {
   state: (): SessionControlState => {
     return {
       sessions: null,
