@@ -64,6 +64,7 @@ const userStore = useUserStore();
 
 const fullName = computed(() => {
   if (userStore.firstName && userStore.lastName) return userStore.fullName;
+  else return "Admin Admin"
 })
 
 const isMenuOpen = ref(false);

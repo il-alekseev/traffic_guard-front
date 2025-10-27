@@ -105,12 +105,12 @@ export function getBadgeClassByStatus(status: SessionStatus): string {
   switch (status) {
     case ('allowed'):
       return 'session-status-badge_greeen'
-    case ('ban'):
+    case ('blocked'):
       return 'session-status-badge_red'
     case ('waiting'):
       return 'session-status-badge_yellow'
     default:
-      return ''
+      return 'session-status-badge_yellow'
   }
 }
 
@@ -118,7 +118,7 @@ export function getStatusText(status: SessionStatus): string {
   switch (status) {
     case ('allowed'):
       return 'Разрешен'
-    case ('ban'):
+    case ('blocked'):
       return 'Запрещён'
     case ('waiting'):
       return 'Ожидает'

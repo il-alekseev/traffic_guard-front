@@ -2,7 +2,7 @@ import type { Categories } from "~/types/categories"
 import type { TableMeta } from "~/types/meta";
 import type { NGFWType } from "~/types/NGFW";
 
-type SessionStatus = 'allowed' | 'ban' | 'waiting';
+type SessionStatus = 'allowed' | 'blocked' | 'waiting';
 
 export interface Session {
   id: string;
