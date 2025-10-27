@@ -238,6 +238,7 @@ const manageUser = (opType: 'create' | 'update', user: User, password: string | 
 }
 
 const handlePasswordReset = (userId: string, password: string) => {
+  closeEditUserModal();
   const user: User | undefined = users.value.find(u => u.user_id === userId);
   if (!user) return;
   openTempPasswordUserModal(user, password, 'reset');

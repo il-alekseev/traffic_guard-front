@@ -130,7 +130,7 @@
           type="submit"
           variant="primary"
           :loading="loading"
-          :loadingText="props.manageType === 'create' ? 'Создание пользователя...' : 'Сохранение изменения...'"
+          loadingText="Загрузка..."
         >
           {{ props.manageType === 'create' ? "Создать пользователя" : "Сохранить изменения" }}
         </BaseButton>
@@ -172,7 +172,7 @@ interface createUserDTO {
   email: string;
   password: string;
 }
-const allowedRoles = ref<{id: string, name: string}[]>([{id: '1', name: '1'}, {id: '2', name: '2'}, {id: '3', name: '3'}, {id: '4', name: '4'}, {id: '5', name: '5'}, {id: '6', name: '6'}]);
+const allowedRoles = ref<{id: string, name: string}[]>([{id: 'SA', name: 'Системный администратор'}, {id: 'CA', name: 'Администратор узла NGFW'}]);
 
 const usersControlStore = useUsersControlStore();
 const userStore = useUserStore();
@@ -370,6 +370,7 @@ const editUser = async () => {
     if (result) {
       const userObject: User = {
         ...data,
+        login: props.userData.login,
         user_id: props.userData.user_id,
         is_super_admin: props.userData.is_super_admin,
         created_at: props.userData.created_at,

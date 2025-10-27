@@ -63,8 +63,7 @@ const emit = defineEmits(['logout']);
 const userStore = useUserStore();
 
 const fullName = computed(() => {
-    if (userStore.firstName && userStore.lastName) return userStore.fullName;
-    return 'Иванов Павел'
+  if (userStore.firstName && userStore.lastName) return userStore.fullName;
 })
 
 const isMenuOpen = ref(false);
@@ -80,6 +79,7 @@ const toggleIsMenuOpen = () => {
   height: 4rem;
   position: sticky;
   background-color: #FFFFFF;
+  z-index: 999999;
 }
 
 .header__content {
@@ -154,6 +154,7 @@ const toggleIsMenuOpen = () => {
 
 
 .header__user-menu {
+  z-index: 999999;
   position: absolute;
   top: 3.5rem;
   right: 0;

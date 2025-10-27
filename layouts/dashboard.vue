@@ -25,12 +25,12 @@ import HeaderComponent from "~/components/Dashboard/HeaderComponent.vue";
 const userStore = useUserStore();
 
 onMounted(async () => {
-  // if (!userStore.user) {
-  //   await userStore.fetchUserInfo();
-  // }
-  // if (userStore.user && userStore.user?.is_need_to_change_password) {
-  //   return navigateTo('/change-password');
-  // }
+  if (!userStore.user) {
+    await userStore.fetchUserInfo();
+  }
+  if (userStore.user && userStore.user?.is_need_to_change_password) {
+    return navigateTo('/change-password');
+  }
 })
 
 

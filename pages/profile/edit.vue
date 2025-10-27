@@ -56,12 +56,12 @@
       </div>
 
       <div class="profile-card__buttons">
-        <SubButton @click="showChangePasswordModal">
+        <!-- <SubButton @click="showChangePasswordModal">
           <template #icon>
             <ChangePasswordIcon />
           </template>
           Сменить пароль
-        </SubButton>
+        </SubButton> -->
         <!-- <SubButton @click="showChangeUserDataModal">
           <template #icon>
             <EditDataIcon />
