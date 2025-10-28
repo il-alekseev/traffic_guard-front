@@ -285,7 +285,7 @@ const selectedYear = ref(currentDate.value.getFullYear())
 const yearsRange = computed(() => {
   const current = new Date().getFullYear()
   const range: number[] = []
-  for (let y = current - 50; y <= current + 10; y++) {
+  for (let y = current - 10; y <= current + 10; y++) {
     range.push(y)
   }
   return range
