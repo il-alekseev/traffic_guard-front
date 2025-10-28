@@ -36,13 +36,18 @@
       <div class="resource-card__host">
         <div v-if="item.country !== 'private'" class="resource-card__flag-icon-block">
           <EmojiFlag :code="item.country.toLowerCase()" />
-          <!-- <VueFlag :iso="item.country" class="resource-card__flag-icon" /> -->
         </div>
         <span class="resource-card__description resource-card__description-location">{{ item.country }}</span>
         <a :href="`https://${item.ip}`" class="resource-card__ip">{{ item.ip }}</a>
       </div>
       <div class="resource-card__meta">
-        <span :class="['resource-card__badge', `resource-card__badge--${item.host_name}`]">
+        <span 
+          :class="['resource-card__badge']"
+          :style="{
+            backgroundColor: deviceColors.background,
+            color: deviceColors.color
+          }"
+        >
           {{ item.host_name }}
         </span>
         <span class="resource-card__requests">
@@ -87,21 +92,25 @@
 import { getModificatorByCategory, getStatusType } from '~/helpers';
 import BaseButton from '~/components/UI/BaseButton.vue';
 import EmojiFlag from "~/components/UI/EmojiFlag.vue"
-import DetectionsIcon from "~/assets/img/detections.svg"
-import RussianFlagIcon from "~/assets/img/russian-flag.svg"
+import { useDeviceColors } from '~/composables/useDeviceColors';
 import type { Detection } from '~/types/detectionsControl';
+import DetectionsIcon from "~/assets/img/detections.svg"
 
 
 interface Props {
   item: Detection
 }
 
-defineProps<Props>()
+const props = defineProps<Props>()
 
 defineEmits<{
   confirm: []
   reject: []
 }>()
+
+const { generateColor } = useDeviceColors();
+const deviceColors = generateColor(props.item.host_name);
+
 </script>
 
 <style scoped lang="scss">
@@ -164,20 +173,47 @@ defineEmits<{
     line-height: 1rem;
     font-weight: 500;
 
-    &--extremism {
-      background: #7C86FF1A;
-      color: #7C86FF;
-    }
+    &--aggression { background: #FEE2E2; color: #DC2626; }
+    &--racism { background: #FECACA; color: #B91C1C; }
+    &--terrorism { background: #FEE2E2; color: #DC2626; }
+    &--drugs { background: #FECACA; color: #B91C1C; }
+    &--malware { background: #FEE2E2; color: #EF4444; }
+    &--malicious-software { background: #FECACA; color: #DC2626; }
 
-    &--drugs {
-      background: #FF64671A;
-      color: #FF6467;
-    }
+    &--botnets { background: #FFEDD5; color: #EA580C; }
+    &--cryptomining { background: #FDBA74; color: #C2410C; }
+    &--cryptojacking { background: #FFEDD5; color: #D97706; }
+    &--phishing { background: #FEF3C7; color: #D97706; }
 
-    &-- {
-      background: #f3f4f6;
-      color: #6b7280;
-    }
+    &--pornography { background: #F3E8FF; color: #9333EA; }
+    &--adult { background: #E9D5FF; color: #7E22CE; }
+    &--gambling { background: #F3E8FF; color: #7C3AED; }
+
+    &--proxy { background: #DBEAFE; color: #2563EB; }
+    &--torrents { background: #BFDBFE; color: #1D4ED8; }
+
+    &--leisure { background: #DCFCE7; color: #16A34A; }
+    &--games { background: #BBF7D0; color: #15803D; }
+    &--online-games { background: #DCFCE7; color: #15803D; }
+    &--gaming-platforms { background: #BBF7D0; color: #16A34A; }
+    &--movies { background: #DCFCE7; color: #059669; }
+
+    &--social { background: #E0F2FE; color: #0284C7; }
+    &--chats { background: #BAE6FD; color: #0369A1; }
+    &--webmail { background: #E0F2FE; color: #0EA5E9; }
+
+    &--shopping { background: #E0E7FF; color: #4F46E5; }
+    &--advertising { background: #C7D2FE; color: #4338CA; }
+
+    &--files { background: #F3F4F6; color: #6B7280; }
+    &--blocked { background: #E5E7EB; color: #4B5563; }
+    &--additional { background: #F3F4F6; color: #6B7280; }
+
+    &--depressive { background: #FCE7F3; color: #DB2777; }
+    
+    &--alcohol { background: #FEF3C7; color: #D97706; }
+
+    &--unknown { background: #f3f4f6; color: #6b7280; }
   }
 
   &__date {

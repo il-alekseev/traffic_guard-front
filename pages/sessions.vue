@@ -37,8 +37,14 @@
           {{ getStatusText(value) }}
         </span>
       </template>
-      <template #cell-ngfw="{ value }">
-        <span :class="getNgfwBadgeClass(value)">
+      <template #cell-host_name="{ value }">
+        <span
+          class="sessions__table-cell__badge"
+          :style="{
+            backgroundColor: generateColor(value).background,
+            color: generateColor(value).color
+          }"
+        >
           {{ value }}
         </span>
       </template>
@@ -66,7 +72,6 @@
         <ContextMenuDotsIcon class="table__action-icon sessions__action-icon" />
       </template>
     </BaseTable>
-
   </div>
 </template>
 
@@ -80,6 +85,7 @@ import BaseSearch from '~/components/UI/BaseSearch.vue';
 import FilterButton from '~/components/UI/FilterButton.vue';
 import ErrorBlock from '~/components/UI/ErrorBlock.vue';
 import BaseTable from '~/components/UI/BaseTable.vue';
+import { useDeviceColors } from '~/composables/useDeviceColors';
 import ContextMenuDotsIcon from '~/assets/img/context-menu-btn.svg';
 import type { OrderDir } from '~/types/otherTypes';
 
@@ -92,6 +98,7 @@ definePageMeta({
 const ORDER_BY: SessionOrderType = 'id';
 const ORDER_DIR: OrderDir = 'desc'
 
+const { generateColor } = useDeviceColors();
 
 const route = useRoute();
 const router = useRouter();
@@ -270,16 +277,6 @@ watch(dateRange, () => {
   padding: 0.25rem 0.5rem;
   text-transform: uppercase;
   border-radius: 6px;
-}
-
-:deep(.sessions__table-cell__badge--ngfw-1) {
-  background: #DCFCE7;
-  color: #008236;
-}
-
-:deep(.sessions__table-cell__badge--ngfw-2) {
-  background: #DBEAFE;
-  color: #1447E6;
 }
 
 :deep(.sessions__table-cell-url),

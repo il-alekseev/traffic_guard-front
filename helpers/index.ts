@@ -82,10 +82,40 @@ export function getJwtExpMs(token: string | null | undefined): number | null {
 }
 
 export function getModificatorByCategory(category: Categories): string {
-  switch (category) {
-    default:
-      return ''
-  }
+  const categoryMap: Record<Categories, string> = {
+    'Агрессия': 'aggression',
+    'Расизм': 'racism',
+    'Терроризм': 'terrorism',
+    'Ботнеты': 'botnets',
+    'Веб-почта': 'webmail',
+    'Досуг и развлечения': 'leisure',
+    'Интернет-магазины': 'shopping',
+    'Компьютерные игры': 'games',
+    'Криптомайнинг': 'cryptomining',
+    'Наркотики': 'drugs',
+    'Порнография и секс': 'pornography',
+    'Прокси и анонимайзеры': 'proxy',
+    'Реестр запрещенных сайтов': 'blocked',
+    'Сайты для взрослых': 'adult',
+    'Сайты, распространяющие вирусы': 'malware',
+    'Социальные сети': 'social',
+    'Торренты и P2P-сети': 'torrents',
+    'Файловые архивы': 'files',
+    'Фильмы и видео онлайн': 'movies',
+    'Фишинг': 'phishing',
+    'Чаты и мессенджеры': 'chats',
+    'Дополнительно': 'additional',
+    'Криптоджекинг': 'cryptojacking',
+    'Реклама': 'advertising',
+    'Онлайн-игры': 'online-games',
+    'Игровые платформы': 'gaming-platforms',
+    'Вредоносное ПО': 'malicious-software',
+    'Азартные игры': 'gambling',
+    'Депрессивный контент и суицид': 'depressive',
+    'Алкоголь, табак': 'alcohol'
+  };
+
+  return categoryMap[category] || 'unknown';
 }
 
 export function getStatusType(status: StatusType): string {
@@ -128,7 +158,7 @@ export function getStatusText(status: SessionStatus): string {
 }
 
 export const getNgfwBadgeClass = (ngfw: number) => {
-  return `sessions__table-cell__badge sessions__table-cell__badge--${ngfw}`;
+  return `sessions__table-cell__badge`;
 };
 
 export const getCurrentDateWithOffset = (
