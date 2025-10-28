@@ -46,7 +46,7 @@
           @reject="handleReject(resource.id)"
         />
       </div>
-      <div v-if="fetchDetectionsError == ''" class="detections__footer">
+      <div v-if="fetchDetectionsError == '' && detections.length > 0" class="detections__footer">
         <div class="detections__info">
           <p>Показано от {{ startIndex }} до {{ endIndex }} из {{ totalDetections }} результатов</p>
         </div>
@@ -419,6 +419,7 @@ watch(
     }
 
     initFiltersFromUrl();
+    await fetchDetectionStats();
     await fetchDetections();
   },
   { deep: true }
@@ -575,6 +576,7 @@ watch(dateRange, () => {
   justify-content: space-between;
   margin-top: auto;
   padding-bottom: 1px;
+  padding-top: 1rem;
 }
 
 .detections__info {
