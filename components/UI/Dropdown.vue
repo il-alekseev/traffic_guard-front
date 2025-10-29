@@ -458,4 +458,37 @@ watch(searchQuery, () => {
 
   &--unknown { background: #f3f4f6; color: #6b7280; }
 }
+
+.session-status-badge_greeen {
+  max-width: fit-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  color: #008236;
+  background-color: #DCFCE7;
+}
+
+.session-status-badge_red {
+  max-width: fit-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  color: #C10007;
+  background-color: #FFE2E2;
+}
+
+.session-status-badge_yellow {
+  max-width: fit-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  color: #894B00;
+  background-color: #FEF9C2;
+}
 </style>

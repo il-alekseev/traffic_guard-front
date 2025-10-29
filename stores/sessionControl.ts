@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { useNuxtApp } from "#app";
 import type { defaultResponse } from "~/types/api";
-import type { SessionTable, SessionControlState, SessionOrderType, SessionTypes } from '~/types/sessionControl';
+import type { SessionTable, SessionControlState, SessionOrderType, SessionTypes, SessionStatus } from '~/types/sessionControl';
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
 import type { Categories } from "~/types/categories";
@@ -21,7 +21,7 @@ export const useSessionsControlStore = defineStore("sessionsControl", {
   },
 
   actions: {
-    async fetchSessions(from: string = 'now-10m', to: string = 'now', page: number = 1, limit: number = 11, order_by: SessionOrderType = 'id', order_dir: OrderDir = 'asc', search?: string, hostname?: string, category?: Categories, type?: SessionTypes, status?: TraficStatuses, ): Promise<SessionTable> {
+    async fetchSessions(from: string = 'now-10m', to: string = 'now', page: number = 1, limit: number = 11, order_by: SessionOrderType = 'id', order_dir: OrderDir = 'asc', search?: string, status?: SessionStatus, category?: Categories, type?: SessionTypes, hostname?: string,): Promise<SessionTable> {
       // const mockdata: SessionTable = {
       //   data: [
       //     {

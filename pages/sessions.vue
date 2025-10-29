@@ -13,7 +13,7 @@
           <DatePicker v-model="dateRange" />
         </div>
 
-        <FilterButton @click="console.log('openFilter')"/>
+        <FilterButton @click="showFilters"/>
       </div>
     </div>
 
@@ -72,19 +72,34 @@
         <ContextMenuDotsIcon class="table__action-icon sessions__action-icon" />
       </template>
     </BaseTable>
+
+    <SideModal
+      v-model="isShowFilters"
+      title="Фильтры"
+      @close="closeFilters"
+    >
+      <FilterForm
+        :filtersData="filtersData"
+        @close="closeFilters"
+        @setFilters="handleSetFilters"
+      />
+
+    </SideModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import {definePageMeta} from '#imports';
-import type { Session, SessionOrderType, SessionTable } from '~/types/sessionControl';
+import type { Session, SessionOrderType, SessionStatus, SessionTable } from '~/types/sessionControl';
 import { useSessionsControlStore } from '~/stores/sessionControl';
-import { getBadgeClassByStatus, getStatusText, getNgfwBadgeClass, getCurrentDateWithOffset } from '~/helpers/index';
+import { getBadgeClassByStatus, getStatusText, getNgfwBadgeClass, getCurrentDateWithOffset, isCategory, isSessionStatus, isSessionTypes } from '~/helpers/index';
 import DatePicker from '~/components/UI/DatePicker.vue';
 import BaseSearch from '~/components/UI/BaseSearch.vue';
 import FilterButton from '~/components/UI/FilterButton.vue';
 import ErrorBlock from '~/components/UI/ErrorBlock.vue';
 import BaseTable from '~/components/UI/BaseTable.vue';
+import SideModal from '~/components/UI/SideModal.vue';
+import FilterForm, { type SessionFilter } from '~/components/Filters/SessionsFilterForm.vue';
 import { useDeviceColors } from '~/composables/useDeviceColors';
 import ContextMenuDotsIcon from '~/assets/img/context-menu-btn.svg';
 import type { OrderDir } from '~/types/otherTypes';
@@ -134,7 +149,7 @@ const totalPages = computed(() =>
   tableMetaData.value ? tableMetaData.value.pages : 1
 );
 
-const searchQuery = ref('');
+
 
 const fetchSessions = async () => {
   loading.value = true;
@@ -149,6 +164,10 @@ const fetchSessions = async () => {
       ORDER_BY,
       ORDER_DIR,
       searchQuery.value,
+      isSessionStatus(statusFilter.value) ? statusFilter.value : undefined ,
+      isCategory(categoryFilter.value) ? categoryFilter.value : undefined,
+      isSessionTypes(typesFilter.value) ? typesFilter.value : undefined,
+      deviceFilter.value
     );
 
     if (result) {
@@ -171,10 +190,38 @@ const handleChangePage = (page: number) => {
   updateUrlParams();
 };
 
-const handleActionClick = (session: Session) => {
-  console.log('Action clicked for session:', session);
-};
+const isShowFilters = ref(false);
 
+const showFilters = () => {
+  isShowFilters.value = true;
+}
+
+const closeFilters = () => {
+  isShowFilters.value = false;
+}
+const searchQuery = ref('');
+const statusFilter = ref<string | undefined>();
+const categoryFilter = ref<string | undefined>();
+const typesFilter = ref<string | undefined>();
+const deviceFilter = ref<string | undefined>();
+
+const filtersData = computed<SessionFilter | null>(() => {
+  const status = statusFilter.value ?? '';
+  const category = categoryFilter.value ?? '';
+  const types = typesFilter.value ?? '';
+  const device = deviceFilter.value ?? '';
+
+  if (!status && !category && !types && !device) {
+    return null;
+  }
+
+  return {
+    status: { id: status, name: getStatusText(status as SessionStatus) },
+    category: { id: category, name: category },
+    types: { id: types, name: types },
+    device: { id: device, name: device },
+  };
+});
 
 const initFiltersFromUrl = async () => {
   const query = route.query;
@@ -184,6 +231,10 @@ const initFiltersFromUrl = async () => {
   searchQuery.value = typeof query.search === 'string' ? query.search : '';
   dateRange.value.from = typeof query.from === 'string' ? new Date(query.from) : getCurrentDateWithOffset(-1, 'd');
   dateRange.value.to = typeof query.to === 'string' ? new Date(query.to) : getCurrentDateWithOffset();
+  statusFilter.value = query.status != null ? String(query.status) : undefined;
+  categoryFilter.value = query.category != null ? String(query.category) : undefined;
+  typesFilter.value = query.types != null ? String(query.types) : undefined;
+  deviceFilter.value = query.device != null ? String(query.device) : undefined;
 };
 
 const updateUrlParams = () => {
@@ -194,13 +245,34 @@ const updateUrlParams = () => {
   if (searchQuery.value.trim()) query.search = searchQuery.value.trim();
   if (dateRange.value.from) query.from = dateRange.value.from.toISOString();
   if (dateRange.value.to) query.to = dateRange.value.to.toISOString();
+  if (statusFilter.value && statusFilter.value !== '') query.status = statusFilter.value;
+  if (categoryFilter.value && categoryFilter.value !== '') query.category = categoryFilter.value;
+  if (typesFilter.value && typesFilter.value !== '') query.types = typesFilter.value;
+  if (deviceFilter.value && deviceFilter.value !== '') query.device = deviceFilter.value;
 
   router.replace({ query });
 };
 
+const handleSetFilters = (filtersData?: SessionFilter) => {
+  currentPage.value = 1;
+
+  if (filtersData) {
+    filtersData.status.id !== '' ? statusFilter.value = filtersData.status.id : statusFilter.value = undefined;
+    filtersData.category.id !== '' ? categoryFilter.value = filtersData.category.id : categoryFilter.value = undefined;
+    filtersData.types.id !== '' ? typesFilter.value = filtersData.types.id : typesFilter.value = undefined;
+    filtersData.device.id !== '' ? deviceFilter.value = filtersData.device.id : deviceFilter.value = undefined;
+  }
+  
+  updateUrlParams()
+}
+
 const applyFilters = () => {
   currentPage.value = 1;
   updateUrlParams();
+};
+
+const handleActionClick = (session: Session) => {
+  console.log('Action clicked for session:', session);
 };
 
 onMounted(async () => {

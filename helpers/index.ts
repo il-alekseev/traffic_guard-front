@@ -1,4 +1,4 @@
-import type { SessionStatus } from "~/types/sessionControl";
+import type { SessionStatus, SessionTypes } from "~/types/sessionControl";
 import type { StatusType } from "~/types/detectionsControl";
 import type { Categories } from "~/types/categories";
 
@@ -89,7 +89,7 @@ export function getModificatorByCategory(category: Categories): string {
     'Ботнеты': 'botnets',
     'Веб-почта': 'webmail',
     'Досуг и развлечения': 'leisure',
-    'Интернет-магазины': 'shopping',
+    'Интернет магазины': 'shopping',
     'Компьютерные игры': 'games',
     'Криптомайнинг': 'cryptomining',
     'Наркотики': 'drugs',
@@ -111,8 +111,8 @@ export function getModificatorByCategory(category: Categories): string {
     'Игровые платформы': 'gaming-platforms',
     'Вредоносное ПО': 'malicious-software',
     'Азартные игры': 'gambling',
-    'Депрессивный контент и суицид': 'depressive',
-    'Алкоголь, табак': 'alcohol'
+    'Депрессивный контент': 'depressive',
+    'Алкоголь и табак': 'alcohol'
   };
 
   return categoryMap[category] || 'unknown';
@@ -183,7 +183,7 @@ const CATEGORIES_LIST = [
   'Ботнеты',
   'Веб-почта',
   'Досуг и развлечения',
-  'Интернет-магазины',
+  'Интернет магазины',
   'Компьютерные игры',
   'Криптомайнинг',
   'Наркотики',
@@ -205,10 +205,31 @@ const CATEGORIES_LIST = [
   'Игровые платформы',
   'Вредоносное ПО',
   'Азартные игры',
-  'Депрессивный контент и суицид',
-  'Алкоголь, табак',
+  'Депрессивный контент',
+  'Алкоголь и табак',
 ] as const satisfies readonly Categories[];
 
 export function isCategory(value: unknown): value is Categories {
   return CATEGORIES_LIST.includes(value as Categories);
+}
+
+const SESSION_STATUSES_LIST = [
+  "allowed",
+  "blocked",
+  "waiting",
+  "anomaly"
+]
+
+export function isSessionStatus(value: unknown): value is SessionStatus {
+  return SESSION_STATUSES_LIST.includes(value as SessionStatus);
+}
+
+const SESSION_TYPES_LIST = [
+  "Фаервол",
+  "VPN",
+  "Аномалия"
+]
+
+export function isSessionTypes(value: unknown): value is SessionTypes {
+  return SESSION_TYPES_LIST.includes(value as SessionTypes);
 }

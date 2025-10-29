@@ -2,8 +2,6 @@ import type { Categories } from "~/types/categories"
 import type { TableMeta } from "~/types/meta";
 import type { NGFWType } from "~/types/NGFW";
 
-type SessionStatus = 'allowed' | 'blocked' | 'waiting' | 'anomaly';
-
 export interface Session {
   id: string;
   datetime_utc: string;
@@ -21,10 +19,12 @@ export interface Session {
   category: Categories
 }
 
+export type SessionStatus = 'allowed' | 'blocked' | 'waiting' | 'anomaly';
+
 export type SessionTypes = 
-  | 'Файервол'
+  | 'Фаервол'
+  | 'VPN'
   | 'Аномалия'
-  | 'Блокировка'
 
 export type SessionOrderType = 
   | 'id'

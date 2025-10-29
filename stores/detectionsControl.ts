@@ -20,7 +20,7 @@ export const useDetectionsControlStore = defineStore("detectionControl", {
   },
 
   actions: {
-    async fetchDetections(from: string = 'now-10m', to: string = 'now', page: number = 1, limit: number = 6, _status?: string | undefined, category?: Categories, _location?: string | undefined, hostname?: string): Promise<DetectionTable> {
+    async fetchDetections(from: string = 'now-10m', to: string = 'now', page: number = 1, limit: number = 6, _status?: string, category?: Categories, hostname?: string): Promise<DetectionTable> {
       // const userStore = useUserStore();
       // try {
       //   await userStore.ensureValidToken();
@@ -48,6 +48,7 @@ export const useDetectionsControlStore = defineStore("detectionControl", {
           to,
           page,
           limit,
+          ...(_status ? { _status } : {}),
           ...(hostname ? { hostname } : {}),
           ...(category ? { category } : {}),
         };
