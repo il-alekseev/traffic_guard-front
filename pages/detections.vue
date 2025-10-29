@@ -265,7 +265,6 @@ const fetchDetections = async () => {
       itemsPerPage.value,
       statusFilter.value,
       isCategory(categoryFilter.value) ? categoryFilter.value : undefined,
-      locationFilter.value,
       deviceFilter.value
     );
 
@@ -334,23 +333,20 @@ const closeFilters = () => {
 
 const statusFilter = ref<string | undefined>();
 const categoryFilter = ref<string | undefined>();
-const locationFilter = ref<string | undefined>();
 const deviceFilter = ref<string | undefined>();
 
 const filtersData = computed<DetectionsFilter | null>(() => {
   const status = statusFilter.value ?? '';
   const category = categoryFilter.value ?? '';
-  const location = locationFilter.value ?? '';
   const device = deviceFilter.value ?? '';
 
-  if (!status && !category && !location && !device) {
+  if (!status && !category && !device) {
     return null;
   }
 
   return {
     status: { id: status, name: status },
     category: { id: category, name: category },
-    location: { id: location, name: location },
     device: { id: device, name: device },
   };
 });
@@ -362,7 +358,6 @@ const initFiltersFromUrl = async () => {
   itemsPerPage.value = Number(query.per_page) || 6;
   statusFilter.value = query.status != null ? String(query.status) : undefined;
   categoryFilter.value = query.category != null ? String(query.category) : undefined;
-  locationFilter.value = query.location != null ? String(query.location) : undefined;
   deviceFilter.value = query.device != null ? String(query.device) : undefined;
   dateRange.value.from = typeof query.from === 'string' ? new Date(query.from) : getCurrentDateWithOffset(-1, 'd');
   dateRange.value.to = typeof query.to === 'string' ? new Date(query.to) : getCurrentDateWithOffset();
@@ -375,7 +370,6 @@ const updateUrlParams = () => {
   if (itemsPerPage.value !== 6) query.per_page = itemsPerPage.value;
   if (statusFilter.value && statusFilter.value !== '') query.status = statusFilter.value;
   if (categoryFilter.value && categoryFilter.value !== '') query.category = categoryFilter.value;
-  if (locationFilter.value && locationFilter.value !== '') query.location = locationFilter.value;
   if (deviceFilter.value && deviceFilter.value !== '') query.device = deviceFilter.value;
   if (dateRange.value.from) query.from = dateRange.value.from.toISOString();
   if (dateRange.value.to) query.to = dateRange.value.to.toISOString();
