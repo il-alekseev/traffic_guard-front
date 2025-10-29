@@ -1,7 +1,5 @@
 import { defineStore } from "pinia";
 import { useNuxtApp } from "#app";
-import type { defaultResponse } from "~/types/api";
-
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
 import type { DetectionControlState, DetectionStats, DetectionTable } from "~/types/detectionsControl";
@@ -21,24 +19,24 @@ export const useDetectionsControlStore = defineStore("detectionControl", {
 
   actions: {
     async fetchDetections(from: string = 'now-10m', to: string = 'now', page: number = 1, limit: number = 6, _status?: string, category?: Categories, hostname?: string): Promise<DetectionTable> {
-      // const userStore = useUserStore();
-      // try {
-      //   await userStore.ensureValidToken();
-      // } catch {
-      //   userStore.clearToken();
-      //   throw new Error(
-      //     "Не удалось получить список выявлений. Пользователь неавторизован",
-      //   );
-      // }
+      const userStore = useUserStore();
+      try {
+        await userStore.ensureValidToken();
+      } catch {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось получить список выявлений. Пользователь неавторизован",
+        );
+      }
 
-      // const token = useCookie('auth_token').value;
+      const token = useCookie('auth_token').value;
 
-      // if (!token) {
-      //   userStore.clearToken();
-      //   throw new Error(
-      //     "Не удалось получить список выявлений. Пользователь неавторизован",
-      //   );
-      // }
+      if (!token) {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось получить список выявлений. Пользователь неавторизован",
+        );
+      }
 
       try {
         const { $api } = useNuxtApp();
@@ -55,7 +53,7 @@ export const useDetectionsControlStore = defineStore("detectionControl", {
 
         const detections = await $api.get<DetectionTable>('/detections/', {
           params,
-          // ...getTokenHeaders(token)
+          ...getTokenHeaders(token)
         });
 
 

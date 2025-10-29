@@ -20,30 +20,30 @@ export const useCategoriesControlStore = defineStore("categoriesControl", {
 
   actions: {
     async fetchCategories(): Promise<Categories[]> {
-      // const userStore = useUserStore();
-      // try {
-      //   await userStore.ensureValidToken();
-      // } catch {
-      //   userStore.clearToken();
-      //   throw new Error(
-      //     "Не удалось получить список категорий. Пользователь неавторизован",
-      //   );
-      // }
+      const userStore = useUserStore();
+      try {
+        await userStore.ensureValidToken();
+      } catch {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось получить список категорий. Пользователь неавторизован",
+        );
+      }
 
-      // const token = useCookie('auth_token').value;
+      const token = useCookie('auth_token').value;
 
-      // if (!token) {
-      //   userStore.clearToken();
-      //   throw new Error(
-      //     "Не удалось получить список категорий. Пользователь неавторизован",
-      //   );
-      // }
+      if (!token) {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось получить список категорий. Пользователь неавторизован",
+        );
+      }
 
       try {
         const { $api } = useNuxtApp();
 
         const categories = await $api.get<Categories[]>('/categories', {
-          // ...getTokenHeaders(token)
+          ...getTokenHeaders(token)
         });
 
 

@@ -3,7 +3,7 @@ import { useNuxtApp } from "#app";
 import type { defaultResponse } from "~/types/api";
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
-import type { Device, DeviceControlState } from "~/types/devicesControl.t";
+import type { Device, DeviceControlState } from "~/types/devicesControl";
 
 
 export const useDevicesControlStore = defineStore("deviceControl", {
