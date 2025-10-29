@@ -114,7 +114,6 @@ import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
 import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
 import { getCurrentDateWithOffset, isCategory } from '~/helpers';
-import type { Categories } from '~/types/categories';
 
 
 definePageMeta({
@@ -390,7 +389,6 @@ const handleSetFilters = (filtersData?: DetectionsFilter) => {
   if (filtersData) {
     filtersData.status.id !== '' ? statusFilter.value = filtersData.status.id : statusFilter.value = undefined;
     filtersData.category.id !== '' ? categoryFilter.value = filtersData.category.id : categoryFilter.value = undefined;
-    filtersData.location.id !== '' ? locationFilter.value = filtersData.location.id : locationFilter.value = undefined;
     filtersData.device.id !== '' ? deviceFilter.value = filtersData.device.id : deviceFilter.value = undefined;
   }
   

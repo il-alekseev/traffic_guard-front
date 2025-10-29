@@ -13,17 +13,16 @@ export interface DetectionStats {
 
 export interface Detection {
   id: number;
-  domain?: string;
   ip: string;
-  country: string;
-  path: string;
+  location: string;
+  domain: string;
   access_count: number;
   host_name: string;
   category: Categories;
   description: string;
   decision: StatusType;
   last_access_datetime: string;
-  is_blocked?: boolean
+  action: '' | 'Разрешено' | 'Заблокировано'
 }
 
 export interface DetectionTable {

@@ -83,9 +83,9 @@ export function getJwtExpMs(token: string | null | undefined): number | null {
 
 export function getModificatorByCategory(category: Categories): string {
   const categoryMap: Record<Categories, string> = {
-    'Агрессия': 'aggression',
-    'Расизм': 'racism',
-    'Терроризм': 'terrorism',
+    'Неизвестный класс': 'unknown',
+    'Положительная категория': 'positive',
+    'Агрессия, расизм, терроризм': 'aggression',
     'Ботнеты': 'botnets',
     'Веб-почта': 'webmail',
     'Досуг и развлечения': 'leisure',
@@ -177,9 +177,9 @@ export const getCurrentDateWithOffset = (
 };
 
 const CATEGORIES_LIST = [
-  'Агрессия',
-  'Расизм',
-  'Терроризм',
+  'Неизвестный класс',
+  'Положительная категория',
+  'Агрессия, расизм, терроризм',
   'Ботнеты',
   'Веб-почта',
   'Досуг и развлечения',

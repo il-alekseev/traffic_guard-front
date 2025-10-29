@@ -1,5 +1,5 @@
 <template>
-  <div class="resource-card" :class="false ? 'resource-card_transparent' : ''">
+  <div class="resource-card" :class="item.action === 'Заблокировано' ? 'resource-card_transparent' : ''">
     <div class="resource-card__header">
       <div class="resource-card__title-row">
         <span class="resource-card__label">Domain</span>
@@ -8,7 +8,7 @@
         <div class="resource-card__title-icon-block">
           <DetectionsIcon class="resource-card__title-icon" />
         </div>
-        <span class="resource-card__title">{{ item?.domain || 'Неизвестно' }}</span>
+        <span class="resource-card__title">{{ item.domain || 'Неизвестно' }}</span>
         <span :class="['resource-card__category', `resource-card__category--${getModificatorByCategory(item.category)}`]">
           {{ item.category || 'Неизвестно' }}
         </span>
@@ -34,10 +34,10 @@
     <div class="resource-card__section">
       <div class="resource-card__label">Host</div>
       <div class="resource-card__host">
-        <div v-if="item.country !== 'private'" class="resource-card__flag-icon-block">
-          <EmojiFlag :code="item.country.toLowerCase()" />
+        <div v-if="item.location !== 'private'" class="resource-card__flag-icon-block">
+          <EmojiFlag :code="item.location.toLowerCase()" />
         </div>
-        <span class="resource-card__description resource-card__description-location">{{ item.country }}</span>
+        <span class="resource-card__description resource-card__description-location">{{ item.location }}</span>
         <a :href="`https://${item.ip}`" class="resource-card__ip">{{ item.ip }}</a>
       </div>
       <div class="resource-card__meta">
@@ -61,7 +61,7 @@
         <span class="resource-card__status-dot"></span>
         {{ getStatusType(item.decision) }}
       </div>
-      <div v-if="item.is_blocked !== undefined && !item.is_blocked" class="resource-card__actions">
+      <div v-if="item.action === ''" class="resource-card__actions">
         <BaseButton
           type="button"
           variant="primary"
@@ -79,7 +79,10 @@
           Отклонить
         </BaseButton>
       </div>
-      <div v-else-if="item.is_blocked !== undefined && item.is_blocked" class="resource-card__blocked">
+      <div v-else-if="item.action === 'Разрешено'" class="resource-card__blocked">
+        Доступ разерешен
+      </div>
+      <div v-else-if="item.action === 'Заблокировано'" class="resource-card__blocked">
         Заблокировано
       </div>
       <div v-else>
@@ -194,6 +197,7 @@ const deviceColors = generateColor(props.item.host_name);
 
     &--leisure { background: #DCFCE7; color: #16A34A; }
     &--games { background: #BBF7D0; color: #15803D; }
+    &--positive { background: #BBF7D0; color: #15803D; }
     &--online-games { background: #DCFCE7; color: #15803D; }
     &--gaming-platforms { background: #BBF7D0; color: #16A34A; }
     &--movies { background: #DCFCE7; color: #059669; }

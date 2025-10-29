@@ -7,8 +7,8 @@
         :class="{ 'dropdown__button--error': validationError, 'dropdown__button--disabled': disabled }"
         @click="!disabled ? open = !open : null"
       >
-        <span v-if="modelValue.name !== ''" class="dropdown__selected-text" :class="{ 'dropdown__selected-text--error': validationError }">
-          <p>{{ modelValue.name }}</p>
+        <span v-if="modelValue.name !== ''" class="dropdown__selected-text" :class="[{ 'dropdown__selected-text--error': validationError }]">
+          <p :class="props.selectedTextClass" :style="props.selectedTextStyle">{{ modelValue.name }}</p>
         </span>
         <span v-else class="dropdown__selected-text--placeholder">{{ mainPlaceholder }}</span>
         <span class="dropdown__icon-container">
@@ -81,6 +81,7 @@ import type { DropdownItem } from '~/types/dropdown';
 import CaretDownIcon from '~/assets/img/caret-down.svg'
 import CheckIcon from '~/assets/img/check.svg'
 import CrossIcon from '@/assets/img/cross.svg'
+import type { StyleValue } from 'vue';
 
 
 const props = defineProps<{
@@ -94,6 +95,8 @@ const props = defineProps<{
   error?: string;
   disabled?: boolean;
   validationError?: string
+  selectedTextClass?: string
+  selectedTextStyle?: StyleValue
 }>()
 
 const emit = defineEmits<{
@@ -188,7 +191,7 @@ watch(searchQuery, () => {
 })
 </script>
 
-<style>
+<style lang="scss">
 .dropdown {
   position: relative;
   width: 100%;
@@ -392,5 +395,67 @@ watch(searchQuery, () => {
   font-size: 0.75rem;
   line-height: 0.75rem;
   color: #E5381A;
+}
+
+.ngfw-bagde {
+  max-width: fit-content;
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  padding: 0.25rem 0.5rem;
+  text-transform: uppercase;
+  border-radius: 6px;
+}
+
+.category-badge {
+  max-width: fit-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+
+  &--aggression { background: #FEE2E2; color: #DC2626; }
+  &--racism { background: #FECACA; color: #B91C1C; }
+  &--terrorism { background: #FEE2E2; color: #DC2626; }
+  &--drugs { background: #FECACA; color: #B91C1C; }
+  &--malware { background: #FEE2E2; color: #EF4444; }
+  &--malicious-software { background: #FECACA; color: #DC2626; }
+
+  &--botnets { background: #FFEDD5; color: #EA580C; }
+  &--cryptomining { background: #FDBA74; color: #C2410C; }
+  &--cryptojacking { background: #FFEDD5; color: #D97706; }
+  &--phishing { background: #FEF3C7; color: #D97706; }
+
+  &--pornography { background: #F3E8FF; color: #9333EA; }
+  &--adult { background: #E9D5FF; color: #7E22CE; }
+  &--gambling { background: #F3E8FF; color: #7C3AED; }
+
+  &--proxy { background: #DBEAFE; color: #2563EB; }
+  &--torrents { background: #BFDBFE; color: #1D4ED8; }
+
+  &--leisure { background: #DCFCE7; color: #16A34A; }
+  &--games { background: #BBF7D0; color: #15803D; }
+  &--positive { background: #BBF7D0; color: #15803D; }
+  &--online-games { background: #DCFCE7; color: #15803D; }
+  &--gaming-platforms { background: #BBF7D0; color: #16A34A; }
+  &--movies { background: #DCFCE7; color: #059669; }
+
+  &--social { background: #E0F2FE; color: #0284C7; }
+  &--chats { background: #BAE6FD; color: #0369A1; }
+  &--webmail { background: #E0F2FE; color: #0EA5E9; }
+
+  &--shopping { background: #E0E7FF; color: #4F46E5; }
+  &--advertising { background: #C7D2FE; color: #4338CA; }
+
+  &--files { background: #F3F4F6; color: #6B7280; }
+  &--blocked { background: #E5E7EB; color: #4B5563; }
+  &--additional { background: #F3F4F6; color: #6B7280; }
+
+  &--depressive { background: #FCE7F3; color: #DB2777; }
+  
+  &--alcohol { background: #FEF3C7; color: #D97706; }
+
+  &--unknown { background: #f3f4f6; color: #6b7280; }
 }
 </style>

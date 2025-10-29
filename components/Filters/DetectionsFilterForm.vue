@@ -25,18 +25,7 @@
             :items="allowedCategories"
             searchPlaceholder="Поиск..."
             v-model="form.category"
-          />
-        </div>
-
-        <div class="base-form-field">
-          <label for="location" class="base-label">Локация</label>
-          <Dropdown
-            :search="true"
-            :localSearch="true"
-            id="location"
-            :items="allowedLocations"
-            searchPlaceholder="Поиск..."
-            v-model="form.location"
+            :selectedTextClass="`category-badge category-badge--${getModificatorByCategory(form.category.id as Categories)}`"
           />
         </div>
 
@@ -49,6 +38,11 @@
             :items="allowedDevices"
             searchPlaceholder="Поиск..."
             v-model="form.device"
+            :selectedTextClass="'ngfw-bagde'"
+            :selectedTextStyle="{
+              backgroundColor: generateColor(form.device.id).background,
+              color: generateColor(form.device.id).color
+            }"
           />
         </div>
       </div>
@@ -86,10 +80,16 @@
 </template>
 
 <script setup lang="ts">
+import { getModificatorByCategory } from '~/helpers';
+import { useDeviceColors } from '~/composables/useDeviceColors';
+import { useDevicesControlStore } from '~/stores/devicesControl';
+import { useCategoriesControlStore } from '~/stores/categoriesControl';
 import type { DropdownItem } from '~/types/dropdown';
 import BaseButton from '~/components/UI/BaseButton.vue';
 import BaseAlert from '~/components/UI/BaseAlert.vue';
 import Dropdown from '~/components/UI/Dropdown.vue';
+import type { Categories } from '~/types/categories';
+
 
 const emit = defineEmits<{
   setFilters: [filterData: DetectionsFilter];
@@ -101,13 +101,16 @@ const props = defineProps<{
 }>();
 
 
+const { generateColor } = useDeviceColors();
+const deviceControlStore = useDevicesControlStore();
+const categoriesControlStroe = useCategoriesControlStore()
+
 const loading = ref(false);
 const error = ref('');
 
 export interface DetectionsFilter {
   status: DropdownItem,
   category: DropdownItem,
-  location: DropdownItem,
   device: DropdownItem
 }
 
@@ -120,16 +123,13 @@ const form = reactive<DetectionsFilter>({
     id: '',
     name: ''
   },
-  location: {
-    id: '',
-    name: ''
-  },
   device: {
     id: '',
     name: ''
   },
 });
 
+// TO DO. WAITING BACKEND
 const allowedStatus = ref<DropdownItem[]>([
   {
     id: 'Все',
@@ -149,75 +149,34 @@ const allowedStatus = ref<DropdownItem[]>([
   }
 ]);
 
-const allowedCategories = ref<DropdownItem[]>([
-  {
-    id: 'Все',
-    name: 'Все',
-  },
-  {
-    id: 'Экстремизм',
-    name: 'Экстремизм',
-  },
-  {
-    id: 'Наркотики',
-    name: 'Наркотики',
-  },
-  {
-    id: 'Другое',
-    name: 'Другое',
-  }
-])
+const allowedCategories = computed<DropdownItem[]>(() => {
+  const categories = categoriesControlStroe.categories;
+  if (!categories) return [];
+  const result = categories.map((category) => {
+    return {
+      id: category,
+      name: category
+    }
+  })
+  return result;
+})
 
-const allowedLocations = ref<DropdownItem[]>([
-  {
-    id: 'Все',
-    name: 'Все',
-  },
-  {
-    id: 'Московская область',
-    name: 'Московская область',
-  },
-  {
-    id: 'Ленинградская область',
-    name: 'Ленинградская область',
-  },
-  {
-    id: 'Свердловская область',
-    name: 'Свердловская область',
-  },
-  {
-    id: 'Другое',
-    name: 'Другое',
-  }
-])
 
-const allowedDevices = ref<DropdownItem[]>([
-  {
-    id: 'Все',
-    name: 'Все',
-  },
-  {
-    id: 'ngfw-1',
-    name: 'NGFW-1',
-  },
-  {
-    id: 'NGFW-2',
-    name: 'NGFW-2',
-  },
-  {
-    id: 'NGFW-3',
-    name: 'NGFW-3',
-  },
-  {
-    id: 'Другое',
-    name: 'Другое',
-  }
-])
+const allowedDevices = computed<DropdownItem[]>(() => {
+  const devices = deviceControlStore.devices;
+  if (!devices) return [];
+  const result = devices.map((device) => {
+    return {
+      id: device,
+      name: device
+    }
+  })
+  return result;
+})
 
 const resetFilters = () => {
   form.category = {id: '', name: ''}
   form.device = {id: '', name: ''}
-  form.location = {id: '', name: ''}
   form.status = {id: '', name: ''}
 }
 
@@ -231,7 +190,6 @@ const initForm = async () => {
 
   form.status = props.filtersData.status;
   form.category = props.filtersData.category;
-  form.location = props.filtersData.location;
   form.device = props.filtersData.device;
 }
 
@@ -240,7 +198,7 @@ onMounted(() => {
 })
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .filters {
   height: 100%;
 }

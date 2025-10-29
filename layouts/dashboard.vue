@@ -17,20 +17,42 @@
 
 <script setup lang="ts">
 import { useUserStore } from '~/stores/user';
+import { useDevicesControlStore } from '~/stores/devicesControl';
+import { useCategoriesControlStore } from '~/stores/categoriesControl';
 import {navigateTo} from "#app";
 import NotificationToasts from "~/components/UI/NotificationToasts.vue";
 import SidebarComponent from "~/components/Dashboard/SidebarComponent.vue";
 import HeaderComponent from "~/components/Dashboard/HeaderComponent.vue";
 
 const userStore = useUserStore();
+const deviceControlStore = useDevicesControlStore();
+const categoriesControlStroe = useCategoriesControlStore();
+
+const checkUser = async () => {
+  if (!userStore.user) {
+    await userStore.fetchUserInfo();
+  }
+  if (userStore.user && userStore.user?.is_need_to_change_password) {
+    return navigateTo('/change-password');
+  }
+}
+
+const checkDevices = async () => {
+  if (!deviceControlStore.devices) {
+    await deviceControlStore.fetchDevices();
+  }
+}
+
+const checkCategories = async () => {
+  if (!categoriesControlStroe.categories) {
+    await categoriesControlStroe.fetchCategories();
+  }
+}
 
 onMounted(async () => {
-  // if (!userStore.user) {
-  //   await userStore.fetchUserInfo();
-  // }
-  // if (userStore.user && userStore.user?.is_need_to_change_password) {
-  //   return navigateTo('/change-password');
-  // }
+  await checkUser();
+  checkDevices();
+  checkCategories();
 })
 
 
