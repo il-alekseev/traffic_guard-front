@@ -99,17 +99,17 @@ import { definePageMeta } from '#imports'
 import { ref, onMounted } from 'vue';
 import { useUserStore } from '~/stores/user';
 import type { User } from '~/types/user';
-import BaseInput from '~/components/UI/BaseInput.vue';
-import SubButton from '~/components/UI/SubButton.vue';
-import SideModal from '~/components/UI/SideModal.vue';
-import ChangePasswordForm from '~/components/Profile/ChangePasswordForm.vue';
-import ChangePasswordIcon from '~/assets/img/change-password.svg';
+import BaseInput from '~/components/ui/BaseInput.vue';
+// import SubButton from '~/components/UI/SubButton.vue';
+import SideModal from '~/components/ui/SideModal.vue';
+import ChangePasswordForm from '~/components/profile/ChangePasswordForm.vue';
+// import ChangePasswordIcon from '~/assets/img/change-password.svg';
 // import EditDataIcon from '~/assets/img/note-pencil.svg';
 // import ChangeUserDataForm from '~/components/profile/ChangeUserDataForm.vue';
 
 definePageMeta({
   layout: 'dashboard',
-  // middleware: ['auth']
+  middleware: ['auth']
 });
 
 const userStore = useUserStore();

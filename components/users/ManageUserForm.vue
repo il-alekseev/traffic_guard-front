@@ -146,10 +146,10 @@ import { useUserStore } from "~/stores/user";
 import type { User, UserForm } from '~/types/user';
 import type { DropdownItem } from '~/types/dropdown';
 import { getTempPassword } from '~/helpers';
-import BaseInput from '~/components/UI/BaseInput.vue';
-import BaseButton from '~/components/UI/BaseButton.vue';
-import BaseAlert from '~/components/UI/BaseAlert.vue';
-import Dropdown from '~/components/UI/Dropdown.vue';
+import BaseInput from '~/components/ui/BaseInput.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
+import BaseAlert from '~/components/ui/BaseAlert.vue';
+import Dropdown from '~/components/ui/Dropdown.vue';
 
 const emit = defineEmits<{
   close: [];

@@ -20,9 +20,9 @@ import { useUserStore } from '~/stores/user';
 import { useDevicesControlStore } from '~/stores/devicesControl';
 import { useCategoriesControlStore } from '~/stores/categoriesControl';
 import {navigateTo} from "#app";
-import NotificationToasts from "~/components/UI/NotificationToasts.vue";
-import SidebarComponent from "~/components/Dashboard/SidebarComponent.vue";
-import HeaderComponent from "~/components/Dashboard/HeaderComponent.vue";
+import NotificationToasts from "~/components/ui/NotificationToasts.vue";
+import SidebarComponent from "~/components/dashboard/SidebarComponent.vue";
+import HeaderComponent from "~/components/dashboard/HeaderComponent.vue";
 
 const userStore = useUserStore();
 const deviceControlStore = useDevicesControlStore();

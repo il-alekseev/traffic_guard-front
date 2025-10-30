@@ -103,13 +103,13 @@ import { definePageMeta } from '#imports';
 import type { Detection, DetectionStats, DetectionTable } from '~/types/detectionsControl';
 import { useDetectionsControlStore } from '~/stores/detectionsControl';
 import type { StatItem } from '~/types/statistics';
-import StatsComponent from '~/components/DataDisplay/StatsComponent.vue';
-import ResourceCard from '~/components/ResourceCards/ResourceCard.vue';
-import DatePicker from '~/components/UI/DatePicker.vue';
-import DownloadButton from '~/components/UI/DownloadButton.vue';
-import ErrorBlock from '~/components/UI/ErrorBlock.vue';
-import SideModal from '~/components/UI/SideModal.vue';
-import FilterForm, { type DetectionsFilter } from '~/components/Filters/DetectionsFilterForm.vue';
+import StatsComponent from '~/components/data-display/StatsComponent.vue';
+import ResourceCard from '~/components/resource-cards/ResourceCard.vue';
+import DatePicker from '~/components/ui/DatePicker.vue';
+import DownloadButton from '~/components/ui/DownloadButton.vue';
+import ErrorBlock from '~/components/ui/ErrorBlock.vue';
+import SideModal from '~/components/ui/SideModal.vue';
+import FilterForm, { type DetectionsFilter } from '~/components/filters/DetectionsFilterForm.vue';
 import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
 import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
@@ -118,7 +118,7 @@ import { getCurrentDateWithOffset, isCategory } from '~/helpers';
 
 definePageMeta({
   layout: 'dashboard',
-  // middleware: ['auth']
+  middleware: ['auth']
 });
 
 const route = useRoute();
@@ -234,7 +234,7 @@ const endIndex = computed(() => {
 const lastUpdated = ref<Date | null>(null);
 const minutesAgo = ref(0);
 let intervalId: ReturnType<typeof setInterval> | null = null;
-
+  
 
 const handleChangePage = (page: number) => {
   if (page < 1 || page > totalPages.value) return;
@@ -351,7 +351,7 @@ const filtersData = computed<DetectionsFilter | null>(() => {
   };
 });
 
-const initFiltersFromUrl = async () => {
+const initFiltersFromUrl = () => {
   const query = route.query;
 
   currentPage.value = Number(query.page) || 1;
@@ -390,7 +390,7 @@ const handleSetFilters = (filtersData?: DetectionsFilter) => {
 }
 
 onMounted(async () => {
-  await initFiltersFromUrl();
+  initFiltersFromUrl();
   await fetchDetectionStats();
   await fetchDetections();
   intervalId = setInterval(updateMinutesAgo, 60 * 1000);

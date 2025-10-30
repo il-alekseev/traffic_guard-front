@@ -44,8 +44,8 @@
 
 <script setup lang="ts">
 import type { User } from '~/types/user';
-import BaseModal from '~/components/UI/BaseModal.vue';
-import BaseButton from '~/components/UI/BaseButton.vue';
+import BaseModal from '~/components/ui/BaseModal.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
 import CheckIcon from '~/assets/img/check.svg';
 import SuccesCheckImage from "~/assets/img/succes-check-image.svg"
 

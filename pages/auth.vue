@@ -21,8 +21,8 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 import { useUserStore } from "~/stores/user";
-import BaseAlert from '~/components/UI/BaseAlert.vue';
-import FormComponent from '~/components/Login/FormComponent.vue';
+import BaseAlert from '~/components/ui/BaseAlert.vue';
+import FormComponent from '~/components/login/FormComponent.vue';
 import FazendaLogo from "~/assets/img/logo.svg"
 
 const router = useRouter();

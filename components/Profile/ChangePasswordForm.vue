@@ -63,9 +63,9 @@
 </template>
 
 <script setup lang="ts">
-import BaseInput from '~/components/UI/BaseInput.vue';
-import BaseButton from '~/components/UI/BaseButton.vue';
-import BaseAlert from '~/components/UI/BaseAlert.vue';
+import BaseInput from '~/components/ui/BaseInput.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
+import BaseAlert from '~/components/ui/BaseAlert.vue';
 import { useUserStore } from '~/stores/user';
 import { useNotificationStore } from '@/stores/notification';
 

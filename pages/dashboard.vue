@@ -5,7 +5,7 @@
         <div class="dashboard__header-title-block">
           <h1 class="dashboard__title page-title">Нет новых выявлений</h1>
           <div class="dashboard__subtitle-block page-subtitle-block">
-            <p class="dashboard__subtitle page-subtitle">Обновлено 5 мин назад</p>
+            <p class="dashboard__subtitle page-subtitle">Обновлено {{ minutesAgo }} мин назад</p>
             <div class="dashboard__refresh-btn page-refresh-btn" @click="fetchData">
               <ReloadIcon />
             </div>
@@ -27,18 +27,80 @@
     </div>
 
     <div class="dashboard-data">
-      <ErrorBlock v-if="fetchError !== ''" :fetch-error="fetchError"/>
-
-      <div v-if="loading" class="dashboard__loading">
-        Загрузка данных...
+      <div class="dashboard-grid">
+        <!-- <div class="dashboard__trafic">
+          DASHBOARD TRAFIC DATA
+        </div>
+        <div class="dashboard__requests">
+          <div class="dashboard__request dashboard__request-allowed">
+            DASHBOARD REQUEST ALLOW
+          </div>
+          <div class="dashboard__request dashboard__request-before-blocked">
+            DASHBOARD REQUEST BEFORE BLOCKED
+          </div>
+          <div class="dashboard__request dashboard__request-blocked">
+            DASHBOARD REQUEST BLOCKED
+          </div>
+          <div class="dashboard__request dashboard__request-waiting">
+            DASHBOARD REQUEST WAITING
+          </div>
+        </div> -->
+        <DashboardCard class="dashboard__trafic" title="Трафик" :legend="{input: {name: 'Входящий', color: '#37C84F'}, output: {name: 'Исходящий', color: '#2563EB'}}">
+          <template v-if="loading.trafic" #LoadingData>
+            <p class="loading-data">Загрузка...</p>
+          </template>
+          <template v-else-if="fetchError.trafic !== ''" #ErrorData>
+            <p class="error-data">{{ fetchError.trafic }}</p>
+          </template>
+          <template v-else-if="dashboardData.trafic" #DashboardStatistic>
+            <DashboardTrafficChart :trafficData="dashboardData.trafic!"/>
+          </template>
+          <template v-else-if="!dashboardData.trafic" #EmptyData>
+            <p class="empty-data">Данные отсутствуют</p>
+          </template>
+        </DashboardCard>
+        <DashboardCard class="dashboard__top-categories" title="Рейтинг запрещенных категорий" link="/report">
+          <template v-if="loading.topCategories" #LoadingData>
+            <p class="loading-data">Загрузка...</p>
+          </template>
+          <template v-else-if="fetchError.topCategories !== ''" #ErrorData>
+            <p class="error-data">{{ fetchError.topCategories }}</p>
+          </template>
+          <template v-else-if="dashboardData.topCategories && dashboardData.topCategories.length > 0" #DashboardStatistic>
+            <DashboardTopCategories :categories="dashboardData.topCategories!" />
+          </template>
+          <template v-else-if="!dashboardData.topCategories" #EmptyData>
+            <p class="empty-data">Данные отсутствуют</p>
+          </template>
+        </DashboardCard>
+        <DashboardCard class="dashboard__top-detections" title="Топ нерешенных выявлений" link="/detections">
+          <template v-if="loading.topDetections" #LoadingData>
+            <p class="loading-data">Загрузка...</p>
+          </template>
+          <template v-else-if="fetchError.topDetections !== ''" #ErrorData>
+            <p class="error-data">{{ fetchError.topDetections }}</p>
+          </template>
+          <template v-else-if="dashboardData.topDetections && dashboardData.topDetections.length > 0" #DashboardStatistic>
+            <DashboardTopDetections :detections="dashboardData.topDetections!" />
+          </template>
+          <template v-else-if="!dashboardData.topDetections || dashboardData.topDetections.length == 0" #EmptyData>
+            <p class="empty-data">Данные отсутствуют</p>
+          </template>
+        </DashboardCard>
+        <!-- <div class="dashboard__top-detections">
+          DASHBOARD TOP DETECTIONS
+        </div>
+        <div class="dashboard__anomalies">
+          DASHBOARD TOP ANOMALIES
+        </div>
+        <div class="dashboard__proh-activity">
+          DASHBOARD TOP PROH ACTIVITY
+        </div> -->
       </div>
-
-      <div v-else-if="!data" class="dashboard__empty">
-        Данные не найдены
-      </div>
-
-      <div v-else class="resources-grid">
-        DATA
+      <div class="devices-grid">
+        <!-- <div class="devices-stat">
+          STAT BY DEVICE
+        </div> -->
       </div>
     </div>
 
@@ -60,14 +122,18 @@
 <script setup lang="ts">
 import {definePageMeta} from '#imports';
 import { useRouter } from 'vue-router';
-import { useUserStore } from '~/stores/user'
-import DatePicker from '~/components/UI/DatePicker.vue';
-import DownloadButton from '~/components/UI/DownloadButton.vue';
-import SideModal from '~/components/UI/SideModal.vue';
-import ErrorBlock from '~/components/UI/ErrorBlock.vue';
-import FilterForm, { type DashboardFilter } from '~/components/Filters/DashboardFilterForm.vue';
+import { useDashboardStore } from '~/stores/dashboard';
+import DatePicker from '~/components/ui/DatePicker.vue';
+import DownloadButton from '~/components/ui/DownloadButton.vue';
+import SideModal from '~/components/ui/SideModal.vue';
+import FilterForm, { type DashboardFilter } from '~/components/filters/DashboardFilterForm.vue';
+import DashboardCard from "~/components/dashboard-grid/BaseCard.vue"
+import DashboardTopCategories from "~/components/dashboard-grid/TopCategories.vue"
+import DashboardTopDetections from "~/components/dashboard-grid/TopDetections.vue"
+import DashboardTrafficChart from "~/components/dashboard-grid/TrafficSplineChart.vue"
 import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
+import { getCurrentDateWithOffset } from '~/helpers';
 
 
 const route = useRoute();
@@ -75,37 +141,123 @@ const router = useRouter();
 
 definePageMeta({
   layout: 'dashboard',
-  // middleware: ['auth']
+  middleware: ['auth']
 });
 
-const dateRange = ref<{ from: Date | null; to: Date | null }>({
-  from: new Date(2025, 7, 1),
-  to: new Date(2025, 8, 1)
-})
+const dashboardStore = useDashboardStore();
 
-const loading = ref(true);
-const fetchError = ref('');
+const loading = ref({
+  topCategories: true,
+  topDetections: true,
+  trafic: true,
+  requests: false,
+  anomalies: false,
+  events: false,
+  proh_activity: false,
+  devicesState: false
+});
+const isLoading = computed(() => 
+  Object.values(loading.value).some(status => status === true)
+);
 
-const data = ref();
+const fetchError = ref({
+  topCategories: '',
+  topDetections: '',
+  trafic: '',
+  requests: '',
+  anomalies: '',
+  events: '',
+  proh_activity: '',
+  devicesState: ''
+});
+const hasErrors = computed(() => 
+  Object.values(fetchError.value).some(error => error !== '')
+);
 
-const fetchData = async () => {
-  console.log('fetchData');
-  loading.value = false;
-  fetchError.value = 'Произошла ошибка'
+const dashboardData = computed(() => ({
+  topCategories: dashboardStore.topCategories,
+  topDetections: dashboardStore.topDetections,
+  trafic: dashboardStore.trafic,
+  requests: dashboardStore.requests,
+  anomalies: dashboardStore.anomalies,
+  events: dashboardStore.events,
+  proh_activity: dashboardStore.events,
+  devicesState: dashboardStore.devicesState
+}));
+
+const lastUpdated = ref<Date | null>(null);
+const minutesAgo = ref(0);
+let intervalId: ReturnType<typeof setInterval> | null = null;
+
+const updateMinutesAgo = () => {
+  if (!lastUpdated.value) return;
+  const diffMs = Date.now() - lastUpdated.value.getTime();
+  minutesAgo.value = Math.floor(diffMs / 60000);
 }
 
-const isShowFilters = ref(false);
+const fetchData = async () => {
+  Object.keys(fetchError.value).forEach(key => {
+    fetchError.value[key as keyof typeof fetchError.value] = '';
+  });
 
+  const from = dateRange.value.from?.toISOString();
+  const to = dateRange.value.to?.toISOString();
+  const TOPS_COUNT = 5;
+  const TRAFFIC_COUNT = 20;
+  const hostname = deviceFilter.value;
+
+  try {
+    await Promise.all([
+      dashboardStore.fetchTopCategories(from, to, TOPS_COUNT, hostname)
+        .then(() => {
+          loading.value.topCategories = false;
+        })
+        .catch((error: Error) => {
+          loading.value.topCategories = false;
+          fetchError.value.topCategories = error.message;
+        }),
+
+      dashboardStore.fetchDetections(from, to, TOPS_COUNT, hostname)
+        .then(() => {
+          loading.value.topDetections = false;
+        })
+        .catch((error: Error) => {
+          loading.value.topDetections = false;
+          fetchError.value.topDetections = error.message;
+        }),
+
+      dashboardStore.fetchTraffic(from, to, TRAFFIC_COUNT, hostname)
+        .then(() => {
+          loading.value.trafic = false;
+        })
+        .catch((error: Error) => {
+          loading.value.trafic = false;
+          fetchError.value.trafic = error.message;
+        })
+    ]);
+
+  } catch (error) {
+    console.error('Ошибка при загрузке данных dashboard:', error);
+  }
+
+  lastUpdated.value = new Date();
+  updateMinutesAgo();
+}
+
+const dateRange = ref<{ from: Date | null; to: Date | null }>({
+  from: getCurrentDateWithOffset(-1, 'd'),
+  to: getCurrentDateWithOffset()
+})
+
+const isShowFilters = ref(false);
 const showFilters = () => {
   isShowFilters.value = true;
 }
-
 const closeFilters = () => {
   isShowFilters.value = false;
 }
 
 const deviceFilter = ref<string | undefined>();
-
 const filtersData = computed<DashboardFilter | null>(() => {
   const device = deviceFilter.value ?? '';
 
@@ -118,7 +270,7 @@ const filtersData = computed<DashboardFilter | null>(() => {
   };
 });
 
-const initFiltersFromUrl = async () => {
+const initFiltersFromUrl = () => {
   const query = route.query;
 
   deviceFilter.value = query.device != null ? String(query.device) : undefined;
@@ -139,9 +291,13 @@ const handleSetFilters = (filtersData: DashboardFilter) => {
 }
 
 onMounted(async () => {
-  await initFiltersFromUrl();
+  initFiltersFromUrl();
   await fetchData();
+  intervalId = setInterval(updateMinutesAgo, 60 * 1000);
 });
+onUnmounted(() => {
+  if (intervalId) clearInterval(intervalId);
+})
 watch(
   () => route.query,
   async (newQuery, oldQuery) => {
@@ -188,10 +344,17 @@ watch(
 }
 
 .dashboard-data {
+  margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
   overflow-x: auto;
   min-height: calc(100vh - 21rem);
+}
+
+.dashboard-grid {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 
@@ -256,6 +419,18 @@ watch(
   width: 20px;
   height: 20px;
   object-fit: contain;
+}
+
+.loading-data, .empty-data {
+  font-size: 1rem;
+  line-height: 1rem;
+  color: #3F3F46;
+  min-height: 148px;
+}
+.error-data {
+  font-size: 1rem;
+  line-height: 1rem;
+  color: #FB2904;
 }
 
 </style>

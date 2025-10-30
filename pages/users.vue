@@ -102,21 +102,21 @@ import {definePageMeta} from '#imports';
 import { useUsersControlStore } from '~/stores/usersControl';
 import { useUserStore } from '~/stores/user';
 import type { User, UsersTable } from '~/types/user';
-import BaseSearch from '~/components/UI/BaseSearch.vue';
-import BaseButton from '~/components/UI/BaseButton.vue';
-import SideModal from '~/components/UI/SideModal.vue';
-import ManageUserForm from '~/components/Users/ManageUserForm.vue';
-import TempPasswordUserModal from '~/components/Users/TempPasswordUserModal.vue';
-import FilterButton from '~/components/UI/FilterButton.vue';
-import ErrorBlock from '~/components/UI/ErrorBlock.vue';
-import BaseTable from '~/components/UI/BaseTable.vue';
+import BaseSearch from '~/components/ui/BaseSearch.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
+import SideModal from '~/components/ui/SideModal.vue';
+import ManageUserForm from '~/components/users/ManageUserForm.vue';
+import TempPasswordUserModal from '~/components/users/TempPasswordUserModal.vue';
+import FilterButton from '~/components/ui/FilterButton.vue';
+import ErrorBlock from '~/components/ui/ErrorBlock.vue';
+import BaseTable from '~/components/ui/BaseTable.vue';
 import PlusIcon from "~/assets/img/plus.svg";
 import EditDataIcon from '~/assets/img/edit.svg';
 
 
 definePageMeta({
   layout: 'dashboard',
-  // middleware: ['auth']
+  middleware: ['auth']
 });
 
 const route = useRoute();
@@ -271,7 +271,7 @@ const handleChangePage = (page: number) => {
   updateUrlParams();
 };
 
-const initFiltersFromUrl = async () => {
+const initFiltersFromUrl = () => {
   const query = route.query;
 
   currentPage.value = Number(query.page) || 1;
@@ -295,7 +295,7 @@ const applyFilters = () => {
 };
 
 onMounted(async () => {
-  await initFiltersFromUrl();
+  initFiltersFromUrl();
   await fetchUsers();
 });
 watch(

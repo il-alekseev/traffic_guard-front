@@ -54,7 +54,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import EyeIcon from '~/assets/img/eye.svg';
 import EyeOffIcon from '~/assets/img/eye-off.svg';
 

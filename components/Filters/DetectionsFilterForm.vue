@@ -85,9 +85,9 @@ import { useDeviceColors } from '~/composables/useDeviceColors';
 import { useDevicesControlStore } from '~/stores/devicesControl';
 import { useCategoriesControlStore } from '~/stores/categoriesControl';
 import type { DropdownItem } from '~/types/dropdown';
-import BaseButton from '~/components/UI/BaseButton.vue';
-import BaseAlert from '~/components/UI/BaseAlert.vue';
-import Dropdown from '~/components/UI/Dropdown.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
+import BaseAlert from '~/components/ui/BaseAlert.vue';
+import Dropdown from '~/components/ui/Dropdown.vue';
 import type { Categories } from '~/types/categories';
 
 

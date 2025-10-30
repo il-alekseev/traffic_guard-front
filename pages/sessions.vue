@@ -93,13 +93,13 @@ import {definePageMeta} from '#imports';
 import type { Session, SessionOrderType, SessionStatus, SessionTable } from '~/types/sessionControl';
 import { useSessionsControlStore } from '~/stores/sessionControl';
 import { getBadgeClassByStatus, getStatusText, getNgfwBadgeClass, getCurrentDateWithOffset, isCategory, isSessionStatus, isSessionTypes } from '~/helpers/index';
-import DatePicker from '~/components/UI/DatePicker.vue';
-import BaseSearch from '~/components/UI/BaseSearch.vue';
-import FilterButton from '~/components/UI/FilterButton.vue';
-import ErrorBlock from '~/components/UI/ErrorBlock.vue';
-import BaseTable from '~/components/UI/BaseTable.vue';
-import SideModal from '~/components/UI/SideModal.vue';
-import FilterForm, { type SessionFilter } from '~/components/Filters/SessionsFilterForm.vue';
+import DatePicker from '~/components/ui/DatePicker.vue';
+import BaseSearch from '~/components/ui/BaseSearch.vue';
+import FilterButton from '~/components/ui/FilterButton.vue';
+import ErrorBlock from '~/components/ui/ErrorBlock.vue';
+import BaseTable from '~/components/ui/BaseTable.vue';
+import SideModal from '~/components/ui/SideModal.vue';
+import FilterForm, { type SessionFilter } from '~/components/filters/SessionsFilterForm.vue';
 import { useDeviceColors } from '~/composables/useDeviceColors';
 import ContextMenuDotsIcon from '~/assets/img/context-menu-btn.svg';
 import type { OrderDir } from '~/types/otherTypes';
@@ -107,7 +107,7 @@ import type { OrderDir } from '~/types/otherTypes';
 
 definePageMeta({
   layout: 'dashboard',
-  // middleware: ['auth']
+  middleware: ['auth']
 });
 
 const ORDER_BY: SessionOrderType = 'id';
@@ -223,7 +223,7 @@ const filtersData = computed<SessionFilter | null>(() => {
   };
 });
 
-const initFiltersFromUrl = async () => {
+const initFiltersFromUrl = () => {
   const query = route.query;
 
   currentPage.value = Number(query.page) || 1;
@@ -276,7 +276,7 @@ const handleActionClick = (session: Session) => {
 };
 
 onMounted(async () => {
-  await initFiltersFromUrl();
+  initFiltersFromUrl();
   await fetchSessions();
 });
 watch(

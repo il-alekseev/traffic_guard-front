@@ -93,8 +93,8 @@
 
 <script setup lang="ts">
 import { getModificatorByCategory, getStatusType } from '~/helpers';
-import BaseButton from '~/components/UI/BaseButton.vue';
-import EmojiFlag from "~/components/UI/EmojiFlag.vue"
+import BaseButton from '~/components/ui/BaseButton.vue';
+import EmojiFlag from "~/components/ui/EmojiFlag.vue"
 import { useDeviceColors } from '~/composables/useDeviceColors';
 import type { Detection } from '~/types/detectionsControl';
 import DetectionsIcon from "~/assets/img/detections.svg"

@@ -13,6 +13,11 @@
             :items="allowedDevices"
             searchPlaceholder="Поиск..."
             v-model="form.device"
+            :selectedTextClass="'ngfw-bagde'"
+            :selectedTextStyle="{
+              backgroundColor: generateColor(form.device.id).background,
+              color: generateColor(form.device.id).color
+            }"
           />
         </div>
       </div>
@@ -50,10 +55,13 @@
 </template>
 
 <script setup lang="ts">
+import { useDevicesControlStore } from '~/stores/devicesControl';
+import { useDeviceColors } from '~/composables/useDeviceColors';
 import type { DropdownItem } from '~/types/dropdown';
-import BaseButton from '~/components/UI/BaseButton.vue';
-import BaseAlert from '~/components/UI/BaseAlert.vue';
-import Dropdown from '~/components/UI/Dropdown.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
+import BaseAlert from '~/components/ui/BaseAlert.vue';
+import Dropdown from '~/components/ui/Dropdown.vue';
+
 
 const emit = defineEmits<{
   setFilters: [filterData: DashboardFilter];
@@ -64,6 +72,9 @@ const props = defineProps<{
   filtersData: DashboardFilter | null
 }>();
 
+const { generateColor } = useDeviceColors();
+
+const deviceControlStore = useDevicesControlStore();
 
 const loading = ref(false);
 const error = ref('');
@@ -79,28 +90,17 @@ const form = reactive<DashboardFilter>({
   }
 });
 
-const allowedDevices = ref<DropdownItem[]>([
-  {
-    id: 'Все',
-    name: 'Все',
-  },
-  {
-    id: 'ngfw-1',
-    name: 'NGFW-1',
-  },
-  {
-    id: 'NGFW-2',
-    name: 'NGFW-2',
-  },
-  {
-    id: 'NGFW-3',
-    name: 'NGFW-3',
-  },
-  {
-    id: 'Другое',
-    name: 'Другое',
-  }
-])
+const allowedDevices = computed<DropdownItem[]>(() => {
+  const devices = deviceControlStore.devices;
+  if (!devices) return [];
+  const result = devices.map((device) => {
+    return {
+      id: device,
+      name: device
+    }
+  })
+  return result;
+})
 
 const resetFilters = () => {
   form.device = {id: '', name: ''}

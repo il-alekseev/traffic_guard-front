@@ -62,9 +62,8 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue';
-import BaseInput from '~/components/UI/BaseInput.vue';
-import BaseButton from '~/components/UI/BaseButton.vue';
+import BaseInput from '~/components/ui/BaseInput.vue';
+import BaseButton from '~/components/ui/BaseButton.vue';
 import CheckMarkCircleIcon from '~/assets/img/checkmark-circle.svg'
 
 const props = defineProps({
