@@ -297,16 +297,6 @@ const deviceColors = generateColor(props.item.host_name);
     line-height: 1rem;
     font-weight: 500;
     text-transform: uppercase;
-
-    &--ngfw-1 {
-      background: #DCFCE7;
-      color: #008236;
-    }
-
-    &--ngfw-2 {
-      background: #DBEAFE;
-      color: #1447E6;
-    }
   }
 
   &__requests {
