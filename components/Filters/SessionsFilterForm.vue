@@ -155,19 +155,19 @@ const allowedStatus = ref<DropdownItem[]>([
     name: 'Все',
   },
   {
-    id: 'allowed',
+    id: 'Разрешен',
     name: 'Разрешен',
   },
   {
-    id: 'blocked',
+    id: 'Запрещен',
     name: 'Запрещен',
   },
   {
-    id: 'waiting',
+    id: 'Ожидает',
     name: 'Ожидает',
   },
   {
-    id: 'anomaly',
+    id: 'Аномалия',
     name: 'Аномалия',
   },
 ]);
@@ -190,16 +190,16 @@ const allowedTypes = ref<DropdownItem[]>([
     name: 'Все',
   },
   {
-    id: 'Фаервол',
-    name: 'Фаервол',
+    id: 'Разрешен',
+    name: 'Разрешен',
+  },
+  {
+    id: 'Запрещен',
+    name: 'Запрещен',
   },
   {
     id: 'VPN',
     name: 'VPN',
-  },
-  {
-    id: 'Аномалия',
-    name: 'Аномалия',
   },
 ]);
 

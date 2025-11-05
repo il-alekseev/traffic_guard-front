@@ -459,17 +459,9 @@ watch(dateRange, () => {
 
 .resources-grid {
   margin-top: 1.5rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
-  gap: 1.5rem;
-  
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-  }
-  
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .detections__filter-button {

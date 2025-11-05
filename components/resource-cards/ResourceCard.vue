@@ -14,7 +14,7 @@
         </span>
         <span class="resource-card__date">
           {{
-            new Date(item.last_access_datetime).toLocaleString('ru-RU', {
+            new Date(item.categorized_at).toLocaleString('ru-RU', {
               day: '2-digit',
               month: '2-digit',
               year: 'numeric',
@@ -35,7 +35,7 @@
       <div class="resource-card__label">Host</div>
       <div class="resource-card__host">
         <div v-if="item.location !== 'private'" class="resource-card__flag-icon-block">
-          <EmojiFlag :code="item.location.toLowerCase()" />
+          <EmojiFlag :code="item.location.substring(0, 2).toLowerCase()" />
         </div>
         <span class="resource-card__description resource-card__description-location">{{ item.location }}</span>
         <a :href="`https://${item.ip}`" class="resource-card__ip">{{ item.ip }}</a>
@@ -51,7 +51,7 @@
           {{ item.host_name }}
         </span>
         <span class="resource-card__requests">
-          Количество обращений: <strong>{{ item.access_count }}</strong>
+          Количество обращений: <strong>{{ item.request_count }}</strong>
         </span>
       </div>
     </div>
@@ -118,6 +118,8 @@ const deviceColors = generateColor(props.item.host_name);
 
 <style scoped lang="scss">
 .resource-card {
+  max-width: 512px;
+  width: 100%;
   background: #ffffff;
   border-radius: 28px;
   padding: 1.25rem;
@@ -160,6 +162,10 @@ const deviceColors = generateColor(props.item.host_name);
     font-size: 1rem;
     line-height: 1.5rem;
     color: #3F3F46;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   &__label {

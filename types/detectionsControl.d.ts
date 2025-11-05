@@ -16,12 +16,12 @@ export interface Detection {
   ip: string;
   location: string;
   domain: string;
-  access_count: number;
+  request_count: number;
   host_name: string;
   category: Categories;
   description: string;
   decision: StatusType;
-  last_access_datetime: string;
+  categorized_at: string;
   action: '' | 'Разрешено' | 'Заблокировано'
 }
 

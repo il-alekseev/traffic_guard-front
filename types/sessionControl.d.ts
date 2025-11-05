@@ -19,12 +19,12 @@ export interface Session {
   category: Categories
 }
 
-export type SessionStatus = 'allowed' | 'blocked' | 'waiting' | 'anomaly';
+export type SessionStatus = 'Разрешен' | 'Запрещен' | 'Ожидает' | 'Аномалия';
 
 export type SessionTypes = 
-  | 'Фаервол'
+  | 'Разрешен'
+  | 'Запрещен'
   | 'VPN'
-  | 'Аномалия'
 
 export type SessionOrderType = 
   | 'id'

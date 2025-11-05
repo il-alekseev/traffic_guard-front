@@ -34,7 +34,7 @@
     >
       <template #cell-status="{ value }">
         <span :class="getBadgeClassByStatus(value)">
-          {{ getStatusText(value) }}
+          {{ value }}
         </span>
       </template>
       <template #cell-host_name="{ value }">
@@ -49,7 +49,7 @@
         </span>
       </template>
       <template #cell-url="{ value }">
-        <span class="sessions__table-cell-url">{{ value }}</span>
+        <span class="sessions__table-cell-url">{{ value || '-' }}</span>
       </template>
       <template #cell-type="{ value }">
         <span class="sessions__table-cell-type">{{ value }}</span>
@@ -92,7 +92,7 @@
 import {definePageMeta} from '#imports';
 import type { Session, SessionOrderType, SessionStatus, SessionTable } from '~/types/sessionControl';
 import { useSessionsControlStore } from '~/stores/sessionControl';
-import { getBadgeClassByStatus, getStatusText, getNgfwBadgeClass, getCurrentDateWithOffset, isCategory, isSessionStatus, isSessionTypes } from '~/helpers/index';
+import { getBadgeClassByStatus, getNgfwBadgeClass, getCurrentDateWithOffset, isCategory, isSessionStatus, isSessionTypes } from '~/helpers/index';
 import DatePicker from '~/components/ui/DatePicker.vue';
 import BaseSearch from '~/components/ui/BaseSearch.vue';
 import FilterButton from '~/components/ui/FilterButton.vue';
@@ -216,7 +216,7 @@ const filtersData = computed<SessionFilter | null>(() => {
   }
 
   return {
-    status: { id: status, name: getStatusText(status as SessionStatus) },
+    status: { id: status, name: status },
     category: { id: category, name: category },
     types: { id: types, name: types },
     device: { id: device, name: device },

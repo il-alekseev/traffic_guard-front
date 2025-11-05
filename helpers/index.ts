@@ -133,27 +133,14 @@ export function getStatusType(status: StatusType): string {
 
 export function getBadgeClassByStatus(status: SessionStatus): string {
   switch (status) {
-    case ('allowed'):
+    case ('Разрешен'):
       return 'session-status-badge_greeen'
-    case ('blocked'):
+    case ('Запрещен'):
       return 'session-status-badge_red'
-    case ('waiting'):
+    case ('Ожидает'):
       return 'session-status-badge_yellow'
     default:
       return 'session-status-badge_yellow'
-  }
-}
-
-export function getStatusText(status: SessionStatus): string {
-  switch (status) {
-    case ('allowed'):
-      return 'Разрешен'
-    case ('blocked'):
-      return 'Запрещён'
-    case ('waiting'):
-      return 'Ожидает'
-    default:
-      return ''
   }
 }
 
@@ -214,10 +201,10 @@ export function isCategory(value: unknown): value is Categories {
 }
 
 const SESSION_STATUSES_LIST = [
-  "allowed",
-  "blocked",
-  "waiting",
-  "anomaly"
+  "Разрешен",
+  "Запрещен",
+  "Ожидает",
+  "Аномалия"
 ]
 
 export function isSessionStatus(value: unknown): value is SessionStatus {
@@ -225,9 +212,9 @@ export function isSessionStatus(value: unknown): value is SessionStatus {
 }
 
 const SESSION_TYPES_LIST = [
-  "Фаервол",
-  "VPN",
-  "Аномалия"
+  "Разрешен",
+  "Запрещен",
+  "VPN"
 ]
 
 export function isSessionTypes(value: unknown): value is SessionTypes {
