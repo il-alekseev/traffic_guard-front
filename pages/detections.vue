@@ -100,8 +100,8 @@
 
 <script setup lang="ts">
 import { definePageMeta } from '#imports';
-import type { Detection, DetectionStats, DetectionTable } from '~/types/detectionsControl';
-import { useDetectionsControlStore } from '~/stores/detectionsControl';
+import type { Detection, DetectionStats, DetectionTable } from '~/types/detections';
+import { useDetectionsStore } from '~/stores/detections';
 import type { StatItem } from '~/types/statistics';
 import StatsComponent from '~/components/data-display/StatsComponent.vue';
 import ResourceCard from '~/components/resource-cards/ResourceCard.vue';
@@ -114,6 +114,7 @@ import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
 import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
 import { getCurrentDateWithOffset, isCategory } from '~/helpers';
+import type { Categories } from '~/types/categories';
 
 
 definePageMeta({
@@ -124,7 +125,7 @@ definePageMeta({
 const route = useRoute();
 const router = useRouter();
 
-const detectionControlStore = useDetectionsControlStore();
+const detectionsStore = useDetectionsStore();
 
 const loadingStats = ref(true);
 const fetchStatsError = ref('');
@@ -258,13 +259,13 @@ const fetchDetections = async () => {
   fetchDetectionsError.value = '';
 
   try {
-    const result: DetectionTable = await detectionControlStore.fetchDetections(
+    const result: DetectionTable = await detectionsStore.fetchDetections(
       dateRange.value.from?.toISOString(),
       dateRange.value.to?.toISOString(),
       currentPage.value,
       itemsPerPage.value,
       statusFilter.value,
-      isCategory(categoryFilter.value) ? categoryFilter.value : undefined,
+      isCategory(categoryFilter.value) ? categoryFilter.value as Categories : undefined,
       deviceFilter.value
     );
 
@@ -299,8 +300,8 @@ const fetchDetectionStats = async () => {
 
   try {
     const [currentResult, oldResult] = await Promise.all([
-      detectionControlStore.fetchDetectionStats(from.toISOString(), to.toISOString()),
-      detectionControlStore.fetchDetectionStats(oldFrom.toISOString(), oldTo.toISOString())
+      detectionsStore.fetchDetectionStats(from.toISOString(), to.toISOString()),
+      detectionsStore.fetchDetectionStats(oldFrom.toISOString(), oldTo.toISOString())
     ]);
 
     detectionStats.value.current = currentResult || null;

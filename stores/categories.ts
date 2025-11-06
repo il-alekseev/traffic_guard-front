@@ -4,11 +4,11 @@ import type { defaultResponse } from "~/types/api";
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
 import type { Categories } from "~/types/categories";
-import type { CategoriesControlState } from "~/types/categoriesControl";
+import type { CategoriesState } from "~/types/categories";
 
 
-export const useCategoriesControlStore = defineStore("categoriesControl", {
-  state: (): CategoriesControlState => {
+export const useCategoriesStore = defineStore("categories", {
+  state: (): CategoriesState => {
     return {
       categories: null,
     };

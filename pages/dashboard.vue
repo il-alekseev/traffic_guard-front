@@ -28,9 +28,7 @@
 
     <div class="dashboard-data">
       <div class="dashboard-grid">
-        <!-- <div class="dashboard__trafic">
-          DASHBOARD TRAFIC DATA
-        </div>
+        <!-- 
         <div class="dashboard__requests">
           <div class="dashboard__request dashboard__request-allowed">
             DASHBOARD REQUEST ALLOW
@@ -53,7 +51,7 @@
             <p class="error-data">{{ fetchError.trafic }}</p>
           </template>
           <template v-else-if="dashboardData.trafic" #DashboardStatistic>
-            <DashboardTrafficChart :trafficData="dashboardData.trafic!"/>
+            <DashboardTrafficChart :trafficData="dashboardData.trafic!" :graphHeight="'133px'"/>
           </template>
           <template v-else-if="!dashboardData.trafic" #EmptyData>
             <p class="empty-data">Данные отсутствуют</p>
@@ -87,15 +85,14 @@
             <p class="empty-data">Данные отсутствуют</p>
           </template>
         </DashboardCard>
-        <!-- <div class="dashboard__top-detections">
-          DASHBOARD TOP DETECTIONS
-        </div>
+        <!--
         <div class="dashboard__anomalies">
           DASHBOARD TOP ANOMALIES
         </div>
         <div class="dashboard__proh-activity">
           DASHBOARD TOP PROH ACTIVITY
-        </div> -->
+        </div>
+        -->
       </div>
       <div class="devices-grid">
         <!-- <div class="devices-stat">
@@ -141,7 +138,7 @@ const router = useRouter();
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: ['auth']
+  // middleware: ['auth']
 });
 
 const dashboardStore = useDashboardStore();

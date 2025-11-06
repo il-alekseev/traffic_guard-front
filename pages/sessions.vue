@@ -90,8 +90,8 @@
 
 <script setup lang="ts">
 import {definePageMeta} from '#imports';
-import type { Session, SessionOrderType, SessionStatus, SessionTable } from '~/types/sessionControl';
-import { useSessionsControlStore } from '~/stores/sessionControl';
+import type { Session, SessionOrderType, SessionStatus, SessionTable } from '~/types/session';
+import { useSessionsStore } from '~/stores/session';
 import { getBadgeClassByStatus, getNgfwBadgeClass, getCurrentDateWithOffset, isCategory, isSessionStatus, isSessionTypes } from '~/helpers/index';
 import DatePicker from '~/components/ui/DatePicker.vue';
 import BaseSearch from '~/components/ui/BaseSearch.vue';
@@ -103,6 +103,7 @@ import FilterForm, { type SessionFilter } from '~/components/filters/SessionsFil
 import { useDeviceColors } from '~/composables/useDeviceColors';
 import ContextMenuDotsIcon from '~/assets/img/context-menu-btn.svg';
 import type { OrderDir } from '~/types/otherTypes';
+import type { Categories } from '~/types/categories';
 
 
 definePageMeta({
@@ -118,7 +119,7 @@ const { generateColor } = useDeviceColors();
 const route = useRoute();
 const router = useRouter();
 
-const sessionsControlStore = useSessionsControlStore();
+const sessionsStore = useSessionsStore();
 
 const dateRange = ref<{ from: Date | null; to: Date | null }>({
   from: getCurrentDateWithOffset(-1, 'd'),
@@ -156,7 +157,7 @@ const fetchSessions = async () => {
   fetchError.value = '';
 
   try {
-    const result: SessionTable = await sessionsControlStore.fetchSessions(
+    const result: SessionTable = await sessionsStore.fetchSessions(
       dateRange.value.from?.toISOString(),
       dateRange.value.to?.toISOString(),
       currentPage.value,
@@ -165,7 +166,7 @@ const fetchSessions = async () => {
       ORDER_DIR,
       searchQuery.value,
       isSessionStatus(statusFilter.value) ? statusFilter.value : undefined ,
-      isCategory(categoryFilter.value) ? categoryFilter.value : undefined,
+      isCategory(categoryFilter.value) ? categoryFilter.value as Categories : undefined,
       isSessionTypes(typesFilter.value) ? typesFilter.value : undefined,
       deviceFilter.value
     );

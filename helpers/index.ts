@@ -1,5 +1,5 @@
-import type { SessionStatus, SessionTypes } from "~/types/sessionControl";
-import type { StatusType } from "~/types/detectionsControl";
+import type { SessionStatus, SessionTypes } from "~/types/session";
+import type { StatusType } from "~/types/detections";
 import type { Categories } from "~/types/categories";
 
 export const getTokenHeaders = (token: string): {
@@ -220,3 +220,25 @@ const SESSION_TYPES_LIST = [
 export function isSessionTypes(value: unknown): value is SessionTypes {
   return SESSION_TYPES_LIST.includes(value as SessionTypes);
 }
+
+export const calculatePercent = (value: number, total: number): string => {
+  if (total === 0) return "0%";
+  
+  const percent = (value / total) * 100;
+  
+  if (percent > 0 && percent < 1) {
+    return "<1%";
+  }
+  
+  return `${Math.round(percent)}%`;
+};
+
+export const formatTraffic = (bytes: number): string => {
+  if (bytes >= 1000000) {
+    return `${(bytes / 1000000).toFixed(0)}M`;
+  }
+  if (bytes >= 1000) {
+    return `${(bytes / 1000).toFixed(0)}k`;
+  }
+  return `${bytes}`;
+};

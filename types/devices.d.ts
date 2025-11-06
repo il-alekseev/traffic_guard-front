@@ -1,9 +1,9 @@
 export type Device = string;
 
-export interface DeviceControlState {
+export interface DevicesState {
   devices: Device[] | null;
 }
 
-export interface SessionControlActions {
+export interface DevicesActions {
   fetchDevices(): Promise<Device[]>
 }

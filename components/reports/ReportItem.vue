@@ -35,7 +35,7 @@
         </span>
       </div>
     </div>
-    <button class="report__download" @click="saveReport">
+    <button class="report__download" @click="saveReport" :disabled="isGenerating">
       <div class="report__download-icon">
         <DownloadIcon />
       </div>
@@ -58,16 +58,25 @@ const props = defineProps<{
 }>();
 
 const { generateColor } = useDeviceColors();
-
 const deviceColors = generateColor(props.report.device);
 
-const saveReport =  () => {
+const isLoading = ref(false);
+const fetchError = ref('');
+const isGenerating = ref(false);
+
+const saveReport = async () => {
   console.log('saveReport')
 }
 
 </script>
 
 <style scoped lang="scss">
+.hidden-report {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+}
+
 .report {
   width: 100%;
   display: flex;

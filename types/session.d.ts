@@ -48,10 +48,10 @@ export interface SessionTable {
   meta: TableMeta;
 }
 
-export interface SessionControlState {
+export interface SessionsState {
   sessions: Session[] | null;
 }
 
-export interface SessionControlActions {
+export interface SessionsActions {
   fetchSessions(page: number = 1, limit: number = 11, search?: string): Promise<SessionTable>
 }

@@ -141,7 +141,7 @@
 
 <script setup lang="ts">
 import { useUsersControlStore } from '~/stores/usersControl';
-import { useNotificationStore } from '@/stores/notification';
+import { useNotificationStore } from '~/stores/notification';
 import { useUserStore } from "~/stores/user";
 import type { User, UserForm } from '~/types/user';
 import type { DropdownItem } from '~/types/dropdown';

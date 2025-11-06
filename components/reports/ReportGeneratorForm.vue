@@ -56,9 +56,10 @@
           </div>
         </label>
 
-        <label class="radio__option">
+        <label class="radio__option radio__option_disabled">
           <input
             v-model="deviceSelection"
+            :disabled="true"
             type="radio"
             value="specific"
             class="radio__input"
@@ -110,14 +111,14 @@
 
 <script setup lang="ts">
 import { useDeviceColors } from '~/composables/useDeviceColors';
-import { useDevicesControlStore } from '~/stores/devicesControl';
+import { useDevicesStore } from '~/stores/devices';
 import type { DropdownItem } from '~/types/dropdown';
 import BaseButton from '~/components/ui/BaseButton.vue';
 import Dropdown from '~/components/ui/Dropdown.vue';
 import SingleDatePicker from '~/components/ui/SingleDatePicker.vue';
 import { computed, ref, watch } from 'vue';
 import { getCurrentDateWithOffset } from '~/helpers';
-import type { ReportFormData } from '~/types/reportControl';
+import type { ReportFormData } from '~/types/reports';
 
 interface Props {
   loading?: boolean;
@@ -154,10 +155,10 @@ const quickRanges: QuickRange[] = [
   { value: 'year', label: 'За последний год' }
 ];
 
-const deviceControlStore = useDevicesControlStore();
+const devicesStore = useDevicesStore();
 
 const allowedDevices = computed<DropdownItem[]>(() => {
-  const devices = deviceControlStore.devices;
+  const devices = devicesStore.devices;
   if (!devices) return [];
   const result = devices.map((device) => {
     return {
@@ -169,7 +170,7 @@ const allowedDevices = computed<DropdownItem[]>(() => {
 });
 
 const selectedQuickRange = ref<QuickRangeValue | null>(null);
-const customDateFrom = ref<Date | null>(getCurrentDateWithOffset(1, 'd'))
+const customDateFrom = ref<Date | null>(getCurrentDateWithOffset(-1, 'd'))
 const customDateTo = ref<Date | null>(getCurrentDateWithOffset())
 const deviceSelection = ref<'all' | 'specific'>('all');
 const selectedDevice = ref<DropdownItem>({
@@ -403,8 +404,13 @@ watch(() => props.success, (newValue) => {
   cursor: pointer;
   transition: all 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-color: #2563EB;
+  }
+
+  &_disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
 

@@ -30,10 +30,10 @@ export interface DetectionTable {
   meta: TableMeta;
 }
 
-export interface DetectionControlState {
+export interface DetectionsState {
   detections: Detection[] | null;
 }
 
-export interface DetectionControlActions {
+export interface DetectionsActions {
   fetchDetections(page: number = 1, limit: number = 11): Promise<DetectionTable>
 }

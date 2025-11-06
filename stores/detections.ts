@@ -2,12 +2,12 @@ import { defineStore } from "pinia";
 import { useNuxtApp } from "#app";
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
-import type { DetectionControlState, DetectionStats, DetectionTable } from "~/types/detectionsControl";
+import type { DetectionsState, DetectionStats, DetectionTable } from "~/types/detections";
 import type { Categories } from "~/types/categories";
 
 
-export const useDetectionsControlStore = defineStore("detectionControl", {
-  state: (): DetectionControlState => {
+export const useDetectionsStore = defineStore("detection", {
+  state: (): DetectionsState => {
     return {
       detections: null,
     };

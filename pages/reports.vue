@@ -27,7 +27,7 @@
             <EmptyDataIcon />
           </div>
           <div class="reports__empty-title">
-            <p>У вас пока нет никаких отчетов</p>
+            <p>У вас пока нет отчетов</p>
           </div>
           <div class="reports__empty-subtitle">
             Для начала создайте свой первый отчет, используя генератор отчётов
@@ -40,77 +40,46 @@
 
 <script setup lang="ts">
 import {definePageMeta} from '#imports';
+import { useReportsStore } from '~/stores/reports';
 import ErrorBlock from '~/components/ui/ErrorBlock.vue';
 import EmptyDataIcon from "~/assets/img/empty-data.svg"
 import ReportForm from "~/components/reports/ReportGeneratorForm.vue"
-import type { ReportFormData } from '~/types/reportControl';
+import type { ReportFormData } from '~/types/reports';
 import ReportItem from '~/components/reports/ReportItem.vue';
+
 
 definePageMeta({
   layout: 'dashboard',
   // middleware: ['auth']
 });
 
+const reportStore = useReportsStore();
+
 const loadingReports = ref(true);
 const reportsFetchError = ref('');
 const reports = ref<any[]>([]);
 
 const fetchReports = async () => {
-  loadingReports.value = true;
-  reportsFetchError.value = '';
-
-  try {
-    setTimeout(() => {}, 1500)
-    reports.value = [
-      {
-        id: '1',
-        device: 'all',
-        datetime: '2025-10-01T00:00:00Z'
-      },
-      {
-        id: '2',
-        device: 'NGFW-2',
-        datetime: '2025-10-01T00:00:00Z'
-      },
-      {
-        id: '3',
-        device: 'NGFW-1',
-        datetime: '2025-10-01T00:00:00Z'
-      }
-    ]
-
-  } catch (error: any) {
-    reportsFetchError.value = error
-  } finally {
-    loadingReports.value = false;
-  }
+  loadingReports.value = false;
+  console.log('fetchReports');
+  // pass
 }
-
-const generatorFormData =ref<ReportFormData>({
-  dateFrom: '',
-  dateTo: '',
-  deviceSelection: 'all',
-  selectedDevice: ''
-});
 
 const formLoading = ref(false);
 const formError = ref('');
 const formSucces = ref(false);
 
 const getReport = async (formData: ReportFormData) => {
-  generatorFormData.value = formData;
+  console.log('getReport', formData)
+  if (formData.deviceSelection === 'specific') return;
 
   formLoading.value = true;
   formSucces.value = false;
   formError.value = '';
 
   try {
-    setTimeout(() => {}, 1500)
-    // getReport
-    formLoading.value = false;
-    formSucces.value = true;
-    setTimeout(() => {}, 3000)
-    formSucces.value = false;
+    const reportData = await reportStore.fetchReportAllDevices(formData.dateFrom, formData.dateTo);
+    console.log('reportData', reportData);
 
   } catch (error: any) {
     formError.value = error

@@ -1,14 +1,14 @@
 import { defineStore } from "pinia";
 import { useNuxtApp } from "#app";
-import type { SessionTable, SessionControlState, SessionOrderType, SessionTypes, SessionStatus } from '~/types/sessionControl';
+import type { SessionTable, SessionsState, SessionOrderType, SessionTypes, SessionStatus } from '~/types/session';
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
 import type { Categories } from "~/types/categories";
 import type { OrderDir } from "~/types/otherTypes";
 
 
-export const useSessionsControlStore = defineStore("sessionsControl", {
-  state: (): SessionControlState => {
+export const useSessionsStore = defineStore("sessions", {
+  state: (): SessionsState => {
     return {
       sessions: null,
     };
