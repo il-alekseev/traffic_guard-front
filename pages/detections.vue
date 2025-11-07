@@ -272,6 +272,7 @@ const fetchDetections = async () => {
     if (result) {
       detections.value = result.data;
       tableMetaData.value = result.meta;
+      loadingCardActs.value = detections.value.map(() => false)
     } else {
       detections.value = [];
     }
@@ -432,17 +433,47 @@ const dateRange = ref<{ from: Date | null; to: Date | null }>({
   to: getCurrentDateWithOffset()
 })
 
+const loadingCardActs = ref<boolean[]>([])
+
 const handleConfirm = async (item: Detection) => {
-  const res = await detectionsStore.actForDetection('allow', item.domain);
-  if (res ) {
-    item.action = 'Разрешено';
+  console.log('handleConfirm', item);
+  const itemIndex = detections.value.findIndex((d) => d.domain === item.domain);
+  console.log('itemIndex', itemIndex);
+  if (itemIndex === -1) return;
+
+  if (loadingCardActs.value[itemIndex]) return;
+
+  loadingCardActs.value[itemIndex] = true;
+
+  try {
+    const res = await detectionsStore.actForDetection('allow', item.domain);
+    if (res ) {
+      item.action = 'Разрешено';
+    }
+  } catch (error: any) {
+    console.log('error: ', error)
+  } finally {
+    loadingCardActs.value[itemIndex] = false;
   }
 }
 
 const handleReject = async (item: Detection) => {
-  const res = await detectionsStore.actForDetection('allow', item.domain);
-if (res ) {
-    item.action = 'Заблокировано';
+  const itemIndex = detections.value.findIndex((d) => d.id === item.id);
+  if (itemIndex !== -1) return;
+
+  if (loadingCardActs.value[itemIndex]) return;
+
+  loadingCardActs.value[itemIndex] = true;
+
+  try {
+    const res = await detectionsStore.actForDetection('allow', item.domain);
+    if (res ) {
+      item.action = 'Заблокировано';
+    }
+  } catch (error: any) {
+    console.log('error: ', error)
+  } finally {
+    loadingCardActs.value[itemIndex] = false;
   }
 }
 

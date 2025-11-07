@@ -48,7 +48,7 @@
             color: deviceColors.color
           }"
         >
-          {{ item.hostname }}
+          {{ item.hostname || 'Неизвестно' }}
         </span>
         <span class="resource-card__requests">
           Количество обращений: <strong>{{ item.request_count }}</strong>
@@ -57,11 +57,11 @@
     </div>
 
     <div class="resource-card__footer">
-      <div :class="['resource-card__status', `resource-card__status--${item.decision || ''}`]">
+      <div :class="['resource-card__status', `resource-card__status--`]">
         <span class="resource-card__status-dot"></span>
-        {{ getStatusType(item.decision) }}
+        {{ item.action }}
       </div>
-      <div v-if="item.action === ''" class="resource-card__actions">
+      <div v-if="item.action === 'Не решено'" class="resource-card__actions">
         <BaseButton
           type="button"
           variant="primary"
@@ -80,19 +80,20 @@
         </BaseButton>
       </div>
       <div v-else-if="item.action === 'Разрешено'" class="resource-card__blocked">
-        Доступ разерешен
+        Доступ разрешен
       </div>
       <div v-else-if="item.action === 'Заблокировано'" class="resource-card__blocked">
         Заблокировано
       </div>
       <div v-else>
+        Неизвестно
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { getModificatorByCategory, getStatusType } from '~/helpers';
+import { getModificatorByCategory } from '~/helpers';
 import BaseButton from '~/components/ui/BaseButton.vue';
 import EmojiFlag from "~/components/ui/EmojiFlag.vue"
 import { useDeviceColors } from '~/composables/useDeviceColors';

@@ -45,7 +45,7 @@
             color: generateColor(value).color
           }"
         >
-          {{ value }}
+          {{ value || 'Неизвестно' }}
         </span>
       </template>
       <template #cell-url="{ value }">

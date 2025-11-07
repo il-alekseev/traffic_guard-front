@@ -56,7 +56,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-interface ChartItem {
+export interface ChartItem {
   name: string
   before_block: number
   after_block: number

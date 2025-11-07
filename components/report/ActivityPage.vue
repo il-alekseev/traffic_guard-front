@@ -11,7 +11,7 @@
           class="category-card"
         >
           <template #DashboardStatistic>
-            <BarChartForRating :items="categoriesTop" />
+            <BarChartForRating :items="categoiersChartData" />
           </template>
         </BaseCard>
         <BaseCard
@@ -20,7 +20,7 @@
           class="resources-card"
         >
           <template #DashboardStatistic>
-            <BarChartForRating :items="resourcesTop" showSubcategories />
+            <BarChartForRating :items="resourcesChartData" showSubcategories />
           </template>
         </BaseCard>
         <BaseCard
@@ -41,7 +41,7 @@
 import BaseLayout from '~/components/report/BaseLayout.vue';
 import BaseCard from '~/components/report/BaseCard.vue';
 import TrafficSplineChart from '~/components/dashboard-grid/TrafficSplineChart.vue';
-import BarChartForRating from '~/components/report/BarChartForRating.vue';
+import BarChartForRating, { type ChartItem } from '~/components/report/BarChartForRating.vue';
 import type { DashboardTraffic } from '~/types/dashboard';
 import type { GraphLegend, ReportCategoryItem, ReportResourceItem } from '~/types/reports';
 
@@ -51,6 +51,29 @@ const props = defineProps<{
   categoriesTop: ReportCategoryItem[];
   resourcesTop: ReportResourceItem[];
 }>();
+
+const categoiersChartData = computed<ChartItem[]>(() => {
+  return props.categoriesTop.map((c) => {
+    return {
+      name: c.category,
+      before_block: c.stat.before_block,
+      after_block: c.stat.after_block,
+      waiting: c.stat.pending
+    }
+  })
+})
+
+const resourcesChartData = computed<ChartItem[]>(() => {
+  return props.resourcesTop.map((r) => {
+    return {
+      name: r.resource,
+      before_block: r.stat.before_block,
+      after_block: r.stat.after_block,
+      waiting: r.stat.pending,
+      categoies: r.categories
+    }
+  })
+})
 
 const ratingLegend: GraphLegend = [
   {

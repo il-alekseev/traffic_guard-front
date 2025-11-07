@@ -95,11 +95,11 @@ export default defineNuxtPlugin((nuxtApp) => {
       return handleResponse<T>(response).then(res => res.data)
     },
 
-    putch: async <T>(endpoint: string, data?: any, options: ApiRequestOptions = {}) => {
+    patch: async <T>(endpoint: string, data?: any, options: ApiRequestOptions = {}) => {
       const { params, ...fetchOptions } = options
       const response = await fetch(getFullUrl(endpoint, params), {
         ...fetchOptions,
-        method: 'PUT',
+        method: 'PATCH',
         // credentials: 'include',
         headers: {
           'Accept': 'application/json',

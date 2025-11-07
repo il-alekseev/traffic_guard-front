@@ -1,5 +1,5 @@
 import type { SessionStatus, SessionTypes } from "~/types/session";
-import type { StatusType } from "~/types/detections";
+import type { ActionType } from "~/types/detections";
 import type { Categories } from "~/types/categories";
 
 export const getTokenHeaders = (token: string): {
@@ -116,19 +116,6 @@ export function getModificatorByCategory(category: Categories): string {
   };
 
   return categoryMap[category] || 'unknown';
-}
-
-export function getStatusType(status: StatusType): string {
-  switch (status) {
-    case 'blocked':
-      return 'Заблокировано'
-    case 'blocking':
-      return 'Рекомендуется блокировка'
-    case 'verification':
-      return 'Требуется проверка'
-    default:
-      return 'Неизвестно'
-  }
 }
 
 export function getBadgeClassByStatus(status: SessionStatus): string {

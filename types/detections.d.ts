@@ -4,6 +4,8 @@ import type { Categories } from "./categories";
 
 export type StatusType = 'blocking' | 'verification' | 'blocked' | 'unknown'
 
+export type ActionType = 'Не решено' | 'Разрешено' | 'Заблокировано' | '';
+
 export interface DetectionStats {
   accepted: number,
   denied: number,
@@ -20,9 +22,8 @@ export interface Detection {
   hostname: string;
   category: Categories;
   description: string;
-  decision: StatusType;
   categorized_at: string;
-  action: '' | 'Разрешено' | 'Заблокировано'
+  action: ActionType
 }
 
 export interface DetectionTable {

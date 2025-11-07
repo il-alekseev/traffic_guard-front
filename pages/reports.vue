@@ -35,6 +35,31 @@
         </div>
       </div>
     </div>
+
+    <div class="hidden-report" v-if="formSucces && reportData !== null">
+      <WelcomePage 
+        ref="welcomePageRef"
+        :date-range="reportConfig.dateRange"
+        :generated-date="reportConfig.generatedDate"
+      />
+
+      <ActivityPage
+        ref="activityPageRef"
+        :traffic="reportData.traffic"
+        :categoriesTop="reportData.top_categories"
+        :resourcesTop="reportData.top_resources"
+      />
+
+      <AnalyticsTableAllNGFW
+        ref="analyticsPageRef"
+        :data="reportData.all_ngfw"
+      />
+
+      <AnomaliesTableAllNGFW
+        ref="anomaliesPageRef"
+        :data="reportData.anomalies"
+      />
+    </div>
   </div>
 </template>
 
@@ -44,8 +69,13 @@ import { useReportsStore } from '~/stores/reports';
 import ErrorBlock from '~/components/ui/ErrorBlock.vue';
 import EmptyDataIcon from "~/assets/img/empty-data.svg"
 import ReportForm from "~/components/reports/ReportGeneratorForm.vue"
-import type { ReportFormData } from '~/types/reports';
+import type { ReportData, ReportFormData } from '~/types/reports';
 import ReportItem from '~/components/reports/ReportItem.vue';
+import html2canvas from 'html2canvas'
+import WelcomePage from '~/components/report/WelcomePage.vue';
+import ActivityPage from '~/components/report/ActivityPage.vue';
+import AnalyticsTableAllNGFW from '~/components/report/AnalyticsTableAllNGFW.vue';
+import AnomaliesTableAllNGFW from '~/components/report/AnomaliesTableAllNGFW.vue';
 
 
 definePageMeta({
@@ -61,13 +91,45 @@ const reports = ref<any[]>([]);
 
 const fetchReports = async () => {
   loadingReports.value = false;
-  console.log('fetchReports');
   // pass
 }
 
 const formLoading = ref(false);
 const formError = ref('');
 const formSucces = ref(false);
+
+const reportData = ref<ReportData | null>(null);
+
+const formatDate = (date: string | Date, withYear: boolean = true): string => {
+  const d = new Date(date);
+
+  const options: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'long',
+  };
+
+  if (withYear) {
+    options.year = 'numeric';
+  }
+
+  const formatted = d.toLocaleDateString('ru-RU', options);
+
+  return formatted.replace(/(\p{L})/u, c => c.toUpperCase());
+};
+
+const reportConfig = ref({
+  dateRange: '',
+  generatedDate: formatDate(new Date(), false)
+})
+
+const setReportConfig = (from: string, to: string) => {
+  if (!from || !to) return;
+
+  reportConfig.value = {
+    dateRange: `${formatDate(from)} — ${formatDate(to)}`,
+    generatedDate: formatDate(new Date(), false)
+  }
+}
 
 const getReport = async (formData: ReportFormData) => {
   console.log('getReport', formData)
@@ -78,13 +140,79 @@ const getReport = async (formData: ReportFormData) => {
   formError.value = '';
 
   try {
-    const reportData = await reportStore.fetchReportAllDevices(formData.dateFrom, formData.dateTo);
-    console.log('reportData', reportData);
+    const reportDataResponse = await reportStore.fetchReportAllDevices(new Date(formData.dateFrom)?.toISOString(), new Date(formData.dateTo)?.toISOString());
+    reportData.value = reportDataResponse;
+    setReportConfig(reportData.value.from, reportData.value.to);
+    formSucces.value = true;
 
+    await downloadReport();
   } catch (error: any) {
-    formError.value = error
+    formError.value = error;
+    formSucces.value = false;
   } finally {
     formLoading.value = false;
+  }
+}
+
+// @ts-ignore
+const welcomePageRef = ref<InstanceType<typeof WelcomePage> | null>(null);
+// @ts-ignore
+const activityPageRef = ref<InstanceType<typeof activityPageRef> | null>(null);
+// @ts-ignore
+const analyticsPageRef = ref<InstanceType<typeof analyticsPageRef> | null>(null);
+// @ts-ignore
+const anomaliesPageRef = ref<InstanceType<typeof anomaliesPageRef> | null>(null);
+
+const downloadReport = async () => {
+const { jsPDF } = await import('jspdf');
+  
+  if (reportData.value == null || !welcomePageRef.value || !activityPageRef.value || !analyticsPageRef.value || !anomaliesPageRef.value) {
+    return
+  }
+
+  try {
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4'
+    })
+
+    const pages = [
+      { ref: welcomePageRef.value.$el, name: 'Welcome' },
+      { ref: activityPageRef.value.$el, name: 'Activity' },
+      { ref: analyticsPageRef.value.$el, name: 'Analytics' },
+      { ref: anomaliesPageRef.value.$el, name: 'Anomalies' },
+    ]
+
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i]
+
+      const canvas = await html2canvas(page.ref, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: page.ref.offsetWidth,
+        height: page.ref.offsetHeight
+      })
+
+      const imgData = canvas.toDataURL('image/png')
+      const imgWidth = 297
+      const imgHeight = 210
+
+      if (i > 0) {
+        pdf.addPage()
+      }
+
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
+      
+    }
+
+    const fileName = `report_${new Date().toISOString().split('T')[0]}.pdf`
+    pdf.save(fileName)
+    
+  } catch (error) {
+    throw new Error('Произошла ошибка при создании отчета')
   }
 }
 

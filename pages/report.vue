@@ -33,7 +33,6 @@
         ref="anomaliesPageRef"
         :data="mockAnomaliesAllNGFW"
       />
-    
     </div>
   </div>
 </template>
@@ -122,29 +121,29 @@ const mockTraffic: DashboardTraffic = {
 }
 
 const mockCategories: ReportCategoryItem[] = [
-  { name: "Прокси и анонимайзеры", before_block: 3044, after_block: 3044, waiting: 129 },
-  { name: "Наркотики", before_block: 2588, after_block: 2288, waiting: 151 },
-  { name: "Порнография и секс", before_block: 2637, after_block: 1437, waiting: 151 },
-  { name: "Прокси и анонимайзеры", before_block: 1511, after_block: 1711, waiting: 151 },
-  { name: "Торренты и P2P-сети", before_block: 1511, after_block: 1711, waiting: 15 },
-  { name: "Агрессия, расизм, терроризм", before_block: 1511, after_block: 1711, waiting: 15 },
-  { name: "Азартные игры", before_block: 1511, after_block: 1711, waiting: 15 },
-  { name: "Ботнеты", before_block: 1512, after_block: 1000, waiting: 15 },
-  { name: "Депрессивный контент", before_block: 512, after_block: 1000, waiting: 15 },
-  { name: "Фишинг", before_block: 512, after_block: 100, waiting: 1 },
+  { category: "Прокси и анонимайзеры", stat: {before_block: 3044, after_block: 3044, pending: 129} },
+  { category: "Наркотики", stat: {before_block: 2588, after_block: 2288, pending: 151} },
+  { category: "Порнография и секс", stat: {before_block: 2637, after_block: 1437, pending: 151}  },
+  { category: "Прокси и анонимайзеры", stat: {before_block: 1511, after_block: 1711, pending: 151}  },
+  { category: "Торренты и P2P-сети", stat: {before_block: 1511, after_block: 1711, pending: 15}  },
+  { category: "Агрессия, расизм, терроризм", stat: {before_block: 1511, after_block: 1711, pending: 15}  },
+  { category: "Азартные игры", stat: {before_block: 1511, after_block: 1711, pending: 15}  },
+  { category: "Ботнеты", stat: {before_block: 1512, after_block: 1000, pending: 15}  },
+  { category: "Депрессивный контент", stat: {before_block: 512, after_block: 1000, pending: 15}  },
+  { category: "Фишинг", stat: {before_block: 512, after_block: 100, pending: 1}  },
 ];
 
 const mockResources: ReportResourceItem[] =  [
-  { name: "youtube.com", categories: ["Наркотики", "Порнография и секс"], before_block: 2588, after_block: 2288, waiting: 129 },
-  { name: "telegram.com", categories: ["Наркотики", "Порнография и секс"], before_block: 2588, after_block: 2288, waiting: 15 },
-  { name: "discord.com", categories: ["Наркотики", "Порнография и секс"], before_block: 2588, after_block: 2288, waiting: 15 },
-  { name: "vk.com", categories: ["Наркотики", "Порнография и секс"], before_block: 2588, after_block: 2288, waiting: 15 },
-  { name: "vtb.com", categories: ["Наркотики", "Порнография и секс"], before_block: 2588, after_block: 2288, waiting: 15 },
-  { name: "dinamo.com", categories: ["Наркотики", "Порнография и секс"], before_block: 2588, after_block: 2288, waiting: 15 },
-  { name: "ok.com", categories: ["Наркотики", "Порнография и секс"], before_block: 2588, after_block: 2288, waiting: 15 },
-  { name: "twitch.com", categories: ["Наркотики", "Порнография и секс"], before_block: 2588, after_block: 2288, waiting: 15 },
-  { name: "minecraft.com", categories: ["Наркотики", "Порнография и секс"], before_block: 2588, after_block: 2288, waiting: 15 },
-  { name: "tiktok.com", categories: ["Наркотики", "Порнография и секс"], before_block: 25, after_block: 22, waiting: 15 },
+  { resource: "youtube.com", categories: ["Наркотики", "Порнография и секс"], stat: {before_block: 2588, after_block: 2288, pending: 129} },
+  { resource: "telegram.com", categories: ["Наркотики", "Порнография и секс"], stat: {before_block: 2588, after_block: 2288, pending: 15} },
+  { resource: "discord.com", categories: ["Наркотики", "Порнография и секс"], stat: {before_block: 2588, after_block: 2288, pending: 15}  },
+  { resource: "vk.com", categories: ["Наркотики", "Порнография и секс"], stat: {before_block: 2588, after_block: 2288, pending: 15} },
+  { resource: "vtb.com", categories: ["Наркотики", "Порнография и секс"], stat: {before_block: 2588, after_block: 2288, pending: 15} },
+  { resource: "dinamo.com", categories: ["Наркотики", "Порнография и секс"], stat: {before_block: 2588, after_block: 2288, pending: 15} },
+  { resource: "ok.com", categories: ["Наркотики", "Порнография и секс"], stat: {before_block: 2588, after_block: 2288, pending: 15} },
+  { resource: "twitch.com", categories: ["Наркотики", "Порнография и секс"], stat: { before_block: 2588, after_block: 2288, pending: 15 }},
+  { resource: "minecraft.com", categories: ["Наркотики", "Порнография и секс"], stat: {before_block: 2588, after_block: 2288, pending: 15}  },
+  { resource: "tiktok.com", categories: ["Наркотики", "Порнография и секс"], stat: {before_block: 25, after_block: 22, pending: 15} },
 ];
 
 const mockAllNGFW: NGFWReportItem[] = [

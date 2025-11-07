@@ -47,23 +47,29 @@ export interface AnomalyReportItem {
 }
 
 export interface ReportCategoryItem {
-  name: Categories,
-  before_block: number,
-  after_block: number,
-  waiting: number
+  category: Categories,
+  stat: {
+    before_block: number,
+    after_block: number,
+    pending: number
+  }
 }
 
 export interface ReportResourceItem {
-  name: string,
+  resource: string,
   categories: Categories[],
-  before_block: number,
-  after_block: number,
-  waiting: number
+  stat: {
+    before_block: number,
+    after_block: number,
+    pending: number
+  }
 }
 
 export interface ReportData {
-  category_top: ReportCategoryItem[],
-  resource_top: ReportResourceItem[],
+  from: string,
+  to: string,
+  top_categories: ReportCategoryItem[],
+  top_resources: ReportResourceItem[],
   traffic: DashboardTraffic,
   all_ngfw: NGFWReportItem[];
   anomalies: AnomalyReportItem[];
