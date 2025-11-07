@@ -84,8 +84,9 @@ const props = defineProps<{
 
 const { generateColor } = useDeviceColors();
 
-const groupedData = computed(() => {
+const groupedData = computed<Record<string, AnomalyReportItem[]> | null>(() => {
   const groups: Record<string, AnomalyReportItem[]> = {};
+  if (!props.data) return null
   
   props.data.forEach(item => {
     if (!groups[item.hostname]) {
