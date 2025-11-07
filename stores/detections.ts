@@ -52,7 +52,7 @@ export const useDetectionsStore = defineStore("detection", {
           ...(category ? { category } : {}),
         };
 
-        const detections = await $api.get<DetectionTable>('/analytics/detections/', {
+        const detections = await $api.get<DetectionTable>('/analytics/detections', {
           params,
           ...getTokenHeaders(token)
         });
