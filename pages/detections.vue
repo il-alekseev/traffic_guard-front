@@ -456,15 +456,15 @@ const handleConfirm = async (item: Detection) => {
 }
 
 const handleReject = async (item: Detection) => {
-  const itemIndex = detections.value.findIndex((d) => d.id === item.id);
-  if (itemIndex !== -1) return;
+  const itemIndex = detections.value.findIndex((d) => d.domain === item.domain);
+  if (itemIndex === -1) return;
 
   if (loadingCardActs.value[itemIndex]) return;
 
   loadingCardActs.value[itemIndex] = true;
 
   try {
-    const res = await detectionsStore.actForDetection('allow', item.domain);
+    const res = await detectionsStore.actForDetection('deny', item.domain);
     if (res ) {
       item.action = 'Заблокировано';
     }
