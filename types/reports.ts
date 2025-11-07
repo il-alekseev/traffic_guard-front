@@ -83,14 +83,16 @@ export interface ReportResourceItem {
 export interface ReportData {
   from: string,
   to: string,
-  top_categories: ReportCategoryItem[],
-  top_resources: ReportResourceItem[],
-  traffic: DashboardTraffic,
+  main_activity_page: {
+    top_categories: ReportCategoryItem[],
+    top_resources: ReportResourceItem[],
+    traffic: DashboardTraffic,
+  }
   device_analytics_page: {
     analytics: NGFWReportItem[];
   }
   anomalies_list_page: {
-    device_anomaly: AnomalyReportItem[]
+    anomalies: AnomalyReportItem[]
   }
 }
 

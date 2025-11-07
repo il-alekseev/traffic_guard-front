@@ -4,16 +4,10 @@ import type { ApiClient, ApiRequestOptions, ApiResponse } from '~/types/api'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig();
-  const apiBaseUrl = `${config.public.apiGateway.host}:${config.public.apiGateway.port}/api/v1`
-  const apiUsersControlBaseUrl = `${config.public.apiUsers.host}:${config.public.apiUsers.port}/v1`
+  const apiBaseUrl = `${config.public.apiGateway.host}:${config.public.apiGateway.port}/v1`
 
   const getFullUrl = (endpoint: string, params?: Record<string, string | number | boolean>) => {
-    let url
-    if (endpoint.startsWith('/auth') || endpoint.startsWith('/users') || endpoint.startsWith('/analytics/reports')) {
-      url = `${apiUsersControlBaseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`  
-    } else {
-      url = `${apiBaseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`
-    }
+    const url = `${apiBaseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`
     
     if (!params) return url
 
