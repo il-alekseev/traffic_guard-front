@@ -242,3 +242,25 @@ export const formatTraffic = (bytes: number): string => {
   }
   return `${bytes}`;
 };
+
+export const getRoleDisplayName = (role: string): string => {
+  const onlyRole = getOnlyRole(role);
+
+  const roles: Record<string, string> = {
+    'SA': 'Системный администратор',
+    'CA': 'Администратор узла NGFW',
+  };
+  return roles[onlyRole] || role;
+};
+
+export const getOnlyRole = (role: string): string => {
+  const [onlyRole] = role?.split('-', 1);
+  return onlyRole;
+};
+
+export const getOnlyDeviceName = (role: string): string => {
+  if (role === 'SA') {
+    return ''
+  }
+  return role.split("-")[1];
+};

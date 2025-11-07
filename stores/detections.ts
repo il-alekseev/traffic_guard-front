@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { useNuxtApp } from "#app";
+import type { defaultResponse } from "~/types/api";
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
 import type { DetectionsState, DetectionStats, DetectionTable } from "~/types/detections";
@@ -111,6 +112,46 @@ export const useDetectionsStore = defineStore("detection", {
         }
       } catch (error: any) {
         throw new Error(error.message || "Не удалось получить статистику по выявлениям");
+      }
+    },
+
+    async actForDetection(action: 'allow' | 'deny', path: string): Promise<boolean> {
+     const userStore = useUserStore();
+      try {
+        await userStore.ensureValidToken();
+      } catch {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось изменить выявление. Пользователь неавторизован",
+        );
+      }
+
+      const token = useCookie('auth_token').value;
+
+      if (!token) {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось изменить выявление. Пользователь неавторизован",
+        );
+      }
+
+      try {
+        const { $api } = useNuxtApp();
+
+        const params: Record<string, string | number> = {
+          action: action,
+          path: path,
+        };
+
+        const result = await $api.post<defaultResponse>('/detections/act', params, getTokenHeaders(token));
+
+        if (result) {
+          return true;
+        } else {
+          return false;
+        }
+      } catch (error: any) {
+        throw new Error(error.message || "Не удалось изменить выявление по выявлениям");
       }
     }
   },

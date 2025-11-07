@@ -42,8 +42,8 @@
         <ResourceCard
           v-for="resource in detections"
           :item="resource"
-          @confirm="handleConfirm(resource.id)"
-          @reject="handleReject(resource.id)"
+          @confirm="handleConfirm(resource)"
+          @reject="handleReject(resource)"
         />
       </div>
       <div v-if="fetchDetectionsError == '' && detections.length > 0" class="detections__footer">
@@ -423,12 +423,18 @@ const dateRange = ref<{ from: Date | null; to: Date | null }>({
   to: getCurrentDateWithOffset()
 })
 
-const handleConfirm = (id: number) => {
-  console.log('Подтверждено:', id)
+const handleConfirm = async (item: Detection) => {
+  const res = await detectionsStore.actForDetection('allow', item.domain);
+  if (res ) {
+    item.action = 'Разрешено';
+  }
 }
 
-const handleReject = (id: number) => {
-  console.log('Отклонено:', id)
+const handleReject = async (item: Detection) => {
+  const res = await detectionsStore.actForDetection('allow', item.domain);
+if (res ) {
+    item.action = 'Заблокировано';
+  }
 }
 
 watch(dateRange, () => {
