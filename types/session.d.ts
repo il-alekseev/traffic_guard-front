@@ -8,7 +8,7 @@ export interface Session {
   status: SessionStatus;
   url: string;
   proto: string,
-  host_name: string,
+  hostname: string,
   src_ip: string;
   src_port: string,
   src_country: string,
@@ -33,7 +33,7 @@ export type SessionOrderType =
   | 'status'
   | 'url'
   | 'proto'
-  | 'host_name'
+  | 'hostname'
   | 'src_ip'
   | 'src_port'
   | 'src_country'

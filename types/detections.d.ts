@@ -17,7 +17,7 @@ export interface Detection {
   location: string;
   domain: string;
   request_count: number;
-  host_name: string;
+  hostname: string;
   category: Categories;
   description: string;
   decision: StatusType;

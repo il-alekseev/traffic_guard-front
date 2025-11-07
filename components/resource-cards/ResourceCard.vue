@@ -48,7 +48,7 @@
             color: deviceColors.color
           }"
         >
-          {{ item.host_name }}
+          {{ item.hostname }}
         </span>
         <span class="resource-card__requests">
           Количество обращений: <strong>{{ item.request_count }}</strong>
@@ -112,7 +112,7 @@ defineEmits<{
 }>()
 
 const { generateColor } = useDeviceColors();
-const deviceColors = generateColor(props.item.host_name);
+const deviceColors = generateColor(props.item.hostname);
 
 </script>
 

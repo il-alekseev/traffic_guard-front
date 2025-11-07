@@ -37,7 +37,7 @@
           {{ value }}
         </span>
       </template>
-      <template #cell-host_name="{ value }">
+      <template #cell-hostname="{ value }">
         <span
           class="sessions__table-cell__badge"
           :style="{
@@ -134,7 +134,7 @@ const columns = [
   { key: 'status', label: 'Статус' },
   { key: 'url', label: 'URL' },
   { key: 'dst_ip', label: 'IP' },
-  { key: 'host_name', label: 'NGFW' },
+  { key: 'hostname', label: 'NGFW' },
   { key: 'src_ip', label: 'IP SRC' },
   { key: 'type', label: 'Тип сессии' },
   { key: 'category', label: 'Категория' },
@@ -377,7 +377,7 @@ watch(dateRange, () => {
 :deep(.sessions__table-column-dst_ip) {
   width: 10%;
 }
-:deep(.sessions__table-column-host_name) {
+:deep(.sessions__table-column-hostname) {
   width: 13%;
 }
 :deep(.sessions__table-column-src_ip) {
