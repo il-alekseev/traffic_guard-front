@@ -436,9 +436,7 @@ const dateRange = ref<{ from: Date | null; to: Date | null }>({
 const loadingCardActs = ref<boolean[]>([])
 
 const handleConfirm = async (item: Detection) => {
-  console.log('handleConfirm', item);
   const itemIndex = detections.value.findIndex((d) => d.domain === item.domain);
-  console.log('itemIndex', itemIndex);
   if (itemIndex === -1) return;
 
   if (loadingCardActs.value[itemIndex]) return;
@@ -451,7 +449,7 @@ const handleConfirm = async (item: Detection) => {
       item.action = 'Разрешено';
     }
   } catch (error: any) {
-    console.log('error: ', error)
+    console.error('error: ', error)
   } finally {
     loadingCardActs.value[itemIndex] = false;
   }
@@ -471,7 +469,7 @@ const handleReject = async (item: Detection) => {
       item.action = 'Заблокировано';
     }
   } catch (error: any) {
-    console.log('error: ', error)
+    console.error('error: ', error)
   } finally {
     loadingCardActs.value[itemIndex] = false;
   }
