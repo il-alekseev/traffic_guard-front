@@ -42,11 +42,11 @@ export const useReportsStore = defineStore("reports", {
         const { $api } = useNuxtApp();
 
         const params: Record<string, string | number> = {
-          from,
-          to,
+          from: 'now-24h',
+          to: 'now',
         };
 
-        const reportData = await $api.get<ReportData>('/reports', {
+        const reportData = await $api.get<ReportData>('/analytics/reports', {
           params,
           ...getTokenHeaders(token)
         });

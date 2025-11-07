@@ -9,7 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const getFullUrl = (endpoint: string, params?: Record<string, string | number | boolean>) => {
     let url
-    if (endpoint.startsWith('/auth') || endpoint.startsWith('/users')) {
+    if (endpoint.startsWith('/auth') || endpoint.startsWith('/users') || endpoint.startsWith('/analytics/reports')) {
       url = `${apiUsersControlBaseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`  
     } else {
       url = `${apiBaseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`

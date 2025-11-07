@@ -52,12 +52,12 @@
 
       <AnalyticsTableAllNGFW
         ref="analyticsPageRef"
-        :data="reportData.all_ngfw"
+        :data="reportData.device_analytics_page.analytics"
       />
 
       <AnomaliesTableAllNGFW
         ref="anomaliesPageRef"
-        :data="reportData.anomalies"
+        :data="reportData.anomalies_list_page.device_anomaly"
       />
     </div>
   </div>
