@@ -1,8 +1,8 @@
 import type { Categories } from "./categories";
 
 export interface DashboardCategory {
-  category: Categories;
-  count: number;
+  name: Categories;
+  access_count: number;
 }
 
 export type TopCategories = DashboardCategory[];

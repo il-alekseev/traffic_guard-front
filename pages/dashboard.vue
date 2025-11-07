@@ -128,7 +128,7 @@
             </template>
           </DashboardRequestCard>
         </div>
-        <DashboardCard class="dashboard__top-categories" title="Рейтинг запрещенных категорий" link="/report">
+        <DashboardCard class="dashboard__top-categories" title="Рейтинг запрещенных категорий" link="/reports">
           <template v-if="loading.topCategories" #LoadingData>
             <p class="loading-data">Загрузка...</p>
           </template>
