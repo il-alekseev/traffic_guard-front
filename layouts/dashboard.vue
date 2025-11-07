@@ -50,9 +50,9 @@ const checkCategories = async () => {
 }
 
 onMounted(async () => {
-  // await checkUser();
-  // checkDevices();
-  // checkCategories();
+  await checkUser();
+  checkDevices();
+  checkCategories();
 })
 
 

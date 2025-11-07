@@ -28,21 +28,6 @@
 
     <div class="dashboard-data">
       <div class="dashboard-grid">
-        <!-- 
-        <div class="dashboard__requests">
-          <div class="dashboard__request dashboard__request-allowed">
-            DASHBOARD REQUEST ALLOW
-          </div>
-          <div class="dashboard__request dashboard__request-before-blocked">
-            DASHBOARD REQUEST BEFORE BLOCKED
-          </div>
-          <div class="dashboard__request dashboard__request-blocked">
-            DASHBOARD REQUEST BLOCKED
-          </div>
-          <div class="dashboard__request dashboard__request-waiting">
-            DASHBOARD REQUEST WAITING
-          </div>
-        </div> -->
         <DashboardCard class="dashboard__trafic" title="Трафик" :legend="{input: {name: 'Входящий', color: '#37C84F'}, output: {name: 'Исходящий', color: '#2563EB'}}">
           <template v-if="loading.trafic" #LoadingData>
             <p class="loading-data">Загрузка...</p>
@@ -57,6 +42,92 @@
             <p class="empty-data">Данные отсутствуют</p>
           </template>
         </DashboardCard>
+        <div class="dashboard__requests">
+          <DashboardRequestCard
+            class="dashboard__request"
+            title="Разрешенные запросы"
+            :data="{
+              currentValue: dashboardData?.requests?.allowed?.data?.Data?.at(-1) ?? 0,
+              oldValue: dashboardData?.requests?.allowed?.data?.Data?.at(-2) ?? 0
+            }"
+          >
+            <template v-if="loading.requests" #LoadingData>
+              <p class="loading-data">Загрузка...</p>
+            </template>
+            <template v-else-if="fetchError.requests !== ''" #ErrorData>
+              <p class="error-data">{{ fetchError.requests }}</p>
+            </template>
+            <template v-else-if="dashboardData.requests && dashboardData.requests.allowed" #DashboardStatistic>
+              <RequestGraph :data="dashboardData.requests.allowed!" :label="'Разрешенные запросы'" :graphHeight="'90px'"/>
+            </template>
+            <template v-else-if="!dashboardData.requests.allowed || dashboardData.requests.allowed.data.data == 0" #EmptyData>
+              <p class="empty-data">Данные отсутствуют</p>
+            </template>
+          </DashboardRequestCard>
+          <DashboardRequestCard
+            class="dashboard__request"
+            title="Запросы до блокировки"
+            :data="{
+              currentValue: dashboardData?.requests?.before_block?.data?.Data?.at(-1) ?? 0,
+              oldValue: dashboardData?.requests?.before_block?.data?.Data?.at(-2) ?? 0
+            }"  
+          >
+            <template v-if="loading.requests" #LoadingData>
+              <p class="loading-data">Загрузка...</p>
+            </template>
+            <template v-else-if="fetchError.requests !== ''" #ErrorData>
+              <p class="error-data">{{ fetchError.requests }}</p>
+            </template>
+            <template v-else-if="dashboardData.requests && dashboardData.requests.before_block" #DashboardStatistic>
+              <RequestGraph :data="dashboardData.requests.before_block!" :label="'Запросы до блокировки'" :graphHeight="'90px'"/>
+            </template>
+            <template v-else-if="!dashboardData.requests.before_block || dashboardData.requests.before_block.data.data == 0" #EmptyData>
+              <p class="empty-data">Данные отсутствуют</p>
+            </template>
+          </DashboardRequestCard>
+          <DashboardRequestCard
+            class="dashboard__request"
+            title="Заблокированные запросы"
+            :data="{
+              currentValue: dashboardData?.requests?.blocked?.data?.Data?.at(-1) ?? 0,
+              oldValue: dashboardData?.requests?.blocked?.data?.Data?.at(-2) ?? 0
+            }"  
+          >
+            <template v-if="loading.requests" #LoadingData>
+              <p class="loading-data">Загрузка...</p>
+            </template>
+            <template v-else-if="fetchError.requests !== ''" #ErrorData>
+              <p class="error-data">{{ fetchError.requests }}</p>
+            </template>
+            <template v-else-if="dashboardData.requests && dashboardData.requests.blocked" #DashboardStatistic>
+              <RequestGraph :data="dashboardData.requests.blocked!" :label="'Заблокированные запросы'" :graphHeight="'90px'"/>
+            </template>
+            <template v-else-if="!dashboardData.requests.blocked || dashboardData.requests.blocked.data.data == 0" #EmptyData>
+              <p class="empty-data">Данные отсутствуют</p>
+            </template>
+          </DashboardRequestCard>
+          <DashboardRequestCard
+            class="dashboard__request"
+            title="Запросы в ожидании"
+            :data="{
+              currentValue: dashboardData?.requests?.pending?.data?.Data?.at(-1) ?? 0,
+              oldValue: dashboardData?.requests?.pending?.data?.Data?.at(-2) ?? 0
+            }"  
+          >
+            <template v-if="loading.requests" #LoadingData>
+              <p class="loading-data">Загрузка...</p>
+            </template>
+            <template v-else-if="fetchError.requests !== ''" #ErrorData>
+              <p class="error-data">{{ fetchError.requests }}</p>
+            </template>
+            <template v-else-if="dashboardData.requests && dashboardData.requests.pending" #DashboardStatistic>
+              <RequestGraph :data="dashboardData.requests.pending!" :label="'Запросы в ожидании'" :graphHeight="'90px'"/>
+            </template>
+            <template v-else-if="!dashboardData.requests.pending || dashboardData.requests.pending.data.data == 0" #EmptyData>
+              <p class="empty-data">Данные отсутствуют</p>
+            </template>
+          </DashboardRequestCard>
+        </div>
         <DashboardCard class="dashboard__top-categories" title="Рейтинг запрещенных категорий" link="/report">
           <template v-if="loading.topCategories" #LoadingData>
             <p class="loading-data">Загрузка...</p>
@@ -67,7 +138,7 @@
           <template v-else-if="dashboardData.topCategories && dashboardData.topCategories.length > 0" #DashboardStatistic>
             <DashboardTopCategories :categories="dashboardData.topCategories!" />
           </template>
-          <template v-else-if="!dashboardData.topCategories" #EmptyData>
+          <template v-else-if="!dashboardData.topCategories || dashboardData.topCategories.length == 0" #EmptyData>
             <p class="empty-data">Данные отсутствуют</p>
           </template>
         </DashboardCard>
@@ -125,6 +196,8 @@ import DownloadButton from '~/components/ui/DownloadButton.vue';
 import SideModal from '~/components/ui/SideModal.vue';
 import FilterForm, { type DashboardFilter } from '~/components/filters/DashboardFilterForm.vue';
 import DashboardCard from "~/components/dashboard-grid/BaseCard.vue"
+import DashboardRequestCard from "~/components/dashboard-grid/BaseRequestCard.vue"
+import RequestGraph from '~/components/dashboard-grid/RequestGraph.vue';
 import DashboardTopCategories from "~/components/dashboard-grid/TopCategories.vue"
 import DashboardTopDetections from "~/components/dashboard-grid/TopDetections.vue"
 import DashboardTrafficChart from "~/components/dashboard-grid/TrafficSplineChart.vue"
@@ -138,7 +211,7 @@ const router = useRouter();
 
 definePageMeta({
   layout: 'dashboard',
-  // middleware: ['auth']
+  middleware: ['auth']
 });
 
 const dashboardStore = useDashboardStore();
@@ -147,7 +220,7 @@ const loading = ref({
   topCategories: true,
   topDetections: true,
   trafic: true,
-  requests: false,
+  requests: true,
   anomalies: false,
   events: false,
   proh_activity: false,
@@ -201,6 +274,7 @@ const fetchData = async () => {
   const to = dateRange.value.to?.toISOString();
   const TOPS_COUNT = 5;
   const TRAFFIC_COUNT = 20;
+  const REQUESTS_COUNT = 10;
   const hostname = deviceFilter.value;
 
   try {
@@ -230,7 +304,16 @@ const fetchData = async () => {
         .catch((error: Error) => {
           loading.value.trafic = false;
           fetchError.value.trafic = error.message;
+        }),
+
+      dashboardStore.fetchRequests(from, to, REQUESTS_COUNT, hostname)
+        .then(() => {
+          loading.value.requests = false;
         })
+        .catch((error: Error) => {
+          loading.value.requests = false;
+          fetchError.value.requests = error.message;
+        }),
     ]);
 
   } catch (error) {
@@ -271,18 +354,25 @@ const initFiltersFromUrl = () => {
   const query = route.query;
 
   deviceFilter.value = query.device != null ? String(query.device) : undefined;
+  dateRange.value.from = typeof query.from === 'string' ? new Date(query.from) : getCurrentDateWithOffset(-1, 'd');
+  dateRange.value.to = typeof query.to === 'string' ? new Date(query.to) : getCurrentDateWithOffset();
 };
 
 const updateUrlParams = () => {
   const query: Record<string, string | number> = {};
 
   if (deviceFilter.value && deviceFilter.value !== '') query.device = deviceFilter.value;
+  if (dateRange.value.from) query.from = dateRange.value.from.toISOString();
+  if (dateRange.value.to) query.to = dateRange.value.to.toISOString();
 
   router.replace({ query });
 };
 
-const handleSetFilters = (filtersData: DashboardFilter) => {
-  filtersData.device.id !== '' ? deviceFilter.value = filtersData.device.id : deviceFilter.value = undefined;
+const handleSetFilters = (filtersData?: DashboardFilter) => {
+  
+  if (filtersData) {
+    filtersData.device.id !== '' ? deviceFilter.value = filtersData.device.id : deviceFilter.value = undefined;
+  }
 
   updateUrlParams()
 }
@@ -312,7 +402,9 @@ watch(
   },
   { deep: true }
 );
-
+watch(dateRange, () => {
+  handleSetFilters();
+})
 
 </script>
 
@@ -428,6 +520,18 @@ watch(
   font-size: 1rem;
   line-height: 1rem;
   color: #FB2904;
+}
+
+.dashboard__trafic {
+  min-height: 14.25rem;
+}
+
+.dashboard__requests {
+  display: flex;
+  row-gap: 0.75rem;
+  column-gap: 1rem;
+  flex-wrap: wrap;
+  max-width: 65rem;
 }
 
 </style>

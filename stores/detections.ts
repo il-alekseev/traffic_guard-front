@@ -69,24 +69,24 @@ export const useDetectionsStore = defineStore("detection", {
     },
 
     async fetchDetectionStats(from: string = 'now-10m', to: string = 'now', hostname?: string, category?: Categories): Promise<DetectionStats> {
-      // const userStore = useUserStore();
-      // try {
-      //   await userStore.ensureValidToken();
-      // } catch {
-      //   userStore.clearToken();
-      //   throw new Error(
-      //     "Не удалось получить статистику по выявлениям. Пользователь неавторизован",
-      //   );
-      // }
+      const userStore = useUserStore();
+      try {
+        await userStore.ensureValidToken();
+      } catch {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось получить статистику по выявлениям. Пользователь неавторизован",
+        );
+      }
 
-      // const token = useCookie('auth_token').value;
+      const token = useCookie('auth_token').value;
 
-      // if (!token) {
-      //   userStore.clearToken();
-      //   throw new Error(
-      //     "Не удалось получить статистику по выявлениям. Пользователь неавторизован",
-      //   );
-      // }
+      if (!token) {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось получить статистику по выявлениям. Пользователь неавторизован",
+        );
+      }
 
       try {
         const { $api } = useNuxtApp();
@@ -100,7 +100,7 @@ export const useDetectionsStore = defineStore("detection", {
 
         const detectionStats = await $api.get<DetectionStats>('/detections/stat', {
           params,
-          // ...getTokenHeaders(token)
+          ...getTokenHeaders(token)
         });
 
 

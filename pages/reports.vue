@@ -50,7 +50,7 @@ import ReportItem from '~/components/reports/ReportItem.vue';
 
 definePageMeta({
   layout: 'dashboard',
-  // middleware: ['auth']
+  middleware: ['auth']
 });
 
 const reportStore = useReportsStore();
