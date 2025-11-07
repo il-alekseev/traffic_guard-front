@@ -143,7 +143,7 @@ export const useDetectionsStore = defineStore("detection", {
           path: path,
         };
 
-        const result = await $api.post<defaultResponse>('/detections/act', params, getTokenHeaders(token));
+        const result = await $api.putch<defaultResponse>('/detections/act', params, getTokenHeaders(token));
 
         if (result) {
           return true;

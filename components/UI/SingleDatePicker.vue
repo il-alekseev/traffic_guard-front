@@ -78,6 +78,7 @@
 <script setup lang="ts">
 import CalendarIcon from "~/assets/img/calendar.svg"
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { makeUTCDate } from "~/helpers"
 
 interface CalendarDay {
   date: Date
@@ -137,18 +138,18 @@ const calendarDays = computed((): CalendarDay[] => {
   const year = currentDate.value.getFullYear()
   const month = currentDate.value.getMonth()
   
-  const firstDay = new Date(year, month, 1)
-  const lastDay = new Date(year, month + 1, 0)
+  const firstDay = makeUTCDate(year, month, 1)
+  const lastDay = makeUTCDate(year, month + 1, 0)
   
   let startDay = firstDay.getDay()
   startDay = startDay === 0 ? 6 : startDay - 1
   
   const days: CalendarDay[] = []
   
-  const prevMonthLastDay = new Date(year, month, 0).getDate()
+  const prevMonthLastDay = makeUTCDate(year, month, 0).getDate()
   for (let i = startDay - 1; i >= 0; i--) {
     const day = prevMonthLastDay - i
-    const date = new Date(year, month - 1, day)
+    const date = makeUTCDate(year, month - 1, day)
     days.push({
       date,
       day,
@@ -158,7 +159,7 @@ const calendarDays = computed((): CalendarDay[] => {
   }
   
   for (let day = 1; day <= lastDay.getDate(); day++) {
-    const date = new Date(year, month, day)
+    const date = makeUTCDate(year, month, day)
     days.push({
       date,
       day,
@@ -169,7 +170,7 @@ const calendarDays = computed((): CalendarDay[] => {
   
   const remainingDays = 42 - days.length
   for (let day = 1; day <= remainingDays; day++) {
-    const date = new Date(year, month + 1, day)
+    const date = makeUTCDate(year, month + 1, day)
     days.push({
       date,
       day,
@@ -262,6 +263,15 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('keydown', handleEscape)
 })
+
+watch(
+  () => [props.modelValue],
+  ([selected]) => {
+    selectedDate.value = selected ? new Date(selected) : null;
+  },
+  { immediate: true }
+);
+
 
 const handleEscape = (e: KeyboardEvent) => {
   if (e.key === 'Escape') {

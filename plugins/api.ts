@@ -95,6 +95,23 @@ export default defineNuxtPlugin((nuxtApp) => {
       return handleResponse<T>(response).then(res => res.data)
     },
 
+    putch: async <T>(endpoint: string, data?: any, options: ApiRequestOptions = {}) => {
+      const { params, ...fetchOptions } = options
+      const response = await fetch(getFullUrl(endpoint, params), {
+        ...fetchOptions,
+        method: 'PUT',
+        // credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          ...fetchOptions.headers
+        },
+        body: data ? JSON.stringify(data) : undefined
+      })
+      return handleResponse<T>(response).then(res => res.data)
+    },
+
+
     delete: async <T>(endpoint: string, options: ApiRequestOptions = {}) => {
       const { params, ...fetchOptions } = options
       const response = await fetch(getFullUrl(endpoint, params), {

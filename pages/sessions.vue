@@ -92,7 +92,7 @@
 import {definePageMeta} from '#imports';
 import type { Session, SessionOrderType, SessionStatus, SessionTable } from '~/types/session';
 import { useSessionsStore } from '~/stores/session';
-import { getBadgeClassByStatus, getNgfwBadgeClass, getCurrentDateWithOffset, isCategory, isSessionStatus, isSessionTypes } from '~/helpers/index';
+import { getBadgeClassByStatus, getNgfwBadgeClass, getCurrentDateWithOffset, isCategory, isSessionStatus, isSessionTypes, isValidDateString } from '~/helpers/index';
 import DatePicker from '~/components/ui/DatePicker.vue';
 import BaseSearch from '~/components/ui/BaseSearch.vue';
 import FilterButton from '~/components/ui/FilterButton.vue';
@@ -230,12 +230,21 @@ const initFiltersFromUrl = () => {
   currentPage.value = Number(query.page) || 1;
   itemsPerPage.value = Number(query.per_page) || 11;
   searchQuery.value = typeof query.search === 'string' ? query.search : '';
-  dateRange.value.from = typeof query.from === 'string' ? new Date(query.from) : getCurrentDateWithOffset(-1, 'd');
-  dateRange.value.to = typeof query.to === 'string' ? new Date(query.to) : getCurrentDateWithOffset();
   statusFilter.value = query.status != null ? String(query.status) : undefined;
   categoryFilter.value = query.category != null ? String(query.category) : undefined;
   typesFilter.value = query.types != null ? String(query.types) : undefined;
   deviceFilter.value = query.device != null ? String(query.device) : undefined;
+
+  const fromStr = typeof query.from === 'string' ? query.from : null;
+  const toStr = typeof query.to === 'string' ? query.to : null;
+  
+  dateRange.value.from = isValidDateString(fromStr)
+    ? new Date(fromStr!)
+    : getCurrentDateWithOffset(-1, 'd');
+
+  dateRange.value.to = isValidDateString(toStr)
+    ? new Date(toStr!)
+    : getCurrentDateWithOffset();
 };
 
 const updateUrlParams = () => {

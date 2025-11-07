@@ -113,7 +113,7 @@ import FilterForm, { type DetectionsFilter } from '~/components/filters/Detectio
 import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
 import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
-import { getCurrentDateWithOffset, isCategory } from '~/helpers';
+import { getCurrentDateWithOffset, isCategory, isValidDateString } from '~/helpers';
 import type { Categories } from '~/types/categories';
 
 
@@ -360,8 +360,17 @@ const initFiltersFromUrl = () => {
   statusFilter.value = query.status != null ? String(query.status) : undefined;
   categoryFilter.value = query.category != null ? String(query.category) : undefined;
   deviceFilter.value = query.device != null ? String(query.device) : undefined;
-  dateRange.value.from = typeof query.from === 'string' ? new Date(query.from) : getCurrentDateWithOffset(-1, 'd');
-  dateRange.value.to = typeof query.to === 'string' ? new Date(query.to) : getCurrentDateWithOffset();
+
+  const fromStr = typeof query.from === 'string' ? query.from : null;
+  const toStr = typeof query.to === 'string' ? query.to : null;
+  
+  dateRange.value.from = isValidDateString(fromStr)
+    ? new Date(fromStr!)
+    : getCurrentDateWithOffset(-1, 'd');
+
+  dateRange.value.to = isValidDateString(toStr)
+    ? new Date(toStr!)
+    : getCurrentDateWithOffset();
 };
 
 const updateUrlParams = () => {

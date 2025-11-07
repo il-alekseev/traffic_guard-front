@@ -264,3 +264,13 @@ export const getOnlyDeviceName = (role: string): string => {
   }
   return role.split("-")[1];
 };
+
+export function makeUTCDate(year: number, month: number, day: number): Date {
+  return new Date(Date.UTC(year, month, day))
+}
+
+export const isValidDateString = (val: string | null | undefined) => {
+  if (!val || typeof val !== 'string') return false;
+  const d = new Date(val);
+  return !isNaN(d.getTime());
+};
