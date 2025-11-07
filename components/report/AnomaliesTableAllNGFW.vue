@@ -28,7 +28,7 @@
                 
                 <tr v-for="item in group" :key="item.url" class="table__row">
                   <td class="table__cell table__cell--url">
-                    <span>{{ item.url }}</span>
+                    <span>{{ item.url || '–' }}</span>
                   </td>
                   <td class="table__cell table__cell--status">
                     <span v-if="item.status && item.live_count" :class="['status-badge', `status-badge--${getStatusColor(item.status)}`]">
