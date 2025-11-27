@@ -8,7 +8,8 @@
         @click="!disabled ? open = !open : null"
       >
         <span v-if="modelValue.name !== ''" class="dropdown__selected-text" :class="[{ 'dropdown__selected-text--error': validationError }]">
-          <p :class="props.selectedTextClass" :style="props.selectedTextStyle">{{ modelValue.name }}</p>
+          <p :class="props.selectedTextClass" :style="props.selectedTextStyle">{{ modelValue.name }} <span @click.stop="selectItem({id: '', name: ''})"><CrossIcon class="dropdown__selected-cross-icon"/></span></p>
+          
         </span>
         <span v-else class="dropdown__selected-text--placeholder">{{ mainPlaceholder }}</span>
         <span class="dropdown__icon-container">
@@ -248,6 +249,12 @@ watch(searchQuery, () => {
   line-height: 1.5rem;
 }
 
+.dropdown__selected-text p {
+  display: flex;
+  gap: var(--size-1);
+  align-items: center;
+}
+
 .dropdown__selected-text--error {
   background-color: #F5E6E6;
 }
@@ -259,7 +266,7 @@ watch(searchQuery, () => {
   cursor: pointer;
   width: 0.75rem;
   height: 0.75rem;
-  color: var(--color-typo-primary);
+  padding-top: 1px;
 }
 
 .dropdown__selected-text--placeholder {
