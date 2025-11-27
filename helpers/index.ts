@@ -251,9 +251,11 @@ export const getOnlyRole = (role: string): string => {
 
 export const getOnlyDeviceName = (role: string): string => {
   if (role === 'SA') {
-    return ''
+    return '';
   }
-  return role.split("-")[1];
+  const firstDashIndex = role.indexOf('-');
+  if (firstDashIndex === -1) return role;
+  return role.slice(firstDashIndex + 1);
 };
 
 export function makeUTCDate(year: number, month: number, day: number): Date {
