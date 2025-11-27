@@ -1,10 +1,11 @@
-  <template>
+<template>
   <div class="dashboard">
     <div class="dashboard__container">
       <SidebarComponent />
       <main class="dashboard__main">
-        <HeaderComponent @logout="logout"/>
-        <!-- <div class="dashboard__content-blur-layer"></div> -->
+        <ClientOnly>
+          <HeaderComponent @logout="logout"/>
+        </ClientOnly>
         <div class="dashboard__content">
           <slot />
         </div>
