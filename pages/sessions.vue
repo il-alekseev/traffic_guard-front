@@ -1,7 +1,7 @@
 <template>
   <div class="sessions-page">
     <div class="sessions__header">
-      <h1 class="sessions__title page-title">Подозрительные сессии</h1>
+      <h1 class="sessions__title page-title">Сессии</h1>
       <div class="sessions__toolbar">
         <BaseSearch
           v-model="searchQuery"
