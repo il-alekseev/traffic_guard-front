@@ -39,6 +39,16 @@
         />
 
         <BaseInput
+          id="email"
+          name="email"
+          label="Email"
+          :showRequiredLabel="true"
+          type="email"
+          v-model="form.email"
+          :error="errors.email"
+        />
+
+        <BaseInput
           id="last_name"
           name="last_name"
           label="Фамилия"
@@ -97,16 +107,6 @@
             }"
           />
         </div>
-
-        <BaseInput
-          id="email"
-          name="email"
-          label="Email"
-          :showRequiredLabel="true"
-          type="email"
-          v-model="form.email"
-          :error="errors.email"
-        />
 
         <div class="extras" v-if="props.userData !== undefined && props.userData?.user_id">
           <p class="extras__title">Дополнительно</p>
