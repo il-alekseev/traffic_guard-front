@@ -6,7 +6,7 @@
         <BaseSearch
           v-model="searchQuery"
           class="sessions__search"
-          placeholder="Поиск"
+          placeholder="Поиск по URL"
           @search="applyFilters"
         />
         <div class="dashboard__datepicker-container">
