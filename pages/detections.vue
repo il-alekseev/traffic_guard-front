@@ -4,7 +4,7 @@
       <StatsComponent :stats="stats" />
       <div class="detections__header-block">
         <div class="detections__header-title-block">
-          <h1 class="detections__title page-title">У вас {{ totalDetections }} нерешенных выявлений</h1>
+          <h1 class="detections__title page-title">{{ detectionsTitle }}</h1>
           <div class="detections__subtitle-block page-subtitle-block">
             <p class="detections__subtitle page-subtitle">Обновлено {{ minutesAgo }} мин назад</p>
             <div class="detections__refresh-btn page-refresh-btn" @click="fetchDetections">
@@ -202,6 +202,20 @@ const tableMetaData = ref<{ total: number; pages: number } | null>(null);
 const totalDetections = computed(() =>
   tableMetaData.value ? tableMetaData.value.total : detections.value.length
 );
+const detectionsTitle = computed<string>(() => {
+  const detectionCount = totalDetections.value;
+
+  if (!detectionCount) return 'Нет нерешенных выявлений';
+  
+  const pluralForm = (() => {
+    const n = detectionCount % 100;
+    if (n === 1) return 'нерешенное выявление';
+    if (n >= 2 && n <= 4) return 'нерешенных выявления';
+    return 'нерешенных выявлений';
+  })();
+
+  return `У вас ${detectionCount} ${pluralForm}`;
+});
 const totalPages = computed(() =>
   tableMetaData.value ? tableMetaData.value.pages : 1
 );
