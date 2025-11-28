@@ -16,6 +16,10 @@
           <div class="detections__datepicker-container">
             <DatePicker v-model="dateRange" />
           </div>
+          <DetectionsChipFilter 
+            v-model="actionFilter"
+            :options="actionFilterOptions"
+          />
           <button class="detections__filter-button" @click="showFilters">
             <div class="detections__filter-button-icon">
               <FilterIcon />
@@ -100,7 +104,7 @@
 
 <script setup lang="ts">
 import { definePageMeta } from '#imports';
-import type { Detection, DetectionStats, DetectionTable } from '~/types/detections';
+import type { ActionFilterOption, Detection, DetectionStats, DetectionTable } from '~/types/detections';
 import { useDetectionsStore } from '~/stores/detections';
 import type { StatItem } from '~/types/statistics';
 import StatsComponent from '~/components/data-display/StatsComponent.vue';
@@ -115,6 +119,7 @@ import FilterIcon from "~/assets/img/filter-icon.svg"
 import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
 import { getCurrentDateWithOffset, isCategory, isValidDateString } from '~/helpers';
 import type { Categories } from '~/types/categories';
+import DetectionsChipFilter from '~/components/filters/DetectionsChipFilter.vue';
 
 
 definePageMeta({
@@ -280,7 +285,8 @@ const fetchDetections = async () => {
       itemsPerPage.value,
       statusFilter.value,
       isCategory(categoryFilter.value) ? categoryFilter.value as Categories : undefined,
-      deviceFilter.value
+      deviceFilter.value,
+      actionFilter.value
     );
 
     if (result) {
@@ -350,6 +356,12 @@ const closeFilters = () => {
 const statusFilter = ref<string | undefined>();
 const categoryFilter = ref<string | undefined>();
 const deviceFilter = ref<string | undefined>();
+const actionFilter = ref<'Разрешено' | 'Заблокировано' | 'Не решено' | undefined>();
+const actionFilterOptions: ActionFilterOption[] = [
+  { value: 'Не решено', label: 'Ожидают', color: '#EFB100' },
+  { value: 'Заблокировано', label: 'Заблокированы', color: '#FB2C36' },
+  { value: 'Разрешено', label: 'Разрешены', color: '#05DF72' }
+]
 
 const filtersData = computed<DetectionsFilter | null>(() => {
   const status = statusFilter.value ?? '';
@@ -398,6 +410,7 @@ const updateUrlParams = () => {
   if (deviceFilter.value && deviceFilter.value !== '') query.device = deviceFilter.value;
   if (dateRange.value.from) query.from = dateRange.value.from.toISOString();
   if (dateRange.value.to) query.to = dateRange.value.to.toISOString();
+  if (actionFilter.value) query.action = actionFilter.value;
 
   router.replace({ query });
 };
@@ -411,7 +424,7 @@ const handleSetFilters = (filtersData?: DetectionsFilter) => {
     filtersData.device.id !== '' ? deviceFilter.value = filtersData.device.id : deviceFilter.value = undefined;
   }
   
-  updateUrlParams()
+  updateUrlParams();
 }
 
 onMounted(async () => {
@@ -423,6 +436,7 @@ onMounted(async () => {
 onUnmounted(() => {
   if (intervalId) clearInterval(intervalId);
 })
+
 watch(
   () => route.query,
   async (newQuery, oldQuery) => {
@@ -488,6 +502,10 @@ const handleReject = async (item: Detection) => {
     loadingCardActs.value[itemIndex] = false;
   }
 }
+
+watch(actionFilter, () => {
+  handleSetFilters()
+})
 
 watch(dateRange, () => {
   handleSetFilters();
