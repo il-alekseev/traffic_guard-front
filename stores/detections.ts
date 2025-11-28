@@ -11,6 +11,7 @@ export const useDetectionsStore = defineStore("detection", {
   state: (): DetectionsState => {
     return {
       detections: null,
+      detectionsStat: null
     };
   },
 
@@ -106,6 +107,7 @@ export const useDetectionsStore = defineStore("detection", {
 
 
         if (detectionStats) {
+          this.detectionsStat = detectionStats;
           return detectionStats;
         } else {
           throw new Error("Не удалось получить статистику по выявлениям");
