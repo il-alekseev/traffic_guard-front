@@ -167,14 +167,8 @@ const anomaliesPageRef = ref<InstanceType<typeof AnomaliesTableAllNGFW> | null>(
 
 const downloadReport = async () => {
   const { jsPDF } = await import('jspdf');
-  console.log('reportData.value', reportData.value);
-  console.log('welcomePageRef.value', welcomePageRef.value);
-  console.log('activityPageRef.value', activityPageRef.value);
-  console.log('analyticsPageRef.value', analyticsPageRef.value);
-  console.log('anomaliesPageRef.value', anomaliesPageRef.value);
   
   if (reportData.value == null) {
-    console.log("LOX");
     return
   }
 
