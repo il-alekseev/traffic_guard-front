@@ -33,6 +33,7 @@ export interface DetectionTable {
 
 export interface DetectionsState {
   detections: Detection[] | null;
+  detectionsStat: DetectionStats | null
 }
 
 export interface DetectionsActions {

@@ -3,7 +3,7 @@
     <div class="dashboard__header">
       <div class="dashboard__header-block">
         <div class="dashboard__header-title-block">
-          <h1 class="dashboard__title page-title">Нет новых выявлений</h1>
+          <h1 class="dashboard__title page-title">{{ dashboardTitle }}</h1>
           <div class="dashboard__subtitle-block page-subtitle-block">
             <p class="dashboard__subtitle page-subtitle">Обновлено {{ minutesAgo }} мин назад</p>
             <div class="dashboard__refresh-btn page-refresh-btn" @click="fetchData">
@@ -204,6 +204,7 @@
 import {definePageMeta} from '#imports';
 import { useRouter } from 'vue-router';
 import { useDashboardStore } from '~/stores/dashboard';
+import { useDetectionsStore } from '~/stores/detections';
 import DatePicker from '~/components/ui/DatePicker.vue';
 import DownloadButton from '~/components/ui/DownloadButton.vue';
 import SideModal from '~/components/ui/SideModal.vue';
@@ -229,8 +230,10 @@ definePageMeta({
 });
 
 const dashboardStore = useDashboardStore();
+const detectionsStore = useDetectionsStore();
 
 const loading = ref({
+  detectionsStat: true,
   topCategories: true,
   topDetections: true,
   trafic: true,
@@ -245,6 +248,7 @@ const isLoading = computed(() =>
 );
 
 const fetchError = ref({
+  detectionsStat: '',
   topCategories: '',
   topDetections: '',
   trafic: '',
@@ -259,6 +263,7 @@ const hasErrors = computed(() =>
 );
 
 const dashboardData = computed(() => ({
+  detectionsStat: detectionsStore.detectionsStat,
   topCategories: dashboardStore.topCategories,
   topDetections: dashboardStore.topDetections,
   trafic: dashboardStore.trafic,
@@ -268,6 +273,21 @@ const dashboardData = computed(() => ({
   proh_activity: dashboardStore.events,
   devicesState: dashboardStore.devicesState
 }));
+
+const dashboardTitle = computed<string>(() => {
+  const detectionCount = dashboardData.value.detectionsStat?.detected;
+
+  if (!detectionCount) return 'Нет новых выявлений';
+  
+  const pluralForm = (() => {
+    const n = detectionCount % 100;
+    if (n === 1) return 'новое выявление';
+    if (n >= 2 && n <= 4) return 'новых выявления';
+    return 'новых выявлений';
+  })();
+
+  return `У вас ${detectionCount} ${pluralForm}`;
+});
 
 const lastUpdated = ref<Date | null>(null);
 const minutesAgo = ref(0);
@@ -293,6 +313,15 @@ const fetchData = async () => {
 
   try {
     await Promise.all([
+      detectionsStore.fetchDetectionStats(from, to)
+        .then(() => {
+          loading.value.detectionsStat = false;
+        })
+        .catch((error: Error) => {
+          loading.value.detectionsStat = false;
+          fetchError.value.detectionsStat = error.message;
+        }),
+
       dashboardStore.fetchTopCategories(from, to, TOPS_COUNT, hostname)
         .then(() => {
           loading.value.topCategories = false;
