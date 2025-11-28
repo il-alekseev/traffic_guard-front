@@ -20,7 +20,7 @@ export const useDetectionsStore = defineStore("detection", {
   },
 
   actions: {
-    async fetchDetections(from: string = 'now-10m', to: string = 'now', page: number = 1, limit: number = 6, _status?: string, category?: Categories, hostname?: string): Promise<DetectionTable> {
+    async fetchDetections(from: string = 'now-10m', to: string = 'now', page: number = 1, limit: number = 6, _status?: string, category?: Categories, hostname?: string, action?: 'Разрешено' | 'Заблокировано' | 'Не решено'): Promise<DetectionTable> {
       const userStore = useUserStore();
       try {
         await userStore.ensureValidToken();
@@ -51,6 +51,7 @@ export const useDetectionsStore = defineStore("detection", {
           ...(_status ? { _status } : {}),
           ...(hostname ? { hostname } : {}),
           ...(category ? { category } : {}),
+          ...(action ? { action } : {}),
         };
 
         const detections = await $api.get<DetectionTable>('/analytics/detections', {
