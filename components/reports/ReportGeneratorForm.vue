@@ -56,10 +56,9 @@
           </div>
         </label>
 
-        <label class="radio__option radio__option_disabled">
+        <label class="radio__option">
           <input
             v-model="deviceSelection"
-            :disabled="true"
             type="radio"
             value="specific"
             class="radio__input"
@@ -315,7 +314,6 @@ watch(() => props.success, (newValue) => {
 }
 
 .error-message {
-  margin-top: 0.5rem;
   font-size: 0.875rem;
   color: #EF4444;
   font-weight: 500;
@@ -440,10 +438,6 @@ watch(() => props.success, (newValue) => {
   line-height: 1.25rem;
   font-weight: 400;
   color: #A1A1AA;
-}
-
-.device-select-wrapper {
-  margin-top: 0.5rem;
 }
 
 .base-form-field {

@@ -300,55 +300,6 @@ export const useDashboardStore = defineStore("dashboard", {
 
 
         if (result) {
-          // const mockData: DashboardAnomalies = {
-          //   "host_count": 5,
-          //   "block_count": 8,
-          //   "host_anomalies": [
-          //     {
-          //       "hostname": "NGFW1",
-          //       "anomaly_count": 3,
-          //       "domains": [
-          //         "ctldl.windowsupdate.com",
-          //         "update.googleapis.com",
-          //         "cdn.discordapp.com"
-          //       ]
-          //     },
-          //     {
-          //       "hostname": "NGFW2",
-          //       "anomaly_count": 1,
-          //       "domains": [
-          //         "api.dropboxapi.com"
-          //       ]
-          //     },
-          //     {
-          //       "hostname": "SRV-DB01",
-          //       "anomaly_count": 2,
-          //       "domains": [
-          //         "repo.mysql.com",
-          //         "telemetry.microsoft.com"
-          //       ]
-          //     },
-          //     {
-          //       "hostname": "WS-ADMIN",
-          //       "anomaly_count": 4,
-          //       "domains": [
-          //         "login.live.com",
-          //         "graph.facebook.com",
-          //         "cdn.tiktok.com",
-          //         "updates.signal.org"
-          //       ]
-          //     },
-          //     {
-          //       "hostname": "WS-USER1",
-          //       "anomaly_count": 0,
-          //       "domains": []
-          //     }
-          //   ]
-          // }
-
-          // this.anomalies = mockData;
-          // return mockData;
-
           this.anomalies = result;
           return result;
         } else {

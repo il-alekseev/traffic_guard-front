@@ -81,14 +81,38 @@ const chartOptions = computed<ApexOptions>(() => ({
     curve: 'smooth',
     width: 2
   },
+
   xaxis: {
     type: 'datetime',
     categories: safeData.value.time,
+    tickAmount: safeData.value.time.length,
+
     labels: {
+      show: true,
+      rotate: 0,
+      
       datetimeUTC: false,
-      format: 'HH:mm'
+      formatter: (value: string | number) => {
+        const d = new Date(value);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        return `${day}.${month}`;
+      }
+    },
+
+    axisTicks: {
+      show: true
+    },
+
+    axisBorder: {
+      show: true
+    },
+
+    tooltip: {
+      enabled: false
     }
   },
+
   yaxis: {
     labels: {
       formatter: (val: number) => formatCompactNumber(val)
