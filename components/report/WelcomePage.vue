@@ -9,19 +9,15 @@
           Fazenda
         </div>
       </div>
+
+      <h1 v-if="deviceName" class="title">Отчёт по {{ deviceName }}</h1>
       
-      <h1 class="title">Отчёт за период</h1>
+      <h1 v-else class="title">Отчёт за период</h1>
       
       <div class="info">
         <div class="info__block">
-          <!-- <span class="info__label">Период:</span> -->
           <span class="info__value">{{ dateRange }}</span>
         </div>
-        
-        <!-- <div class="info__block">
-          <span class="info__label">Дата формирования:</span>
-          <span class="info__value">{{ generatedDate }}</span>
-        </div> -->
       </div>
     </div>
   </div>
@@ -34,6 +30,7 @@ import AlternativeLogoIcon from "~/assets/img/alternative-logo.svg"
 interface Props {
   dateRange: string
   generatedDate?: string
+  deviceName?: string
 }
 
 defineProps<Props>()
@@ -60,7 +57,7 @@ defineProps<Props>()
 
 .welcome-content {
   text-align: center;
-  max-width: 600px;
+  max-width: 760px;
 }
 
 .logo {

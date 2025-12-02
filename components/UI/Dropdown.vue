@@ -464,6 +464,51 @@ watch(searchQuery, () => {
   &--alcohol { background: #FEF3C7; color: #D97706; }
 
   &--unknown { background: #f3f4f6; color: #6b7280; }
+
+  &--reverse {
+    &--aggression { background: #DC2626; color: #DC2626; }
+    &--racism { background: #B91C1C; color: #B91C1C; }
+    &--terrorism { background: #DC2626; color: #DC2626; }
+    &--drugs { background: #B91C1C; color: #B91C1C; }
+    &--malware { background: #EF4444; color: #EF4444; }
+    &--malicious-software { background: #DC2626; color: #DC2626; }
+
+    &--botnets { background: #EA580C; color: #EA580C; }
+    &--cryptomining { background: #C2410C; color: #C2410C; }
+    &--cryptojacking { background: #D97706; color: #D97706; }
+    &--phishing { background: #D97706; color: #D97706; }
+
+    &--pornography { background: #9333EA; color: #9333EA; }
+    &--adult { background: #7E22CE; color: #7E22CE; }
+    &--gambling { background: #7C3AED; color: #7C3AED; }
+
+    &--proxy { background: #2563EB; color: #2563EB; }
+    &--torrents { background: #1D4ED8; color: #1D4ED8; }
+
+    &--leisure { background: #16A34A; color: #16A34A; }
+    &--games { background: #15803D; color: #15803D; }
+    &--positive { background: #15803D; color: #15803D; }
+    &--online-games { background: #15803D; color: #15803D; }
+    &--gaming-platforms { background: #16A34A; color: #16A34A; }
+    &--movies { background: #059669; color: #059669; }
+
+    &--social { background: #0284C7; color: #0284C7; }
+    &--chats { background: #0369A1; color: #0369A1; }
+    &--webmail { background: #0EA5E9; color: #0EA5E9; }
+
+    &--shopping { background: #4F46E5; color: #4F46E5; }
+    &--advertising { background: #4338CA; color: #4338CA; }
+
+    &--files { background: #6B7280; color: #6B7280; }
+    &--blocked { background: #4B5563; color: #4B5563; }
+    &--additional { background: #6B7280; color: #6B7280; }
+
+    &--depressive { background: #DB2777; color: #DB2777; }
+
+    &--alcohol { background: #D97706; color: #D97706; }
+
+    &--unknown { background: #6b7280; color: #6b7280; }
+  }
 }
 
 .session-status-badge_greeen {

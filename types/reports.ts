@@ -8,6 +8,12 @@ export interface ReportFormData {
   selectedDevice?: string
 }
 
+export interface ReportConfig {
+  dateRange: string,
+  generatedDate: string,
+  deviceName: string | undefined
+}
+
 export interface GraphLegendItem {
   name: string,
   color: string
@@ -75,6 +81,71 @@ export interface ReportResourceItem {
   }
 }
 
+export interface RequestsGraphExtraTitle {
+  mainValue: string,
+  percentValue: string,
+  dynamicSign: 'positive' | 'negative' | 'neutral'
+}
+
+export interface RequestsAnalyticsTraffic {
+  allowed: RequestAnalyticShortData,
+  blocked: RequestAnalyticShortData,
+  pending: RequestAnalyticShortData
+}
+
+export interface RequestAnalyticShortData {
+  count: number,
+  data: number[],
+  time: string[]
+}
+
+export interface AnomaliesAndBlocksStat {
+  all: number,
+  anomalies: number,
+  blocks: number,
+  status?: string,
+  live_count?: string,
+  before_block?: number,
+  pending?: number,
+  after_block?: number
+}
+
+export interface DeviceAnalyticsPageData {
+  traffic: DashboardTraffic,
+  requests_analytics: RequestsAnalyticsTraffic,
+  anomaly_block_stat: AnomaliesAndBlocksStat
+}
+
+export interface DeviceAnomaliesData {
+  hostname: string,
+  requests: number,
+  anomaly_block_stat: AnomaliesAndBlocksStat,
+  detections: {
+    all: number,
+    allowed: number,
+    blocked: number,
+    unresolved: number
+  },
+  traffic: {
+    input: number,
+    output: number
+  }
+}
+
+export interface CategoriesDeviceData {
+  category: Categories,
+  stat: {
+    after_block: number,
+    all: number,
+    before_block: number,
+    pending: number
+  },
+  traffic: {
+    input: number,
+    output: number
+  }
+}
+
 export interface ReportData {
   from: string,
   to: string,
@@ -91,6 +162,19 @@ export interface ReportData {
   }
 }
 
+export interface ReportDataByDevice {
+  from: string,
+  to: string,
+  hostname: string,
+  device_analytics_page: DeviceAnalyticsPageData,
+  anomalies_list_page: {
+    device_anomaly: DeviceAnomaliesData[]
+  },
+  categories_page: {
+    categories: CategoriesDeviceData[]
+  }
+}
+
 export interface ReportsState {
-  report: ReportData | null
+  report: ReportData | ReportDataByDevice | null
 }

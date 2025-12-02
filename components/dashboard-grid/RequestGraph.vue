@@ -15,17 +15,41 @@
 import VueApexCharts from 'vue3-apexcharts'
 import type { ApexOptions } from 'apexcharts'
 import type { DashboardRequestObj } from '~/types/dashboard';
+import type { RequestAnalyticShortData } from '~/types/reports';
 
 const props = defineProps<{
-  data?: DashboardRequestObj,
+  data?: DashboardRequestObj | RequestAnalyticShortData,
   label: string
   graphHeight: string
+  showX?: boolean,
+  showY?: boolean,
 }>()
 
-const safeData = computed(() => ({
-  data: props.data?.data?.data ?? [],
-  time: props.data?.data?.time ?? []
-}))
+const isDashboardRequestObj = (
+  d: DashboardRequestObj | RequestAnalyticShortData | undefined
+): d is DashboardRequestObj => {
+  return !!(d && typeof d === 'object' && 'type' in d);
+};
+
+const safeData = computed(() => {
+  const d = props.data;
+
+  if (!d) {
+    return { data: [], time: [] };
+  }
+
+  if (isDashboardRequestObj(d)) {
+    return {
+      data: d.data?.data ?? [],
+      time: d.data?.time ?? []
+    }
+  }
+
+  return {
+    data: d.data ?? [],
+    time: d.time ?? []
+  }
+});
 
 const series = computed(() => [
   {
@@ -69,59 +93,78 @@ const chartOptions = computed<ApexOptions>(() => ({
         }
       }
     }],
-    defaultLocale: 'ru',
+    defaultLocale: 'ru'
   },
+
   grid: {
     show: false
   },
+
   dataLabels: {
     enabled: false
   },
+
   stroke: {
     curve: 'smooth',
     width: 2
   },
+
   xaxis: {
     type: 'datetime',
     categories: safeData.value.time,
+    tickAmount: safeData.value.time.length,
+
     labels: {
-      show: false,
+      show: props.showX === true,
+      rotate: 0,
+      
       datetimeUTC: false,
-      format: 'HH:mm'
+      formatter: (value: string | number) => {
+        const d = new Date(value);
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        return `${day}.${month}`;
+      }
     },
+
+    axisBorder: {
+      show: props.showX === true
+    },
+
     tooltip: {
       enabled: false
-    },
-    axisTicks: {
-      show: false,
-    },
-    axisBorder: {
-      show: false,
     }
   },
+
   yaxis: {
     labels: {
-      show: false,
-      formatter: (val: number) => formatCompactNumber(val)
+      show: props.showY === true,
+      formatter: (val: number) =>
+        props.showY ? formatCompactNumber(val) : ''
+    },
+
+    axisTicks: {
+      show: props.showY === true
+    },
+
+    axisBorder: {
+      show: props.showY === true
     }
   },
+
   legend: {
-    show: false,
-    position: 'top',
-    horizontalAlign: 'right', 
+    show: false
   },
+
   tooltip: {
     x: {
       show: false,
-      format: 'dd MMM',
-      formatter: undefined,
+      format: 'dd MM'
     },
     y: {
       formatter: (val: number) => formatCompactNumber(val),
-      title: {
-          formatter: () => props.label
-      },
-    },
+      title: { formatter: () => props.label }
+    }
   },
 
   fill: {
@@ -133,8 +176,10 @@ const chartOptions = computed<ApexOptions>(() => ({
       stops: [0, 90, 100]
     }
   },
+
   colors: ['#37C84F']
-}))
+}));
+
 </script>
 
 <style scoped>
