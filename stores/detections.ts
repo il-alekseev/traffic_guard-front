@@ -146,8 +146,7 @@ export const useDetectionsStore = defineStore("detection", {
           path: path,
         };
 
-        const result = await $api.patch<defaultResponse>('/analytics/dashboards/act', undefined, {
-          params,
+        const result = await $api.patch<defaultResponse>('/analytics/detections/act', params, {
           ...getTokenHeaders(token)
         });
 

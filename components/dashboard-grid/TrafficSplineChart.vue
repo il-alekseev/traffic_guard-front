@@ -15,6 +15,7 @@
 import VueApexCharts from 'vue3-apexcharts'
 import type { ApexOptions } from 'apexcharts'
 import type { DashboardTraffic } from '~/types/dashboard';
+import { formatCompactNumber } from '~/helpers';
 
 const props = defineProps<{
   trafficData?: DashboardTraffic
@@ -37,13 +38,6 @@ const series = computed(() => [
     data: safeData.value.output
   }
 ])
-
-const formatCompactNumber = (val: number, locale: string = 'ru'): string => {
-  return new Intl.NumberFormat(locale, {
-    notation: 'compact',
-    maximumFractionDigits: 1
-  }).format(val);
-};
 
 const chartOptions = computed<ApexOptions>(() => ({
   chart: {

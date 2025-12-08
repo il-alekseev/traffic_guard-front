@@ -26,7 +26,7 @@
               <RequestGraph 
                 :data="props.requestsTraffic.allowed" 
                 :label="'Разрешенные запросы'" 
-                :graph-height="'150px'"
+                :graph-height="'120px'"
                 :show-x="true"
                 :show-y="true"
               />
@@ -42,7 +42,7 @@
               <RequestGraph 
                 :data="props.requestsTraffic.blocked" 
                 :label="'Запрещенные запросы'" 
-                :graph-height="'150px'"
+                :graph-height="'120px'"
                 :show-x="true"
                 :show-y="true"
               />
@@ -58,7 +58,7 @@
               <RequestGraph 
                 :data="props.requestsTraffic.pending" 
                 :label="'Запросы в ожидании'" 
-                :graph-height="'150px'"
+                :graph-height="'120px'"
                 :show-x="true"
                 :show-y="true"
               />
@@ -167,7 +167,6 @@ const extraTitles = computed<Record<string, RequestsGraphExtraTitle>>(() => {
 .analytics-data {
   display: flex;
   flex-direction: column;
-  gap: 15px;
 }
 
 .request-types-graphs {
@@ -184,6 +183,7 @@ const extraTitles = computed<Record<string, RequestsGraphExtraTitle>>(() => {
 }
 
 .anomalies-and-blocks {
+  margin-top: 15px;
   width: 100%;
   display: flex;
   justify-content: space-between;

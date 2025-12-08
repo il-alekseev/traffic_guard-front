@@ -11,7 +11,12 @@
           class="traffic-card"
         >
           <template #DashboardStatistic>
-            <DistributedColumnsChart v-if="requestsDataByCategories.length > 0" :data="requestsDataByCategories" :columnNames="categoriesNames" :height="'300px'"/>
+            <DistributedColumnsChart 
+              v-if="requestsDataByCategories.length > 0" 
+              :data="requestsDataByCategories" 
+              :columnNames="categoriesNames" 
+              :height="'130px'"
+            />
           </template>
         </BaseCard>
       </div>
@@ -38,10 +43,10 @@
                 <td class="table__cell table__cell--traffic">
                   <div class="traffic">
                     <span class="traffic__item traffic__item--up">
-                      ↑ {{ formatTraffic(item.traffic.input) }}
+                      ↑ {{ formatTraffic(item.traffic.output) }}
                     </span>
                     <span class="traffic__item traffic__item--down">
-                      ↓ {{ formatTraffic(item.traffic.output) }}
+                      ↓ {{ formatTraffic(item.traffic.input) }}
                     </span>
                   </div>
                 </td>
@@ -184,7 +189,7 @@ const requestsDataByCategories = computed<{name: Categories, value: number, colo
   font-size: 8px;
   line-height: 8px;
   font-weight: 500;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 
   &--green {
     background-color: #DCFCE7;

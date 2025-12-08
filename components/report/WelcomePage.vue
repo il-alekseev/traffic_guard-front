@@ -38,8 +38,8 @@ defineProps<Props>()
 
 <style scoped>
 .report-page {
-  width: 297mm;
-  height: 210mm;
+  width: 842px;
+  height: 595px;
   background: #FFFFFF;
   padding: 40px;
   box-sizing: border-box;
@@ -84,12 +84,12 @@ defineProps<Props>()
   font-weight: 400;
   color: #FFFFFF;
   font-size: 48px;
-  line-height: 100%;
+  line-height: 58px;
 }
 
 .title {
   font-size: 72px;
-  line-height: 100%;
+  line-height: 87px;
   font-weight: 600;
   color: #FFFFFF;
 }
@@ -114,7 +114,7 @@ defineProps<Props>()
 .info__value {
   font-weight: 400;
   font-size: 24px;
-  line-height: 100%;
+  line-height: 29px;
   font-size: 20px;
   color: #FFFFFF;;
 }
