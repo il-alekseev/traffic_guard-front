@@ -150,8 +150,6 @@ const totalPages = computed(() =>
   tableMetaData.value ? tableMetaData.value.pages : 1
 );
 
-
-
 const fetchSessions = async () => {
   loading.value = true;
   fetchError.value = '';

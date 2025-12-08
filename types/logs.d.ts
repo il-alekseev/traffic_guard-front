@@ -1,0 +1,29 @@
+import type { TableMeta } from "~/types/meta";
+
+
+export interface Log {
+  id: 0,
+  context: string,
+  description: string,
+  entity: string,
+  entity_id: string,
+  event_type: string,
+  new_value: string,
+  old_value: string,
+  timestamp: string,
+  user_name: string,
+  user_role: string
+}
+
+export interface LogTable {
+  data: Log[];
+  meta: TableMeta;
+}
+
+export interface LogsState {
+  logs: Log[] | null;
+}
+
+export interface LogsActions {
+  fetchLogs(page: number = 1, limit: number = 10, search?: string, role?: string, contextId?: string): Promise<LogTable>
+}
