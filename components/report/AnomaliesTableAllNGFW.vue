@@ -41,10 +41,10 @@
                   <td class="table__cell table__cell--traffic">
                     <div class="traffic">
                       <span class="traffic__item traffic__item--up">
-                        ↑ {{ formatTraffic(item.anomaly_stat.traffic.input) }}
+                        ↑ {{ formatTraffic(item.anomaly_stat.traffic.output) }}
                       </span>
                       <span class="traffic__item traffic__item--down">
-                        ↓ {{ formatTraffic(item.anomaly_stat.traffic.output) }}
+                        ↓ {{ formatTraffic(item.anomaly_stat.traffic.input) }}
                       </span>
                     </div>
                   </td>
