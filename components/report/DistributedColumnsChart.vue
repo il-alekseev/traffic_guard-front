@@ -13,34 +13,35 @@
 </template>
 
 <script setup lang="ts">
-import type { Categories } from '~/types/categories';
 import VueApexCharts from 'vue3-apexcharts'
 import type { ApexOptions } from 'apexcharts'
 import { computed } from 'vue';
+import { formatCompactNumber } from '~/helpers';
+import type { Categories } from '~/types/categories';
 
 const props = defineProps<{
   data: { name: Categories; value: number; color: string }[];
   height: string
 }>();
 
+const safeData = computed(() => ({
+  categories: props.data.map(i => i.name),
+  colors: props.data.map(i => i.color),
+  data: props.data.map(i => i.value)
+}));
+
 const series = computed(() => [
   {
     name: "",
-    data: safeData.value.data,
-  },
+    data: safeData.value.data
+  }
 ]);
-
-const safeData = computed(() => ({
-  categories: props.data.map((i) => i.name) ?? [],
-  colors: props.data.map((i) => i.color) ?? [],
-  data: props.data.map((i) => i.value) ?? [],
-}))
-
 
 const chartOptions = computed<ApexOptions>(() => ({
   chart: {
     type: 'bar',
     toolbar: { show: false },
+    sparkline: { enabled: false }
   },
 
   plotOptions: {
@@ -48,8 +49,8 @@ const chartOptions = computed<ApexOptions>(() => ({
       distributed: true,
       horizontal: false,
       borderRadius: 6,
-      columnWidth: '50%',
-    },
+      columnWidth: '50%'
+    }
   },
 
   colors: safeData.value.colors,
@@ -59,32 +60,47 @@ const chartOptions = computed<ApexOptions>(() => ({
     labels: { show: false },
     axisTicks: { show: false },
     axisBorder: { show: false },
-  },
-
-  dataLabels: {
-    enabled: false,
-  },
-
-  tooltip: {
-    y: {
-      title: {
-        formatter: () => "",
-      },
-    },
-    x: {
-      formatter: (_: any, opts: any) => props.data[opts.dataPointIndex].name,
-    },
+    floating: true
   },
 
   yaxis: {
     labels: {
-      formatter: (value: number) => Math.round(value).toString(),
+      show: true,
+      formatter: (value: number) => formatCompactNumber(Math.round(value))
     },
+    title: {
+      text: '',
+      style: { fontSize: '12px' }
+    }
   },
 
-  legend: { show: false },
+  grid: {
+    show: true,
+    strokeDashArray: 0,
+    yaxis: {
+      lines: { show: true }
+    },
+    xaxis: {
+      lines: { show: false }
+    },
+    padding: {
+      bottom: 8
+    }
+  },
+
+  dataLabels: { enabled: false },
+
+  tooltip: {
+    y: { title: { formatter: () => "" } },
+    x: {
+      formatter: (_, opts) => props.data[opts.dataPointIndex].name
+    }
+  },
+
+  legend: { show: false }
 }));
 </script>
 
 <style lang="scss">
+
 </style>

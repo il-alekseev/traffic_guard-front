@@ -11,7 +11,12 @@
           class="traffic-card"
         >
           <template #DashboardStatistic>
-            <DistributedColumnsChart v-if="requestsDataByCategories.length > 0" :data="requestsDataByCategories" :columnNames="categoriesNames" :height="'300px'"/>
+            <DistributedColumnsChart 
+              v-if="requestsDataByCategories.length > 0" 
+              :data="requestsDataByCategories" 
+              :columnNames="categoriesNames" 
+              :height="'130px'"
+            />
           </template>
         </BaseCard>
       </div>
@@ -184,7 +189,7 @@ const requestsDataByCategories = computed<{name: Categories, value: number, colo
   font-size: 8px;
   line-height: 8px;
   font-weight: 500;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 
   &--green {
     background-color: #DCFCE7;

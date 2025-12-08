@@ -314,3 +314,10 @@ export const getStatusNameByAction = (action: ActionType): string => {
     return '';
   }
 }
+
+export const formatCompactNumber = (val: number, locale: string = 'ru'): string => {
+  return new Intl.NumberFormat(locale, {
+    notation: 'compact',
+    maximumFractionDigits: 1
+  }).format(val);
+};

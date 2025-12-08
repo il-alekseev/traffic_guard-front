@@ -150,7 +150,7 @@ export const useReportsStore = defineStore("reports", {
         anomalies_list_page: {
           device_anomaly: [
             {
-              hostname: "ngfw-01",
+              hostname: "agression-net.ruagression-net.ru",
               requests: 86000,
               anomaly_block_stat: {
                 all: 50,

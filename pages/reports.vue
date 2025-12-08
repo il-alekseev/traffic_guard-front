@@ -175,9 +175,6 @@ const setReportConfig = (from: string, to: string, deviceName?: string) => {
 }
 
 const getReport = async (formData: ReportFormData) => {
-  console.log('getReport');
-  console.log('formData', formData)
-
   reportData.value = null;
   reportDataByDevice.value = null;
   formLoading.value = true;
@@ -227,7 +224,6 @@ const anomaliesByDevicePageRef = ref<InstanceType<typeof AnomaliesTableByDevice>
 const categoriesRatingPageRef = ref<InstanceType<typeof CategoriesRating> | null>(null);
 
 const downloadReport = async () => {
-  console.log('downloadReport');
   const { jsPDF } = await import('jspdf');
   
   if (reportData.value == null && reportDataByDevice.value === null) {
@@ -237,7 +233,7 @@ const downloadReport = async () => {
   try {
     const pdf = new jsPDF({
       orientation: 'landscape',
-      unit: 'mm',
+      unit: 'px',
       format: 'a4'
     })
 
@@ -254,37 +250,34 @@ const downloadReport = async () => {
       if (anomaliesPageRef.value) pages.push({ ref: anomaliesPageRef.value.$el, name: 'Anomalies' })
     }
 
-    console.log('pages', pages);
-
 
     for (let i = 0; i < pages.length; i++) {
       const page = pages[i]
-      console.log('page', page);
 
       const canvas = await html2canvas(page.ref, {
-        scale: 2,
+        scale: 3,
         useCORS: true,
         logging: false,
-        backgroundColor: '#ffffff',
-        width: page.ref.offsetWidth,
-        height: page.ref.offsetHeight
       })
 
-      console.log('canvas', canvas);
-
       const imgData = canvas.toDataURL('image/png')
-      const imgWidth = 297
-      const imgHeight = 210
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+
+      const finalWidth = imgWidth * ratio;
+      const finalHeight = imgHeight * ratio;
 
       if (i > 0) {
         pdf.addPage()
       }
 
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight)
+      pdf.addImage(imgData, 'PNG', 0, 0, finalWidth, finalHeight)
       
     }
-
-    console.log('pdf', pdf);
 
     const fileName = `report_${new Date().toISOString().split('T')[0]}.pdf`
     pdf.save(fileName)

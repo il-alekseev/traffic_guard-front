@@ -82,7 +82,8 @@ const arrowStyle = computed(() => ({
 
 .card__extra-title {
   padding-top: 12px;
-  padding-bottom: 18px;
+  padding-left: 12px;
+  margin-bottom: 40px;
   display: flex;
   gap: 8px;
 }

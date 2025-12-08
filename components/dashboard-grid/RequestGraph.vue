@@ -16,6 +16,7 @@ import VueApexCharts from 'vue3-apexcharts'
 import type { ApexOptions } from 'apexcharts'
 import type { DashboardRequestObj } from '~/types/dashboard';
 import type { RequestAnalyticShortData } from '~/types/reports';
+import { formatCompactNumber } from '~/helpers';
 
 const props = defineProps<{
   data?: DashboardRequestObj | RequestAnalyticShortData,
@@ -58,17 +59,12 @@ const series = computed(() => [
   }
 ])
 
-const formatCompactNumber = (val: number, locale: string = 'ru'): string => {
-  return new Intl.NumberFormat(locale, {
-    notation: 'compact',
-    maximumFractionDigits: 1
-  }).format(val);
-};
 
 const chartOptions = computed<ApexOptions>(() => ({
   chart: {
     background: 'transparent',
     type: 'area',
+    sparkline: { enabled: true },
     height: props.graphHeight,
     toolbar: { show: false },
     zoom: { enabled: false },
@@ -93,7 +89,8 @@ const chartOptions = computed<ApexOptions>(() => ({
         }
       }
     }],
-    defaultLocale: 'ru'
+    defaultLocale: 'ru',
+    
   },
 
   grid: {
