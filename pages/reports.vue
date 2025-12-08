@@ -5,7 +5,7 @@
         Генератор отчётов
       </div>
       <div class="reports__config-form">
-        <ReportForm @submit="getReport" :loading="formLoading" :success="formSucces" />
+        <ReportForm @submit="getReport" :loading="formLoading" :success="!formLoading" />
       </div>
     </div>
     <div class="reports__data">
@@ -190,7 +190,7 @@ const getReport = async (formData: ReportFormData) => {
       setReportConfig(reportDataByDevice.value.from, reportDataByDevice.value.to, reportDataByDevice.value.hostname);
       formSucces.value = true;
       
-      await downloadReport();      
+      await downloadReport(); 
       formLoading.value = false;
       formSucces.value = true;
     } catch (error: any) {
