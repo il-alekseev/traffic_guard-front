@@ -83,7 +83,6 @@
         @close="closeFilters"
         @setFilters="handleSetFilters"
       />
-
     </SideModal>
   </div>
 </template>

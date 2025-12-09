@@ -6,10 +6,10 @@
         <BaseSearch
           v-model="searchQuery"
           class="logs__search"
-          placeholder="Поиск по URL"
+          placeholder="Поиск по пользователю, сущности, описанию"
           @search="applyFilters"
         />
-        <!-- <FilterButton @click="showFilters"/> -->
+        <FilterButton @click="showFilters"/>
       </div>
     </div>
 
@@ -28,8 +28,13 @@
       @page-change="handleChangePage"
       @action-click="handleActionClick"
     >
-      <template #cell-datetime_utc="{ value }">
-        <span class="logs__table-cell-datetime_utc">
+      <template #cell-status="{ value }">
+        <span class="logs__table-cell-status">
+          {{ value ? value : '–' }}
+        </span>
+      </template>
+      <template #cell-timestamp="{ value }">
+        <span class="logs__table-cell-timestamp">
           {{ new Date(value).toLocaleString('ru-RU', {
             day: '2-digit',
             month: '2-digit',
@@ -44,13 +49,17 @@
       </template>
     </BaseTable>
 
-    <!-- <SideModal
+    <SideModal
       v-model="isShowFilters"
       title="Фильтры"
       @close="closeFilters"
     >
-
-    </SideModal> -->
+      <FilterForm
+        :filtersData="filtersData"
+        @close="closeFilters"
+        @setFilters="handleSetFilters"
+      />
+    </SideModal>
   </div>
 </template>
 
@@ -62,8 +71,9 @@ import { useLogsStore } from '~/stores/logs';
 import BaseSearch from '~/components/ui/BaseSearch.vue';
 import ErrorBlock from '~/components/ui/ErrorBlock.vue';
 import BaseTable from '~/components/ui/BaseTable.vue';
+import FilterForm from '~/components/filters/LogsFilterForm.vue';
 import ContextMenuDotsIcon from '~/assets/img/context-menu-btn.svg';
-import type { Log, LogTable } from '~/types/logs';
+import type { Log, LogFilter, LogTable } from '~/types/logs';
 
 
 definePageMeta({
@@ -83,10 +93,10 @@ const logs = ref<Log[]>([]);
 const columns = [
   { key: 'id', label: 'ID' },
   { key: 'status', label: 'Статус' },
-  { key: 'datetime_utc', label: 'Дата и время' },
-  { key: 'source', label: 'Источник' },
+  { key: 'timestamp', label: 'Дата и время' },
+  { key: 'entity', label: 'Источник' },
   { key: 'user', label: 'Пользователь' },
-  { key: 'context', label: 'Контекст' },
+  { key: 'description', label: 'Описание' },
 ];
 const currentPage = ref(1);
 const itemsPerPage = ref(11);
@@ -106,6 +116,9 @@ const fetchLogs = async () => {
     const result: LogTable = await logsStore.fetchLogs(
       currentPage.value,
       itemsPerPage.value,
+      searchQuery.value,
+      roleFilter.value,
+      contextIdFilter.value
     );
 
     if (result) {
@@ -138,6 +151,22 @@ const closeFilters = () => {
   isShowFilters.value = false;
 }
 const searchQuery = ref('');
+const roleFilter = ref<string | undefined>();
+const contextIdFilter = ref<string | undefined>();
+
+const filtersData = computed<LogFilter | null>(() => {
+  const role = roleFilter.value ?? '';
+  const context = contextIdFilter.value ?? '';
+
+  if (!role && !context) {
+    return null;
+  }
+
+  return {
+    role: { id: role, name: role },
+    contextId: { id: context, name: context },
+  };
+});
 
 const initFiltersFromUrl = () => {
   const query = route.query;
@@ -145,6 +174,8 @@ const initFiltersFromUrl = () => {
   currentPage.value = Number(query.page) || 1;
   itemsPerPage.value = Number(query.per_page) || 11;
   searchQuery.value = typeof query.search === 'string' ? query.search : '';
+  roleFilter.value = query.role != null ? String(query.role) : undefined;
+  contextIdFilter.value = query.contextId != null ? String(query.contextId) : undefined;
 };
 
 const updateUrlParams = () => {
@@ -153,9 +184,22 @@ const updateUrlParams = () => {
   if (currentPage.value > 1) query.page = currentPage.value;
   if (itemsPerPage.value !== 11) query.per_page = itemsPerPage.value;
   if (searchQuery.value.trim()) query.search = searchQuery.value.trim();
+  if (roleFilter.value && roleFilter.value !== '') query.role = roleFilter.value;
+  if (contextIdFilter.value && contextIdFilter.value !== '') query.contextId = contextIdFilter.value;
 
   router.replace({ query });
 };
+
+const handleSetFilters = (filtersData?: LogFilter) => {
+  currentPage.value = 1;
+
+  if (filtersData) {
+    filtersData.role.id !== '' ? roleFilter.value = filtersData.role.id : roleFilter.value = undefined;
+    filtersData.contextId.id !== '' ? contextIdFilter.value = filtersData.contextId.id : contextIdFilter.value = undefined;
+  }
+  
+  updateUrlParams()
+}
 
 const applyFilters = () => {
   currentPage.value = 1;
@@ -182,6 +226,53 @@ watch(
 );
 </script>
 
-<style>
+<style lang="scss">
+.logs__header {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
 
+.logs__toolbar {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+}
+
+:deep(.logs__table-cell-description),
+:deep(.logs__table-cell-timestamp) {
+  color: #3F3F46;
+}
+
+:deep(.logs__table-cell-user) {
+  color: #2563EB;
+}
+
+:deep(.table__action-icon) {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #2563EB;
+}
+
+:deep(.logs__table-column-id) {
+  width: 9%;
+}
+:deep(.logs__table-column-status) {
+  width: 7%;
+}
+:deep(.logs__table-column-timestamp) {
+  width: 14%;
+}
+:deep(.logs__table-column-entity) {
+  width: 9%;
+}
+:deep(.logs__table-column-user) {
+  width: 14%;
+}
+:deep(.logs__table-column-description) {
+  width: 40%;
+}
+:deep(.logs__table-column-button) {
+  width: 7%;
+}
 </style>

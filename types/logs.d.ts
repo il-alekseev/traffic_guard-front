@@ -1,4 +1,5 @@
 import type { TableMeta } from "~/types/meta";
+import type { DropdownItem } from '~/types/dropdown';
 
 
 export interface Log {
@@ -22,6 +23,11 @@ export interface LogTable {
 
 export interface LogsState {
   logs: Log[] | null;
+}
+
+export interface LogFilter {
+  role: DropdownItem;
+  contextId: DropdownItem;
 }
 
 export interface LogsActions {
