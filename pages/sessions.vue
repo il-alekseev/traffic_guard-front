@@ -83,7 +83,6 @@
         @close="closeFilters"
         @setFilters="handleSetFilters"
       />
-
     </SideModal>
   </div>
 </template>
@@ -149,8 +148,6 @@ const totalSessions = computed(() =>
 const totalPages = computed(() =>
   tableMetaData.value ? tableMetaData.value.pages : 1
 );
-
-
 
 const fetchSessions = async () => {
   loading.value = true;
