@@ -34,12 +34,14 @@
       :total-pages="totalPages"
       :current-page="currentPage"
       :items-per-page="itemsPerPage"
+      :allowedItemsCount="[11, 33, 66]"
       prefix="users"
       :show-actions="true"
       empty-message="Пользователи не найдены"
       loading-message="Загрузка пользователей..."
       item-key="user_id"
       @page-change="handleChangePage"
+      @set-items-per-page="handleChangeItemsPerPage"
       @action-click="openEditUserModal"
     >
       <template #cell-login="{ value }">
@@ -289,6 +291,12 @@ const handleChangePage = (page: number) => {
   currentPage.value = page;
   updateUrlParams();
 };
+
+const handleChangeItemsPerPage = (value: number) => {
+  itemsPerPage.value = value;
+  currentPage.value = 1;
+  updateUrlParams();
+}
 
 const initFiltersFromUrl = () => {
   const query = route.query;

@@ -24,8 +24,10 @@
       :total-pages="totalPages"
       :current-page="currentPage"
       :items-per-page="itemsPerPage"
+      :allowedItemsCount="[11, 33, 66]"
       prefix="logs"
       @page-change="handleChangePage"
+      @set-items-per-page="handleChangeItemsPerPage"
       @action-click="handleActionClick"
     >
       <template #cell-status="{ value }">
@@ -140,6 +142,12 @@ const handleChangePage = (page: number) => {
   currentPage.value = page;
   updateUrlParams();
 };
+
+const handleChangeItemsPerPage = (value: number) => {
+  itemsPerPage.value = value;
+  currentPage.value = 1;
+  updateUrlParams();
+}
 
 const isShowFilters = ref(false);
 
