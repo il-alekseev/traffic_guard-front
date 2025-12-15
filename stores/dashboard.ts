@@ -193,52 +193,6 @@ export const useDashboardStore = defineStore("dashboard", {
         );
       }
 
-      let mockData: DashboardRequestObj = {
-        "count": 5,
-        "data": {
-            "data": [
-                7909,
-                2000000,
-                10000,
-                888888,
-                12222,
-            ],
-            "time": [
-                "2025-12-16T06:00:00Z",
-                "2025-12-16T18:00:00Z",
-                "2025-12-17T06:00:00Z",
-                "2025-12-17T18:00:00Z",
-                "2025-12-18T06:00:00Z",
-            ]
-        },
-        "type": "requests_pending"
-      }
-
-      if (request_type === 'blocked') {
-        mockData = {
-        "count": 5,
-        "data": {
-            "data": [
-                12000,
-                1100,
-                10000,
-                2000000,
-                12222,
-            ],
-            "time": [
-                "2025-12-16T06:00:00Z",
-                "2025-12-16T18:00:00Z",
-                "2025-12-17T06:00:00Z",
-                "2025-12-17T18:00:00Z",
-                "2025-12-18T06:00:00Z",
-            ]
-        },
-        "type": "requests_blocked"
-      }
-      }
-
-      if (!setToStore) return mockData;
-
       try {
         const { $api } = useNuxtApp();
 
