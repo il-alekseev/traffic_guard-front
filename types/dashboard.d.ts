@@ -1,0 +1,94 @@
+import type { Categories } from "./categories";
+import type { Log } from "./logs";
+
+export interface DashboardCategory {
+  name: Categories;
+  access_count: number;
+}
+
+export type TopCategories = DashboardCategory[];
+
+export interface DashboardDetection {
+  domain: string;
+  requests_after: number;
+  requests_all: number;
+  requests_before: number
+}
+
+export type TopDetections = DashboardDetection[];
+
+export interface DashboardTraffic {
+  count: number;
+  data: {
+    input: number[];
+    output: number[];
+    time: string[];
+  }
+}
+
+export interface DashboardTrafficLegend {
+  input: {
+    name: string,
+    color: string
+  }, 
+  output: {
+    name: string,
+    color: string
+  }
+}
+
+export type DashboardRequestsType = 'blocked' | 'allowed' | 'before_block' | 'pending' | 'requests_blocked' | 'requests_allowed' | 'requests_pending' | 'requests_pending';
+
+export interface DashboardRequestObj {
+  count: number;
+  data: {
+    data: number[];
+    time: string[];
+  },
+  type: DashboardRequestsType;
+}
+
+export interface DashboardRequests {
+  blocked: DashboardRequestObj | null;
+  allowed: DashboardRequestObj | null;
+  before_block: DashboardRequestObj | null;
+  pending: DashboardRequestObj | null;
+}
+
+export interface HostAnomaly {
+  anomaly_count: number,
+  hostname: string,
+  domains: string[]
+}
+
+export interface DashboardAnomalies {
+  block_count: number,
+  host_count: number,
+  host_anomalies: HostAnomaly[]
+}
+
+export interface DashboardDeviceRequestsSplineChart {
+  name: string,
+  data: {
+    blocked: number[];
+    pending: number[];
+    time: string[];
+  }
+}
+
+export interface DashboardState {
+  topCategories: TopCategories | null;
+  topDetections: TopDetections | null;
+  trafic: DashboardTraffic | null
+  requests: DashboardRequests,
+  anomalies: DashboardAnomalies | null,
+  logs: Log[] | null,
+  proh_activity: null,
+}
+
+export interface DashboardActions {
+  fetchTopCategories(from: string = 'now-10m', to: string = 'now', count: number = 5, hostname?: string): Promise<TopCategories>
+  fetchDetections(from: string = 'now-10m', to: string = 'now', count: number = 5, hostname?: string): Promise<TopDetections>
+  fetchTraffic(from: string = 'now-10m', to: string = 'now', count: number = 5, hostname?: string): Promise<DashboardTraffic>
+}
+
