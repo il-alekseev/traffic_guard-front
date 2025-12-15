@@ -51,8 +51,10 @@ const checkCategories = async () => {
 }
 
 onMounted(async () => {
-  await checkUser();
-  checkDevices();
+  await Promise.all([
+    checkUser(),
+    checkDevices()
+  ])
   checkCategories();
 })
 

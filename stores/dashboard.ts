@@ -19,9 +19,8 @@ export const useDashboardStore = defineStore("dashboard", {
           pending: null
         },
         anomalies: null,
-        events: null,
+        logs: null,
         proh_activity: null,
-        devicesState: null
     };
   },
 
@@ -174,7 +173,7 @@ export const useDashboardStore = defineStore("dashboard", {
       }
     },
 
-    async fetchRequest(from: string = 'now-10m', to: string = 'now', request_type: DashboardRequestsType = 'allowed', count: number = 10, hostname?: string): Promise<DashboardRequestObj> {
+    async fetchRequest(from: string = 'now-10m', to: string = 'now', request_type: DashboardRequestsType = 'allowed', count: number = 10, hostname?: string, setToStore: boolean = true): Promise<DashboardRequestObj> {
       const userStore = useUserStore();
       try {
         await userStore.ensureValidToken();
@@ -212,13 +211,13 @@ export const useDashboardStore = defineStore("dashboard", {
 
 
         if (result) {
-          if (request_type === 'allowed') {
+          if (request_type === 'allowed' && setToStore) {
             this.requests.allowed = result;
-          } else if (request_type === 'blocked') {
+          } else if (request_type === 'blocked' && setToStore) {
             this.requests.blocked = result;
-          } else if (request_type === 'before_block') {
+          } else if (request_type === 'before_block' && setToStore) {
             this.requests.before_block = result
-          } else if (request_type === 'pending') {
+          } else if (request_type === 'pending' && setToStore) {
             this.requests.pending = result;
           }
           return result;

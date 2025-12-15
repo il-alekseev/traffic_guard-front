@@ -404,16 +404,6 @@ watch(searchQuery, () => {
   color: #E5381A;
 }
 
-.ngfw-bagde {
-  max-width: fit-content;
-  font-weight: 500;
-  font-size: 0.75rem;
-  line-height: 1rem;
-  padding: 0.25rem 0.5rem;
-  text-transform: uppercase;
-  border-radius: 6px;
-}
-
 .category-badge {
   max-width: fit-content;
   padding: 0.25rem 0.5rem;
