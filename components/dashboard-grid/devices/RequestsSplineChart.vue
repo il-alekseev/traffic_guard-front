@@ -12,59 +12,37 @@
 </template>
 
 <script setup lang="ts">
-import VueApexCharts from 'vue3-apexcharts'
+  import VueApexCharts from 'vue3-apexcharts'
 import type { ApexOptions } from 'apexcharts'
-import type { DashboardRequestObj } from '~/types/dashboard';
-import type { RequestAnalyticShortData } from '~/types/reports';
 import { formatCompactNumber } from '~/helpers';
+import type { DashboardDeviceRequestsSplineChart } from '~/types/dashboard';
+
 
 const props = defineProps<{
-  data?: DashboardRequestObj | RequestAnalyticShortData,
-  label: string
+  data?: DashboardDeviceRequestsSplineChart
   graphHeight: string
-  showX?: boolean,
-  showY?: boolean,
 }>()
 
-const isDashboardRequestObj = (
-  d: DashboardRequestObj | RequestAnalyticShortData | undefined
-): d is DashboardRequestObj => {
-  return !!(d && typeof d === 'object' && 'type' in d);
-};
-
-const safeData = computed(() => {
-  const d = props.data;
-
-  if (!d) {
-    return { data: [], time: [] };
-  }
-
-  if (isDashboardRequestObj(d)) {
-    return {
-      data: d.data?.data ?? [],
-      time: d.data?.time ?? []
-    }
-  }
-
-  return {
-    data: d.data ?? [],
-    time: d.time ?? []
-  }
-});
+const safeData = computed(() => ({
+  blocked: props.data?.data?.blocked ?? [],
+  pending: props.data?.data?.pending ?? [],
+  time: props.data?.data?.time ?? []
+}))
 
 const series = computed(() => [
   {
-    name: props.label,
-    data: safeData.value.data
+    name: 'Заблокированные ресурсы',
+    data: safeData.value.blocked
+  },
+  {
+    name: ' Ожидающие решения',
+    data: safeData.value.pending
   }
 ])
 
-
 const chartOptions = computed<ApexOptions>(() => ({
   chart: {
-    background: 'transparent',
     type: 'area',
-    sparkline: { enabled: true },
     height: props.graphHeight,
     toolbar: { show: false },
     zoom: { enabled: false },
@@ -90,17 +68,10 @@ const chartOptions = computed<ApexOptions>(() => ({
       }
     }],
     defaultLocale: 'ru',
-    
   },
-
-  grid: {
-    show: false
-  },
-
   dataLabels: {
     enabled: false
   },
-
   stroke: {
     curve: 'smooth',
     width: 2
@@ -112,7 +83,7 @@ const chartOptions = computed<ApexOptions>(() => ({
     tickAmount: safeData.value.time.length,
 
     labels: {
-      show: props.showX === true,
+      show: true,
       rotate: 0,
       
       datetimeUTC: false,
@@ -124,8 +95,12 @@ const chartOptions = computed<ApexOptions>(() => ({
       }
     },
 
+    axisTicks: {
+      show: true
+    },
+
     axisBorder: {
-      show: props.showX === true
+      show: true
     },
 
     tooltip: {
@@ -135,35 +110,17 @@ const chartOptions = computed<ApexOptions>(() => ({
 
   yaxis: {
     labels: {
-      show: props.showY === true,
-      formatter: (val: number) =>
-        props.showY ? formatCompactNumber(val) : ''
-    },
-
-    axisTicks: {
-      show: props.showY === true
-    },
-
-    axisBorder: {
-      show: props.showY === true
+      formatter: (val: number) => formatCompactNumber(val)
     }
   },
-
   legend: {
-    show: false
+    show: false,
+    position: 'top',
+    horizontalAlign: 'right', 
   },
-
   tooltip: {
-    x: {
-      show: false,
-      format: 'dd MM'
-    },
-    y: {
-      formatter: (val: number) => formatCompactNumber(val),
-      title: { formatter: () => props.label }
-    }
+    x: { format: 'dd MMM HH:mm' }
   },
-
   fill: {
     type: 'gradient',
     gradient: {
@@ -173,15 +130,11 @@ const chartOptions = computed<ApexOptions>(() => ({
       stops: [0, 90, 100]
     }
   },
-
-  colors: ['#37C84F']
-}));
+  colors: ['#FB2904', '#EFB100']
+}))
 
 </script>
 
-<style scoped>
-div {
-  width: 100%;
-  margin-top: -15px;
-}
+<style lang="scss">
+
 </style>

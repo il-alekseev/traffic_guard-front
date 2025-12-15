@@ -6,7 +6,7 @@
           <h1 class="dashboard__title page-title">{{ dashboardTitle }}</h1>
           <div class="dashboard__subtitle-block page-subtitle-block">
             <p class="dashboard__subtitle page-subtitle">Обновлено {{ minutesAgo }} мин назад</p>
-            <div class="dashboard__refresh-btn page-refresh-btn" @click="fetchData">
+            <div class="dashboard__refresh-btn page-refresh-btn" @click="fetchDashboardData">
               <ReloadIcon />
             </div>
           </div>
@@ -60,7 +60,7 @@
             <template v-else-if="dashboardData.requests && dashboardData.requests.allowed" #DashboardStatistic>
               <RequestGraph :data="dashboardData.requests.allowed!" :label="'Разрешенные запросы'" :graphHeight="'90px'"/>
             </template>
-            <template v-else-if="!dashboardData.requests.allowed || dashboardData.requests.allowed.data.data == 0" #EmptyData>
+            <template v-else-if="!dashboardData.requests.allowed || dashboardData.requests.allowed.data.data.length == 0" #EmptyData>
               <p class="empty-data">Данные отсутствуют</p>
             </template>
           </DashboardRequestCard>
@@ -81,7 +81,7 @@
             <template v-else-if="dashboardData.requests && dashboardData.requests.before_block" #DashboardStatistic>
               <RequestGraph :data="dashboardData.requests.before_block!" :label="'Запросы до блокировки'" :graphHeight="'90px'"/>
             </template>
-            <template v-else-if="!dashboardData.requests.before_block || dashboardData.requests.before_block.data.data == 0" #EmptyData>
+            <template v-else-if="!dashboardData.requests.before_block || dashboardData.requests.before_block.data.data.length == 0" #EmptyData>
               <p class="empty-data">Данные отсутствуют</p>
             </template>
           </DashboardRequestCard>
@@ -102,7 +102,7 @@
             <template v-else-if="dashboardData.requests && dashboardData.requests.blocked" #DashboardStatistic>
               <RequestGraph :data="dashboardData.requests.blocked!" :label="'Заблокированные запросы'" :graphHeight="'90px'"/>
             </template>
-            <template v-else-if="!dashboardData.requests.blocked || dashboardData.requests.blocked.data.data == 0" #EmptyData>
+            <template v-else-if="!dashboardData.requests.blocked || dashboardData.requests.blocked.data.data.length == 0" #EmptyData>
               <p class="empty-data">Данные отсутствуют</p>
             </template>
           </DashboardRequestCard>
@@ -123,7 +123,7 @@
             <template v-else-if="dashboardData.requests && dashboardData.requests.pending" #DashboardStatistic>
               <RequestGraph :data="dashboardData.requests.pending!" :label="'Запросы в ожидании'" :graphHeight="'90px'"/>
             </template>
-            <template v-else-if="!dashboardData.requests.pending || dashboardData.requests.pending.data.data == 0" #EmptyData>
+            <template v-else-if="!dashboardData.requests.pending || dashboardData.requests.pending.data.data.length == 0" #EmptyData>
               <p class="empty-data">Данные отсутствуют</p>
             </template>
           </DashboardRequestCard>
@@ -156,7 +156,6 @@
             <p class="empty-data">Данные отсутствуют</p>
           </template>
         </DashboardCard>
-        
         <DashboardCard class="dashboard__anomalies" title="Аномалии" link="/sessions">
           <template v-if="loading.anomalies" #LoadingData>
             <p class="loading-data">Загрузка...</p>
@@ -172,18 +171,78 @@
             <p class="empty-data">Данные отсутствуют</p>
           </template>
         </DashboardCard>
-        <!--
-        <div class="dashboard__proh-activity">
-          DASHBOARD TOP PROH ACTIVITY
-        </div>
-        -->
-      </div>
-      <div class="devices-grid">
-        <!-- <div class="devices-stat">
-          STAT BY DEVICE
-        </div> -->
+        <DashboardCard class="dashboard__logs" title="События" link="/logs">
+          <template v-if="loading.logs" #LoadingData>
+            <p class="loading-data">Загрузка...</p>
+          </template>
+          <template v-else-if="fetchError.logs !== ''" #ErrorData>
+            <p class="error-data">{{ fetchError.logs }}</p>
+          </template>
+          <template v-else-if="dashboardData.logs && dashboardData.logs.length > 0" #DashboardStatistic>
+            <ShortLogs />
+            <!-- <DashboardTopDetections :detections="dashboardData.topDetections!" /> -->
+          </template>
+          <template v-else-if="!dashboardData.logs || dashboardData.logs.length == 0" #EmptyData>
+            <p class="empty-data">Данные отсутствуют</p>
+          </template>
+        </DashboardCard>
       </div>
     </div>
+
+    <template v-if="devices && devices?.length > 0">
+      <div class="dashboard-nodes__header">
+        <div class="dashboard-nodes__header-block">
+          <div class="dashboard-nodes__header-title-block">
+            <h2 class="dashboard-nodes__title page-title">Состояние узлов</h2>
+            <div class="dashboard-nodes__subtitle-block page-subtitle-block">
+              <p class="dashboard__subtitle page-subtitle">Обновлено {{ devicesMinutesAgo }} мин назад</p>
+              <div class="dashboard__refresh-btn page-refresh-btn" @click="fetchDevicesData">
+                <ReloadIcon />
+              </div>
+            </div>
+          </div>
+          <div class="dashboard-nodes__extra">
+            <DownloadButton />
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-nodes-data" v-if="devicesRequestsData.length > 0">
+        <div class="dashboard-grid">
+          <DashboardCard
+            v-for="deviceRequestData in devicesRequestsData"
+            class="dashboard-node__trafic" 
+            :title="deviceRequestData.name"
+            :titleClass="'ngfw-bagde ngfw-bagde_small'"
+            :titleStyle="{
+              backgroundColor: generateColor(deviceRequestData.name).background,
+              color: generateColor(deviceRequestData.name).color
+            }"
+            :legend="{input: {name: 'Заблокированные ресурсы', color: '#FB2904'}, output: {name: ' Ожидающие решения', color: '#EFB100'}}"
+            legend-pos="bottom-right"
+          >
+            <template #titleStatus>
+              <div class="device__status" :class="deviceRequestData.data.time.length > 0 ? 'active' : 'inactive'">
+                <div class="device__status-dot"></div>
+                <div class="device__status-text">{{ deviceRequestData.data.time.length > 0 ? 'Активен' : 'Не активен' }}</div>
+              </div>
+            </template>
+            <template v-if="devicesLoading[deviceRequestData.name + '_blocked'] || devicesLoading[deviceRequestData.name + '_pending']" #LoadingData>
+              <p class="loading-data">Загрузка...</p>
+            </template>
+            <template v-else-if="devicesFetchErrors[deviceRequestData.name + '_blocked'] !== '' ||  devicesFetchErrors[deviceRequestData.name + '_pending'] !== ''" #ErrorData>
+              <p class="error-data">Ошибка при получении данных</p>
+            </template>
+            <template v-else-if="deviceRequestData.data.blocked.length > 0 || deviceRequestData.data.pending.length > 0" #DashboardStatistic>
+              <RequestsSplineChart :data="deviceRequestData" :graphHeight="'133px'"/>
+            </template>
+            <template v-else-if="!dashboardData.trafic" #EmptyData>
+              <p class="empty-data">Данные отсутствуют</p>
+            </template>
+          </DashboardCard>
+        </div>
+      </div>
+    </template>
 
     <SideModal
       v-model="isShowFilters"
@@ -219,6 +278,10 @@ import DashboardAnomalies from '~/components/dashboard-grid/DashboardAnomalies.v
 import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
 import { getCurrentDateWithOffset, isValidDateString } from '~/helpers';
+import type { DashboardDeviceRequestsSplineChart, DashboardRequestsType } from '~/types/dashboard';
+import RequestsSplineChart from '~/components/dashboard-grid/devices/RequestsSplineChart.vue';
+import { useDeviceColors } from '~/composables/useDeviceColors';
+import ShortLogs from '~/components/dashboard-grid/ShortLogs.vue';
 
 
 const route = useRoute();
@@ -229,8 +292,16 @@ definePageMeta({
   middleware: ['auth']
 });
 
+const { generateColor } = useDeviceColors();
+
+const TOPS_COUNT = 5;
+const TRAFFIC_COUNT = 20;
+const REQUESTS_COUNT = 10;
+const REQUESTS_BY_DEVICE_COUNT = 5;
+
 const dashboardStore = useDashboardStore();
 const detectionsStore = useDetectionsStore();
+const deviceStore = useDevicesStore();
 
 const loading = ref({
   detectionsStat: true,
@@ -239,9 +310,9 @@ const loading = ref({
   trafic: true,
   requests: true,
   anomalies: false,
-  events: false,
+  logs: false,
   proh_activity: false,
-  devicesState: false
+  
 });
 const isLoading = computed(() => 
   Object.values(loading.value).some(status => status === true)
@@ -254,9 +325,8 @@ const fetchError = ref({
   trafic: '',
   requests: '',
   anomalies: '',
-  events: '',
+  logs: '',
   proh_activity: '',
-  devicesState: ''
 });
 const hasErrors = computed(() => 
   Object.values(fetchError.value).some(error => error !== '')
@@ -269,9 +339,8 @@ const dashboardData = computed(() => ({
   trafic: dashboardStore.trafic,
   requests: dashboardStore.requests,
   anomalies: dashboardStore.anomalies,
-  events: dashboardStore.events,
-  proh_activity: dashboardStore.events,
-  devicesState: dashboardStore.devicesState
+  logs: dashboardStore.logs,
+  proh_activity: dashboardStore.proh_activity,
 }));
 
 const dashboardTitle = computed<string>(() => {
@@ -299,16 +368,13 @@ const updateMinutesAgo = () => {
   minutesAgo.value = Math.floor(diffMs / 60000);
 }
 
-const fetchData = async () => {
+const fetchDashboardData = async () => {
   Object.keys(fetchError.value).forEach(key => {
     fetchError.value[key as keyof typeof fetchError.value] = '';
   });
 
   const from = dateRange.value.from?.toISOString();
   const to = dateRange.value.to?.toISOString();
-  const TOPS_COUNT = 5;
-  const TRAFFIC_COUNT = 20;
-  const REQUESTS_COUNT = 10;
   const hostname = deviceFilter.value;
 
   try {
@@ -376,10 +442,129 @@ const fetchData = async () => {
   updateMinutesAgo();
 }
 
-const dateRange = ref<{ from: Date | null; to: Date | null }>({
-  from: getCurrentDateWithOffset(-1, 'd'),
-  to: getCurrentDateWithOffset()
-})
+const devices = computed(() => deviceStore.devices);
+const devicesLoading = ref<Record<string, boolean>>({});
+const devicesFetchErrors = ref<Record<string, string>>({});
+const devicesRequestsData = ref<DashboardDeviceRequestsSplineChart[]>([]);
+
+const initDeviceLoading = () => {
+  if (!devices.value) return;
+
+  devicesLoading.value = {};
+  devices.value.forEach(device => {
+    devicesLoading.value[device + '_blocked'] = false;
+    devicesLoading.value[device + '_pending'] = false;
+  });
+};
+
+const initDevicesFetchErrors = () => {
+  if (!devices.value) return;
+
+  devicesFetchErrors.value = {};
+  devices.value.forEach(device => {
+    devicesFetchErrors.value[device + '_blocked'] = '';
+    devicesFetchErrors.value[device + '_pending'] = '';
+  });
+};
+
+const initDevicesGraphData = () => {
+  if (!devices.value) return;
+
+  devicesRequestsData.value = [];
+  devices.value.forEach(device => {
+    devicesRequestsData.value.push({
+      name: device,
+      data: {
+        blocked: [],
+        pending: [],
+        time: []
+      }
+    })
+  });
+}
+
+const prepareDevicesData = () => {
+  initDeviceLoading();
+  initDevicesFetchErrors();
+  initDevicesGraphData();
+}
+
+const lastDeviceUpdated = ref<Date | null>(null);
+const devicesMinutesAgo = ref(0);
+let devicesIntervalId: ReturnType<typeof setInterval> | null = null;
+
+const updateDevicesMinutesAgo = () => {
+  if (!lastDeviceUpdated.value) return;
+  const diffMs = Date.now() - lastDeviceUpdated.value.getTime();
+  devicesMinutesAgo.value = Math.floor(diffMs / 60000);
+}
+
+const fetchDeviceData = async (deviceName: string, type: 'blocked' | 'pending') => {
+  if (devicesLoading.value[deviceName + '_' + type]) return;
+
+  devicesLoading.value[deviceName + '_' + type] = true;
+  devicesFetchErrors.value[deviceName  + '_' + type] = '';
+
+  const from = dateRange.value.from?.toISOString();
+  const to = dateRange.value.to?.toISOString();
+
+  try {
+    const result = await dashboardStore.fetchRequest(from, to, type, REQUESTS_BY_DEVICE_COUNT, deviceName, false);
+
+    if (result.data) {
+      const deviceObj = devicesRequestsData.value.find((dev) => dev.name === deviceName);
+      if (!deviceObj) return;
+
+      if (result.type === 'requests_blocked') {
+        deviceObj.data.blocked = result.data.data;
+        deviceObj.data.time = result.data.time;
+      } else if (result.type === 'requests_pending') {
+        deviceObj.data.pending = result.data.data;
+        deviceObj.data.time = result.data.time;
+      }
+    }
+  } catch (error: any) {
+    console.error(`Ошибка при загрузке данных  по девайсу: ${deviceName}`, error);
+    devicesFetchErrors.value[deviceName  + '_' + type] = error?.message || 'Неизвестная ошибка';
+  } finally {
+    devicesLoading.value[deviceName + '_' + type] = false;
+  }
+}
+
+const fetchDevicesData = async () => {
+  console.log('devices.value', devices.value)
+
+  try {
+    if (!devices.value || devices.value.length === 0) {
+      return;
+    }
+    
+    prepareDevicesData();
+    
+    const promises: Promise<void>[] = [];
+    
+    devices.value.forEach(device => {
+      promises.push(fetchDeviceData(device, 'blocked'));
+      promises.push(fetchDeviceData(device, 'pending'));
+    });
+    
+    await Promise.all(promises);
+  } catch (error) {
+    console.error('Ошибка при загрузке данных устройств:', error);
+  }
+
+  lastDeviceUpdated.value = new Date();
+  updateDevicesMinutesAgo();
+}
+
+const fetchAllData = async () => {
+  try {
+     await fetchDashboardData();
+     await fetchDevicesData();
+  } catch (error) {
+    console.error('Ошибка при загрузке данных:', error);
+  }
+}
 
 const isShowFilters = ref(false);
 const showFilters = () => {
@@ -389,6 +574,10 @@ const closeFilters = () => {
   isShowFilters.value = false;
 }
 
+const dateRange = ref<{ from: Date | null; to: Date | null }>({
+  from: getCurrentDateWithOffset(-1, 'd'),
+  to: getCurrentDateWithOffset()
+})
 const deviceFilter = ref<string | undefined>();
 const filtersData = computed<DashboardFilter | null>(() => {
   const device = deviceFilter.value ?? '';
@@ -440,49 +629,45 @@ const handleSetFilters = (filtersData?: DashboardFilter) => {
 
 onMounted(async () => {
   initFiltersFromUrl();
-  await fetchData();
+  await fetchAllData();
   intervalId = setInterval(updateMinutesAgo, 60 * 1000);
+  devicesIntervalId = setInterval(updateDevicesMinutesAgo, 60 * 1000);
 });
+
 onUnmounted(() => {
   if (intervalId) clearInterval(intervalId);
+  if (devicesIntervalId) clearInterval(devicesIntervalId);
 })
-watch(
-  () => route.query,
-  async (newQuery, oldQuery) => {
-    const withoutCreate = (q: typeof newQuery) => {
-      const { create, ...rest } = q;
-      return JSON.stringify(rest);
-    };
 
-    if (withoutCreate(newQuery) === withoutCreate(oldQuery)) {
-      return;
-    }
-
-    initFiltersFromUrl();
-    await fetchData();
-  },
-  { deep: true }
-);
 watch(dateRange, () => {
   handleSetFilters();
 })
+
+watch(
+  () => route.query,
+  async () => {
+    initFiltersFromUrl();
+    fetchAllData();
+  },
+  { deep: true }
+);
 
 </script>
 
 <style lang="scss" scoped>
 
-.dashboard__header-block {
+.dashboard__header-block, .dashboard-nodes__header-block {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.dashboard__header-title-block {
+.dashboard__header-title-block, .dashboard-nodes__header-title-block {
   display: flex;
   gap: 0.75rem;
 }
 
-.dashboard__subtitle-block {
+.dashboard__subtitle-block, .dashboard-nodes__subtitle-block {
   align-self: flex-end;
 }
 
@@ -499,6 +684,12 @@ watch(dateRange, () => {
   flex-direction: column;
   overflow-x: auto;
   min-height: calc(100vh - 21rem);
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-nodes-data {
+  margin-top: 1.5rem;
+  display: flex;
 }
 
 .dashboard-grid {
@@ -601,6 +792,43 @@ watch(dateRange, () => {
   column-gap: 1rem;
   flex-wrap: wrap;
   max-width: 65rem;
+}
+
+.device__status {
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 6px;
+}
+
+.device__status.active {
+  background-color: #DCFCE7;
+  color: #008236;
+}
+.device__status.inactive {
+  background-color: #FFE2E2;
+  color: #C10007;
+}
+.device__status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.device__status.active .device__status-dot {
+  background-color: #00C950;
+}
+
+.device__status.inactive .device__status-dot {
+  background-color: #FB2C36;
+}
+
+.device__status-text {
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 
 </style>
