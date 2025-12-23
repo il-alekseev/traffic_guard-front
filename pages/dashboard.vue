@@ -165,7 +165,6 @@
           </template>
           <template v-else-if="dashboardData.anomalies && dashboardData.anomalies.host_anomalies.length > 0" #DashboardStatistic>
             <DashboardAnomalies :anomaliesData="dashboardData.anomalies!" :graphHeight="'260px'"/>
-            <!-- <DashboardTopDetections :detections="dashboardData.topDetections!" /> -->
           </template>
           <template v-else-if="!dashboardData.topDetections || dashboardData.topDetections.length == 0" #EmptyData>
             <p class="empty-data">Данные отсутствуют</p>
@@ -179,8 +178,7 @@
             <p class="error-data">{{ fetchError.logs }}</p>
           </template>
           <template v-else-if="dashboardData.logs && dashboardData.logs.length > 0" #DashboardStatistic>
-            <ShortLogs />
-            <!-- <DashboardTopDetections :detections="dashboardData.topDetections!" /> -->
+            <ShortLogs :data="dashboardData.logs" />
           </template>
           <template v-else-if="!dashboardData.logs || dashboardData.logs.length == 0" #EmptyData>
             <p class="empty-data">Данные отсутствуют</p>
