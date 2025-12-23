@@ -179,6 +179,7 @@ const handleChangeItemsPerPage = (value: number) => {
 
 .table__table-wrapper {
   overflow-x: auto;
+  flex: 1
 }
 
 .table__table {

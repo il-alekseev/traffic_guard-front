@@ -155,14 +155,14 @@ const toggleDropdown = () => {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    padding: 8px 12px;
+    padding: 0.5rem 0.75rem;
     background-color: #ffffff;
     border: 1px solid #D4D4D8;
     box-shadow: 0px 1px 2px 0px #0000000D;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
     font-weight: 500;
     color: #3F3F46;
     transition: all 0.2s ease;
@@ -203,12 +203,12 @@ const toggleDropdown = () => {
   &__dropdown-item {
     display: block;
     width: 100%;
-    padding: 12px;
+    padding: 0.75rem;
     border: none;
     background-color: #ffffff;
     text-align: left;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
     font-weight: 500;
     color: #3F3F46;
     cursor: pointer;

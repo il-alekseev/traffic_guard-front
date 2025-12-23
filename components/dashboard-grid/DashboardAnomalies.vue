@@ -179,8 +179,8 @@ const chartOptions = computed<ApexOptions>(() => ({
 .anomalies {
   width: 100%;
   height: 100%;
-  max-width: 464px;
-  max-height: 148px;
+  max-width: 29rem;
+  max-height: 9.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -199,8 +199,8 @@ const chartOptions = computed<ApexOptions>(() => ({
   align-items: center;
   justify-content: center;
   flex: 0 0 auto;
-  max-width: 252px;
-  margin-top: 140px;
+  max-width: 15.75rem;
+  margin-top: 8.75rem;
 }
 
 .anomalies__stats {
@@ -234,7 +234,7 @@ const chartOptions = computed<ApexOptions>(() => ({
   border-radius: 12px;
   min-width: 0;
   overflow: hidden;
-  max-height: 148px;
+  max-height: 9.25rem;
 }
 
 .anomalies__domains-list {

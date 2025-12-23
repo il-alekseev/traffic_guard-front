@@ -372,6 +372,10 @@ watch(
   width: 14.5rem;
 }
 
+:deep(.users__table) {
+  min-width: 77.5rem;
+}
+
 :deep(td.users__table-cell-login) {
   font-weight: 500;
   font-size: 1rem;
@@ -405,7 +409,7 @@ watch(
   width: 17.5%
 }
 :deep(.users__table-column-context) {
-  width: 17.5%
+  width: 20.5%
 }
 :deep(.users__table-column-full_name) {
   width: 25%;
@@ -414,7 +418,7 @@ watch(
   width: 25%;
 }
 :deep(.users__table-column-button) {
-  width: 5%;
+  width: 3%;
 }
 
 </style>

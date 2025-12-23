@@ -55,7 +55,7 @@ const isSelected = (value: ActionFilterOption['value']) => {
   display: flex;
   align-items: center;
   gap: 0.375rem;
-  padding: 7px 12px;
+  padding: 0.4375rem 0.75rem;
   background-color: #FFFFFF;
   border: 1px solid transparent;
   font-weight: 500;
@@ -87,8 +87,8 @@ const isSelected = (value: ActionFilterOption['value']) => {
 }
 
 .chip__indicator {
-  width: 6px;
-  height: 6px;
+  width: 0.375rem;
+  height: 0.375rem;
   border-radius: 50%;
   flex-shrink: 0;
 }

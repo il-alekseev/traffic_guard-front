@@ -316,10 +316,6 @@ watch(dateRange, () => {
   margin-bottom: 1.5rem;
 }
 
-.sessions__title {
-  min-width: 23rem;
-}
-
 .sessions__toolbar {
   width: 100%;
   display: flex;
@@ -382,8 +378,12 @@ watch(dateRange, () => {
   color: #2563EB;
 }
 
+:deep(.sessions__table) {
+  min-width: 77.5rem;
+}
+
 :deep(.sessions__table-column-status) {
-  width: 7%;
+  width: 8%;
 }
 :deep(.sessions__table-column-url) {
   width: 24%;
@@ -398,7 +398,7 @@ watch(dateRange, () => {
   width: 10%;
 }
 :deep(.sessions__table-column-type) {
-  width: 11%;
+  width: 9%;
 }
 :deep(.sessions__table-column-category) {
   width: 11%;

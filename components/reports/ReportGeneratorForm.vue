@@ -335,7 +335,7 @@ watch(() => props.success, (newValue) => {
   grid-template-columns: repeat(2, 1fr);
   gap: 0.75rem;
 
-  @media (max-width: 768px) {
+  @media (max-width: 1580px) {
     grid-template-columns: 1fr;
   }
 }
@@ -497,4 +497,11 @@ watch(() => props.success, (newValue) => {
   color: #EF4444;
   font-weight: 500;
 }
+
+@media screen and (max-width: 1920px) {
+  .quick-range-btn {
+    padding-inline: 0.5rem;
+  }
+}
+
 </style>

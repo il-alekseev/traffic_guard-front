@@ -689,6 +689,7 @@ watch(
 }
 
 .dashboard-grid {
+  width: 100%;
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
@@ -754,8 +755,8 @@ watch(
 }
 
 .dashboard__download-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   object-fit: contain;
 }
 
@@ -763,7 +764,7 @@ watch(
   font-size: 1rem;
   line-height: 1rem;
   color: #3F3F46;
-  min-height: 148px;
+  min-height: 9.25rem;
 }
 .error-data {
   font-size: 1rem;
@@ -773,13 +774,6 @@ watch(
 
 .dashboard__trafic {
   min-height: 14.25rem;
-}
-
-@media screen and (max-width: 1440px) {
-  .dashboard__trafic {
-    max-width: 1040px;
-    width: 100%;
-  }
 }
 
 .dashboard__requests {
@@ -825,6 +819,116 @@ watch(
   font-weight: 500;
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+
+@media screen and (max-width: 1920px) {
+  .dashboard__trafic {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .dashboard__requests {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .dashboard__request {
+    width: 49.3%;
+  }
+
+  .dashboard__top-categories {
+    width: 49.3%;
+  }
+
+  .dashboard__top-detections {
+    width: 49.3%;
+  }
+
+  .dashboard__anomalies {
+    width: 49.3%;
+  }
+
+  .dashboard__logs {
+    width: 49.3%;
+  }
+
+  .dashboard-node__trafic {
+    width: 49.3%;
+  }
+}
+
+@media screen and (max-width: 1500px) {
+  .dashboard__trafic {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .dashboard__requests {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .dashboard__request {
+    width: 49%;
+  }
+
+  .dashboard__top-categories {
+    width: 49%;
+  }
+
+  .dashboard__top-detections {
+    width: 49%;
+  }
+
+  .dashboard__anomalies {
+    width: 49%;
+  }
+
+  .dashboard__logs {
+    width: 49%;
+  }
+
+  .dashboard-node__trafic {
+    width: 49%;
+  }
+}
+
+
+@media screen and (max-width: 780px) {
+  .dashboard__trafic {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .dashboard__requests {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .dashboard__request {
+    width: 100%;
+  }
+
+  .dashboard__top-categories {
+    width: 100%;
+  }
+
+  .dashboard__top-detections {
+    width: 100%;
+  }
+
+  .dashboard__anomalies {
+    width: 100%;
+  }
+
+  .dashboard__logs {
+    width: 100%;
+  }
+
+  .dashboard-node__trafic {
+    width: 100%;
+  }
 }
 
 </style>
