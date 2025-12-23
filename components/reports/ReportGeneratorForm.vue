@@ -109,6 +109,10 @@
       
       {{ isSuccess ? 'Отчет сформирован' : 'Сформировать отчёт' }}
     </BaseButton>
+
+    <span class="form-error" v-if="props.error !== ''">
+      {{ props.error }}
+    </span>
   </form>
 </template>
 
@@ -127,11 +131,13 @@ import LoaderIcon from "~/assets/img/loader.svg"
 interface Props {
   loading?: boolean;
   success?: boolean;
+  error: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
-  success: false
+  success: false,
+  error: ''
 })
 
 const emit = defineEmits<{
@@ -482,5 +488,13 @@ watch(() => props.success, (newValue) => {
   height: 14px;
   color: #DBEAFE;
   display: block;
+}
+
+.form-error {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #EF4444;
+  font-weight: 500;
 }
 </style>
