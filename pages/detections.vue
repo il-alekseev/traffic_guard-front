@@ -579,7 +579,7 @@ watch(dateRange, () => {
   margin-top: auto;
 }
 
-@media screen and (max-width: 1920px) {
+@media screen and (max-width: 1919px) {
   .resource-card {
     max-width: 49%;
     width: 49%;

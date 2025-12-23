@@ -296,8 +296,11 @@ const TOPS_COUNT = 5;
 const TRAFFIC_COUNT = 20;
 const REQUESTS_COUNT = 10;
 const REQUESTS_BY_DEVICE_COUNT = 5;
+const LOGS_PAGE = 1;
+const LOGS_LIMIT = 20;
 
 const dashboardStore = useDashboardStore();
+const logsStore = useLogsStore();
 const detectionsStore = useDetectionsStore();
 const deviceStore = useDevicesStore();
 
@@ -430,6 +433,16 @@ const fetchDashboardData = async () => {
           loading.value.anomalies = false;
           fetchError.value.anomalies = error.message;
         }),
+
+      logsStore.fetchLogs(LOGS_PAGE, LOGS_LIMIT)
+        .then((res) => {
+          dashboardStore.logs = res.data;
+          loading.value.logs = false;
+        })
+        .catch((error: Error) => {
+          loading.value.logs = false;
+          fetchError.value.logs = error.message;
+        })
     ]);
 
   } catch (error) {
@@ -822,7 +835,7 @@ watch(
 }
 
 
-@media screen and (max-width: 1920px) {
+@media screen and (max-width: 1919px) {
   .dashboard__trafic {
     max-width: 100%;
     width: 100%;
