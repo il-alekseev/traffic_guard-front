@@ -346,8 +346,8 @@ onMounted( async () => {
 
 .reports__empty-img {
   align-self: center;
-  width: 88px;
-  height: 88px;
+  width: 5.5rem;
+  height: 5.5rem;
   display: flex;
   justify-content: center;
   align-items: center;

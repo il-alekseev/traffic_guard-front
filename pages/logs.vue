@@ -35,6 +35,11 @@
           {{ value ? value : '–' }}
         </span>
       </template>
+      <template #cell-event_type="{ value }">
+        <span class="logs__table-cell-event_type" :class="getEventTypeClass(value)">
+          {{ value ? value : '–' }}
+        </span>
+      </template>
       <template #cell-timestamp="{ value }">
         <span class="logs__table-cell-timestamp">
           {{ new Date(value).toLocaleString('ru-RU', {
@@ -44,6 +49,16 @@
             hour: '2-digit',
             minute: '2-digit'
           }) }}
+        </span>
+      </template>
+      <template #cell-user_name="{ value }">
+        <span class="logs__table-cell-user_name">
+          {{ value ? value : '–' }}
+        </span>
+      </template>
+      <template #cell-description="{ value }">
+        <span class="logs__table-cell-description">
+          {{ value ? value : '–' }}
         </span>
       </template>
       <template #action-button="{ item }">
@@ -76,6 +91,7 @@ import BaseTable from '~/components/ui/BaseTable.vue';
 import FilterForm from '~/components/filters/LogsFilterForm.vue';
 import ContextMenuDotsIcon from '~/assets/img/context-menu-btn.svg';
 import type { Log, LogFilter, LogTable } from '~/types/logs';
+import { getEventTypeClass, getRoleDisplayName } from '~/helpers';
 
 
 definePageMeta({
@@ -94,10 +110,10 @@ const fetchError = ref('');
 const logs = ref<Log[]>([]);
 const columns = [
   { key: 'id', label: 'ID' },
-  { key: 'status', label: 'Статус' },
+  { key: 'event_type', label: 'Тип операции' },
   { key: 'timestamp', label: 'Дата и время' },
   { key: 'entity', label: 'Источник' },
-  { key: 'user', label: 'Пользователь' },
+  { key: 'user_name', label: 'Пользователь' },
   { key: 'description', label: 'Описание' },
 ];
 const currentPage = ref(1);
@@ -171,7 +187,7 @@ const filtersData = computed<LogFilter | null>(() => {
   }
 
   return {
-    role: { id: role, name: role },
+    role: { id: role, name: getRoleDisplayName(role) },
     contextId: { id: context, name: context },
   };
 });
@@ -234,7 +250,7 @@ watch(
 );
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .logs__header {
   display: flex;
   gap: 1.5rem;
@@ -247,10 +263,10 @@ watch(
   gap: 0.5rem;
 }
 
-:deep(.logs__table-cell-description),
-:deep(.logs__table-cell-timestamp) {
-  color: #3F3F46;
+:deep(.logs__table) {
+  min-width: 77.5rem;
 }
+
 
 :deep(.logs__table-cell-user) {
   color: #2563EB;
@@ -263,7 +279,7 @@ watch(
 }
 
 :deep(.logs__table-column-id) {
-  width: 9%;
+  width: 5%;
 }
 :deep(.logs__table-column-status) {
   width: 7%;
@@ -278,9 +294,54 @@ watch(
   width: 14%;
 }
 :deep(.logs__table-column-description) {
-  width: 40%;
+  width: 44%;
 }
 :deep(.logs__table-column-button) {
   width: 7%;
+}
+
+.logs__table-cell-description {
+  color: #3F3F46;
+}
+
+.logs__table-cell-timestamp {
+  color: #3F3F46;
+}
+
+.logs__table-cell-user_name {
+  color: #2563EB;
+}
+
+.logs-event-type-badge_greeen {
+  max-width: fit-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  color: #008236;
+  background-color: #DCFCE7;
+}
+
+.logs-event-type-badge_red {
+  max-width: fit-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  color: #C10007;
+  background-color: #FFE2E2;
+}
+
+.logs-event-type-badge_yellow {
+  max-width: fit-content;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  color: #894B00;
+  background-color: #FEF9C2;
 }
 </style>

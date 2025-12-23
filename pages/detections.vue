@@ -545,8 +545,8 @@ watch(dateRange, () => {
 }
 
 .detections__download-btn svg {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   object-fit: contain;
 }
 
@@ -576,7 +576,26 @@ watch(dateRange, () => {
 }
 
 .detectios__pagination {
-  margin-top: 1rem;
+  margin-top: auto;
 }
+
+@media screen and (max-width: 1920px) {
+  .resource-card {
+    max-width: 49%;
+    width: 49%;
+  }
+
+  .detections-data {
+    min-height: calc(100vh - 20rem);
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  .detections-data {
+    min-height: calc(100vh - 13rem);
+  }
+}
+
+
 
 </style>

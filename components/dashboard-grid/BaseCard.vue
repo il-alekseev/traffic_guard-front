@@ -63,7 +63,7 @@ const isTopLegend = computed(() => {
 
 <style scoped lang="scss">
 .dashboard-card {
-  min-width: 512px;
+  min-width: 32rem;
   background: #fff;
   border-radius: 12px;
   padding: 1.5rem;
@@ -156,8 +156,8 @@ a.details-btn {
 }
 
 .legend__dot {
-  width: 9px;
-  height: 9px;
+  width: 0.5625rem;
+  height: 0.5625rem;
   border-radius: 50%;
   flex-shrink: 0;
   border: 1.7px solid;

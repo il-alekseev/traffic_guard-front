@@ -239,7 +239,7 @@ watch(
 
 .change-password-form__actions {
   display: flex;
-  gap: 12px;
+  gap: 0.75rem;
   margin-top: auto;
 }
 

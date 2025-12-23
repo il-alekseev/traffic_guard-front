@@ -104,7 +104,6 @@ export const useReportsStore = defineStore("reports", {
           throw new Error("Не удалось получить отчёт");
         }
       } catch (error: any) {
-        console.log('strore error', error)
         throw new Error(error.message || "Ошибка при получении отчёта");
       }
     }

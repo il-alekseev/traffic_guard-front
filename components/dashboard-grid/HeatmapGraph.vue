@@ -84,8 +84,8 @@ onMounted(() => {
   .apexcharts-heatmap-rect {
     rx: 2px;
     ry: 2px;
-    width: 16px;
-    height: 16px;
+    width: 1rem;
+    height: 1rem;
   }
 }
 </style>

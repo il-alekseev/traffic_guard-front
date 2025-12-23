@@ -168,6 +168,19 @@ export function getBadgeClassByStatus(status: SessionStatus): string {
   }
 }
 
+export function getEventTypeClass(type: 'CREATE' | 'UPDATE' | 'DELETE'): string {
+  switch (type) {
+    case ('CREATE'):
+      return 'logs-event-type-badge_greeen'
+    case ('DELETE'):
+      return 'logs-event-type-badge_red'
+    case ('UPDATE'):
+      return 'logs-event-type-badge_yellow'
+    default:
+      return 'logs-event-type-badge_yellow'
+  }
+}
+
 export const getNgfwBadgeClass = (ngfw: number) => {
   return `sessions__table-cell__badge`;
 };
