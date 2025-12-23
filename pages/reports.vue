@@ -5,7 +5,7 @@
         Генератор отчётов
       </div>
       <div class="reports__config-form">
-        <ReportForm @submit="getReport" :loading="formLoading" :success="!formLoading" />
+        <ReportForm @submit="getReport" :loading="formLoading" :success="!formLoading && formSucces" :error="formError" />
       </div>
     </div>
     <div class="reports__data">

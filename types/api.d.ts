@@ -5,6 +5,7 @@ export interface ApiRequestOptions extends RequestInit {
 
 export interface ApiResponse<T = any> {
   data: T;
+  payload?: any;
   status: number;
   headers: Headers;
 }
