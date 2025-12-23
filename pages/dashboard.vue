@@ -532,8 +532,6 @@ const fetchDeviceData = async (deviceName: string, type: 'blocked' | 'pending') 
 }
 
 const fetchDevicesData = async () => {
-  console.log('devices.value', devices.value)
-
   try {
     if (!devices.value || devices.value.length === 0) {
       return;
