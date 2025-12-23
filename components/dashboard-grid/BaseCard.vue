@@ -1,13 +1,13 @@
 <template>
   <div class="dashboard-card">
-    <div v-if="props.legend && isTopLegend" class="card__header">
+    <div v-if="isTopLegend" class="card__header">
       <div class="card__header-content">
         <h3 class="card__title" :class="props.titleClass" :style="props.titleStyle">{{ title }}</h3>
         <NuxtLink v-if="props.link" :to="link" class="details-btn">
           Подробнее
         </NuxtLink>
       </div>
-      <div :class="['chart-legend', `chart-legend--${legendPos}`]">
+      <div v-if="props.legend" :class="['chart-legend', `chart-legend--${legendPos}`]">
         <div v-for="(item, key) in props.legend" :key="key" class="legend__item">
           <div class="legend__dot" :style="{ borderColor: item.color }"></div>
           <div class="legend__name">{{ item.name }}</div>
@@ -85,6 +85,7 @@ const isTopLegend = computed(() => {
   align-items: center;
   gap: 1rem;
   flex-grow: 1;
+  justify-content: space-between;
 }
 
 .card__title {
