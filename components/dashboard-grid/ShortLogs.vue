@@ -5,10 +5,9 @@
         <component :is="getIconByLogItem(data.entity)" />
       </div>
       <div class="log__text">
+        <span class="log__user-name">{{ data.user_name }}:</span>
         {{ data.description }}
-      </div>
-      <div class="log__time">
-        {{ getTimeByLogItem(data.timestamp) }}
+        <span class="log__time"> {{ getTimeByLogItem(data.timestamp) }}</span>
       </div>
     </div>
   </div>
@@ -75,7 +74,7 @@ const getTimeByLogItem = (timestamp: string): string => {
 
 .log {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
   padding: 1rem 0;
   position: relative;
@@ -84,7 +83,7 @@ const getTimeByLogItem = (timestamp: string): string => {
     &::before {
       content: '';
       position: absolute;
-      left: 1.25rem;
+      left: 1rem;
       top: 3rem;
       bottom: -1rem;
       width: 2px;
@@ -109,22 +108,27 @@ const getTimeByLogItem = (timestamp: string): string => {
       height: 1rem;
     }
   }
+
+  &__user-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25;
+    color: #27272A;
+  }
   
   &__text {
     flex: 1;
-    font-size: 1rem;
+    font-size: 0.875rem;
     font-weight: 400;
     line-height: 1.25;
     color: #3F3F46;
-    padding-top: 0.5rem;
   }
   
   &__time {
     flex-shrink: 0;
-    font-size: 1rem;
+    font-size: 0.875rem;;
     line-height: 1.25rem;
     color: #A1A1AA;
-    padding-top: 1rem;
     white-space: nowrap;
   }
 }
