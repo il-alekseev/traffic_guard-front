@@ -3,7 +3,7 @@ import { useNuxtApp } from "#app";
 import type { defaultResponse } from "~/types/api";
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
-import type { DashboardAnomalies, DashboardRequestObj, DashboardRequests, DashboardRequestsType, DashboardState, DashboardTraffic, TopCategories, TopDetections } from "~/types/dashboard";
+import type { DashboardAnomalies, DashboardProhActivity, DashboardRequestObj, DashboardRequests, DashboardRequestsType, DashboardState, DashboardTraffic, TopCategories, TopDetections } from "~/types/dashboard";
 
 
 export const useDashboardStore = defineStore("dashboard", {
@@ -308,5 +308,51 @@ export const useDashboardStore = defineStore("dashboard", {
         throw new Error(error.message || "Ошибка при получении топа аномалий");
       }
     },
+
+    async fetchProhActivity(from: string = 'now-10m', to: string = 'now', hostname?: string): Promise<DashboardProhActivity> {
+      const userStore = useUserStore();
+      try {
+        await userStore.ensureValidToken();
+      } catch {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось получить график запрещенной активности. Пользователь неавторизован",
+        );
+      }
+
+      const token = useCookie('auth_token').value;
+
+      if (!token) {
+        userStore.clearToken();
+        throw new Error(
+          "Не удалось получить график запрещенной активности. Пользователь неавторизован",
+        );
+      }
+
+      try {
+        const { $api } = useNuxtApp();
+
+        const params: Record<string, string | number> = {
+          from,
+          to,
+          ...(hostname ? { hostname } : {}),
+        };
+
+        const result = await $api.get<DashboardProhActivity>('/analytics/dashboards/proh_activity', {
+          params,
+          ...getTokenHeaders(token)
+        });
+
+
+        if (result) {
+          this.proh_activity = result;
+          return result;
+        } else {
+          throw new Error("Не удалось получить график запрещенной активности");
+        }
+      } catch (error: any) {
+        throw new Error(error.message || "Ошибка при получении графика запрещенной активности");
+      }
+    }
   },
 });

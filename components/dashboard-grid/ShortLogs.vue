@@ -26,7 +26,7 @@ const getIconByLogItem = (entity: 'user' | 'context') => {
   if (entity === 'user') return BaseUserCircleIcon
   if (entity === 'context') return DataDocumentIcon
 
-  return null
+  return BaseUserCircleIcon
 }
 
 const getTimeByLogItem = (timestamp: string): string => {
@@ -50,9 +50,13 @@ const getTimeByLogItem = (timestamp: string): string => {
   display: flex;
   flex-direction: column;
   gap: 0;
-
+  max-width: 29rem;
   max-height: 12.5rem;
   overflow-y: auto;
+
+  @media screen and (max-width: 1919px) {
+    max-width: unset;
+  }
 
   &::-webkit-scrollbar {
     width: 0.375rem;

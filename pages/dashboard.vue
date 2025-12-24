@@ -184,6 +184,20 @@
             <p class="empty-data">Данные отсутствуют</p>
           </template>
         </DashboardCard>
+        <DashboardCard class="dashboard__proh-activity" title="График запрещенной активности">
+          <template v-if="loading.proh_activity" #LoadingData>
+            <p class="loading-data">Загрузка...</p>
+          </template>
+          <template v-else-if="fetchError.proh_activity !== ''" #ErrorData>
+            <p class="error-data">{{ fetchError.proh_activity }}</p>
+          </template>
+          <template v-else-if="dashboardData.proh_activity" #DashboardStatistic>
+            <HeatmapGraph :days="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']" :months="['Янв', 'Фев', 'Мар', 'Апр',  'Май', 'Июн',  'Июл', 'Авг',  'Сен', 'Окт',  'Дек']" :values="dashboardData.proh_activity" />
+          </template>
+          <template v-else-if="!dashboardData.logs || dashboardData.logs.length == 0" #EmptyData>
+            <p class="empty-data">Данные отсутствуют</p>
+          </template>
+        </DashboardCard>
       </div>
     </div>
 
@@ -280,6 +294,7 @@ import type { DashboardDeviceRequestsSplineChart, DashboardRequestsType } from '
 import RequestsSplineChart from '~/components/dashboard-grid/devices/RequestsSplineChart.vue';
 import { useDeviceColors } from '~/composables/useDeviceColors';
 import ShortLogs from '~/components/dashboard-grid/ShortLogs.vue';
+import HeatmapGraph from '~/components/dashboard-grid/HeatmapGraph.vue';
 
 
 const route = useRoute();
@@ -442,7 +457,16 @@ const fetchDashboardData = async () => {
         .catch((error: Error) => {
           loading.value.logs = false;
           fetchError.value.logs = error.message;
+        }),
+
+      dashboardStore.fetchProhActivity(from, to, hostname)
+        .then(() => {
+          loading.value.proh_activity = false;
         })
+        .catch((error: Error) => {
+          loading.value.proh_activity = false;
+          fetchError.value.proh_activity = error.message;
+        }),
     ]);
 
   } catch (error) {
@@ -789,6 +813,10 @@ watch(
   min-height: 14.25rem;
 }
 
+.dashboard__proh-activity {
+  width: 66.3%;
+}
+
 .dashboard__requests {
   display: flex;
   row-gap: 0.75rem;
@@ -834,12 +862,17 @@ watch(
   line-height: 1rem;
 }
 
-
 @media screen and (max-width: 1919px) {
   .dashboard__trafic {
     max-width: 100%;
     width: 100%;
   }
+
+  .dashboard__proh-activity {
+    max-width: 100%;
+    width: 100%;
+  }
+
 
   .dashboard__requests {
     max-width: 100%;
