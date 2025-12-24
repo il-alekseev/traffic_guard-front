@@ -2,7 +2,7 @@
   <div class="heatmap">
     <div class="heatmap__graph">
       <ClientOnly>
-        <VueApexCharts type="heatmap" :options="chartOptions" :series="series" />
+        <VueApexCharts type="heatmap" :options="chartOptions" :series="series" :height="props.height" />
       </ClientOnly>
     </div>
     <div class="heatmap__legend">
@@ -28,6 +28,7 @@ import type { ApexOptions } from 'apexcharts'
 type HeatmapValue = number
 
 type Props = {
+  height: string
   days: string[]
   months: string[]
   values: HeatmapValue[][]
