@@ -184,7 +184,7 @@
             <p class="empty-data">Данные отсутствуют</p>
           </template>
         </DashboardCard>
-        <DashboardCard class="dashboard__proh_activity" title="График запрещенной активности">
+        <DashboardCard class="dashboard__proh-activity" title="График запрещенной активности">
           <template v-if="loading.proh_activity" #LoadingData>
             <p class="loading-data">Загрузка...</p>
           </template>
@@ -813,6 +813,10 @@ watch(
   min-height: 14.25rem;
 }
 
+.dashboard__proh-activity {
+  width: 66.3%;
+}
+
 .dashboard__requests {
   display: flex;
   row-gap: 0.75rem;
@@ -863,6 +867,12 @@ watch(
     max-width: 100%;
     width: 100%;
   }
+
+  .dashboard__proh-activity {
+    max-width: 100%;
+    width: 100%;
+  }
+
 
   .dashboard__requests {
     max-width: 100%;
