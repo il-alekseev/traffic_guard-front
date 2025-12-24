@@ -76,6 +76,8 @@ export interface DashboardDeviceRequestsSplineChart {
   }
 }
 
+export type DashboardProhActivity = number[][];
+
 export interface DashboardState {
   topCategories: TopCategories | null;
   topDetections: TopDetections | null;
@@ -83,7 +85,7 @@ export interface DashboardState {
   requests: DashboardRequests,
   anomalies: DashboardAnomalies | null,
   logs: Log[] | null,
-  proh_activity: null,
+  proh_activity: DashboardProhActivity | null,
 }
 
 export interface DashboardActions {

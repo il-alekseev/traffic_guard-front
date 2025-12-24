@@ -21,7 +21,6 @@ type Props = {
 
 const props = defineProps<Props>()
 
-/** Правильный тип серии для heatmap */
 type HeatmapSeries = {
   name: string
   data: number[]
@@ -66,7 +65,6 @@ const chartOptions = ref<ApexOptions>({
   legend: { show: false }
 })
 
-/** Используем собственный тип */
 const series = ref<HeatmapSeries>([])
 
 onMounted(() => {
