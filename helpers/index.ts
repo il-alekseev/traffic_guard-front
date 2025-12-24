@@ -334,3 +334,11 @@ export const formatCompactNumber = (val: number, locale: string = 'ru'): string 
     maximumFractionDigits: 1
   }).format(val);
 };
+
+export const remToPx = (rem: number): number => {
+  const rootFontSize = parseFloat(
+    getComputedStyle(document.documentElement).fontSize
+  );
+
+  return rem * rootFontSize;
+}

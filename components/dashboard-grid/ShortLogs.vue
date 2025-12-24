@@ -82,6 +82,10 @@ const getTimeByLogItem = (timestamp: string): string => {
   gap: 1rem;
   padding: 1rem 0;
   position: relative;
+
+  &:first-child{
+    padding-top: 0;
+  }
   
   &:not(:last-child) {
     &::before {

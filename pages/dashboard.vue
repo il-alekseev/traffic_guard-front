@@ -36,7 +36,7 @@
             <p class="error-data">{{ fetchError.trafic }}</p>
           </template>
           <template v-else-if="dashboardData.trafic" #DashboardStatistic>
-            <DashboardTrafficChart :trafficData="dashboardData.trafic!" :graphHeight="'133px'"/>
+            <DashboardTrafficChart :trafficData="dashboardData.trafic!" :graphHeight="dashboardGraphHeight.DashboardTrafficChart"/>
           </template>
           <template v-else-if="!dashboardData.trafic" #EmptyData>
             <p class="empty-data">Данные отсутствуют</p>
@@ -58,7 +58,7 @@
               <p class="error-data">{{ fetchError.requests }}</p>
             </template>
             <template v-else-if="dashboardData.requests && dashboardData.requests.allowed" #DashboardStatistic>
-              <RequestGraph :data="dashboardData.requests.allowed!" :label="'Разрешенные запросы'" :graphHeight="'90px'"/>
+              <RequestGraph :data="dashboardData.requests.allowed!" :label="'Разрешенные запросы'" :graphHeight="dashboardGraphHeight.RequestGraph"/>
             </template>
             <template v-else-if="!dashboardData.requests.allowed || dashboardData.requests.allowed.data.data.length == 0" #EmptyData>
               <p class="empty-data">Данные отсутствуют</p>
@@ -79,7 +79,7 @@
               <p class="error-data">{{ fetchError.requests }}</p>
             </template>
             <template v-else-if="dashboardData.requests && dashboardData.requests.before_block" #DashboardStatistic>
-              <RequestGraph :data="dashboardData.requests.before_block!" :label="'Запросы до блокировки'" :graphHeight="'90px'"/>
+              <RequestGraph :data="dashboardData.requests.before_block!" :label="'Запросы до блокировки'" :graphHeight="dashboardGraphHeight.RequestGraph"/>
             </template>
             <template v-else-if="!dashboardData.requests.before_block || dashboardData.requests.before_block.data.data.length == 0" #EmptyData>
               <p class="empty-data">Данные отсутствуют</p>
@@ -100,7 +100,7 @@
               <p class="error-data">{{ fetchError.requests }}</p>
             </template>
             <template v-else-if="dashboardData.requests && dashboardData.requests.blocked" #DashboardStatistic>
-              <RequestGraph :data="dashboardData.requests.blocked!" :label="'Заблокированные запросы'" :graphHeight="'90px'"/>
+              <RequestGraph :data="dashboardData.requests.blocked!" :label="'Заблокированные запросы'" :graphHeight="dashboardGraphHeight.RequestGraph"/>
             </template>
             <template v-else-if="!dashboardData.requests.blocked || dashboardData.requests.blocked.data.data.length == 0" #EmptyData>
               <p class="empty-data">Данные отсутствуют</p>
@@ -121,7 +121,7 @@
               <p class="error-data">{{ fetchError.requests }}</p>
             </template>
             <template v-else-if="dashboardData.requests && dashboardData.requests.pending" #DashboardStatistic>
-              <RequestGraph :data="dashboardData.requests.pending!" :label="'Запросы в ожидании'" :graphHeight="'90px'"/>
+              <RequestGraph :data="dashboardData.requests.pending!" :label="'Запросы в ожидании'" :graphHeight="dashboardGraphHeight.RequestGraph"/>
             </template>
             <template v-else-if="!dashboardData.requests.pending || dashboardData.requests.pending.data.data.length == 0" #EmptyData>
               <p class="empty-data">Данные отсутствуют</p>
@@ -164,7 +164,7 @@
             <p class="error-data">{{ fetchError.anomalies }}</p>
           </template>
           <template v-else-if="dashboardData.anomalies && dashboardData.anomalies.host_anomalies.length > 0" #DashboardStatistic>
-            <DashboardAnomalies :anomaliesData="dashboardData.anomalies!" :graphHeight="'260px'"/>
+            <DashboardAnomalies :anomaliesData="dashboardData.anomalies!" :graphHeight="dashboardGraphHeight.DashboardAnomalies"/>
           </template>
           <template v-else-if="!dashboardData.topDetections || dashboardData.topDetections.length == 0" #EmptyData>
             <p class="empty-data">Данные отсутствуют</p>
@@ -192,7 +192,7 @@
             <p class="error-data">{{ fetchError.proh_activity }}</p>
           </template>
           <template v-else-if="dashboardData.proh_activity" #DashboardStatistic>
-            <HeatmapGraph :days="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']" :months="['Янв', 'Фев', 'Мар', 'Апр',  'Май', 'Июн',  'Июл', 'Авг',  'Сен', 'Окт',  'Дек']" :values="dashboardData.proh_activity" />
+            <HeatmapGraph :height="dashboardGraphHeight.HeatmapGraph" :days="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']" :months="['Янв', 'Фев', 'Мар', 'Апр',  'Май', 'Июн',  'Июл', 'Авг',  'Сен', 'Окт',  'Дек']" :values="dashboardData.proh_activity" />
           </template>
           <template v-else-if="!dashboardData.logs || dashboardData.logs.length == 0" #EmptyData>
             <p class="empty-data">Данные отсутствуют</p>
@@ -246,7 +246,7 @@
               <p class="error-data">Ошибка при получении данных</p>
             </template>
             <template v-else-if="deviceRequestData.data.blocked.length > 0 || deviceRequestData.data.pending.length > 0" #DashboardStatistic>
-              <RequestsSplineChart :data="deviceRequestData" :graphHeight="'133px'"/>
+              <RequestsSplineChart :data="deviceRequestData" :graphHeight="dashboardGraphHeight.RequestsSplineChart"/>
             </template>
             <template v-else-if="!dashboardData.trafic" #EmptyData>
               <p class="empty-data">Данные отсутствуют</p>
@@ -289,7 +289,7 @@ import DashboardTrafficChart from "~/components/dashboard-grid/TrafficSplineChar
 import DashboardAnomalies from '~/components/dashboard-grid/DashboardAnomalies.vue';
 import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
-import { getCurrentDateWithOffset, isValidDateString } from '~/helpers';
+import { getCurrentDateWithOffset, isValidDateString, remToPx } from '~/helpers';
 import type { DashboardDeviceRequestsSplineChart, DashboardRequestsType } from '~/types/dashboard';
 import RequestsSplineChart from '~/components/dashboard-grid/devices/RequestsSplineChart.vue';
 import { useDeviceColors } from '~/composables/useDeviceColors';
@@ -357,6 +357,16 @@ const dashboardData = computed(() => ({
   anomalies: dashboardStore.anomalies,
   logs: dashboardStore.logs,
   proh_activity: dashboardStore.proh_activity,
+}));
+
+const rootFontSize = useRootFontSize();
+
+const dashboardGraphHeight = computed(() => ({
+  DashboardAnomalies: rootFontSize.value * 16.25 + 'px',
+  HeatmapGraph: rootFontSize.value * 9.625 + 'px',
+  RequestGraph: rootFontSize.value * 5.625 + 'px',
+  DashboardTrafficChart: rootFontSize.value * 8.25 + 'px',
+  RequestsSplineChart: rootFontSize.value * 8.25 + 'px',
 }));
 
 const dashboardTitle = computed<string>(() => {
@@ -814,7 +824,8 @@ watch(
 }
 
 .dashboard__proh-activity {
-  width: 66.3%;
+  max-width: 65rem;
+  width: 100%;
 }
 
 .dashboard__requests {
@@ -860,6 +871,22 @@ watch(
   font-weight: 500;
   font-size: 0.75rem;
   line-height: 1rem;
+}
+
+.dashboard__logs {
+  padding-bottom: 0;
+}
+
+@media screen and (min-width: 1921px) {
+  .dashboard__trafic {
+    max-width: 64rem;
+    width: 100%;
+  }
+
+  .dashboard__proh-activity {
+    max-width: 131rem;
+    width: 100%;
+  }
 }
 
 @media screen and (max-width: 1919px) {

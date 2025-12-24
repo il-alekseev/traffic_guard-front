@@ -184,6 +184,11 @@ const chartOptions = computed<ApexOptions>(() => ({
   display: flex;
   align-items: center;
   justify-content: center;
+
+  @media screen and (max-width: 1919px) {
+    max-width: unset;
+  }
+
 }
 
 .anomalies__container {
@@ -191,6 +196,10 @@ const chartOptions = computed<ApexOptions>(() => ({
   gap: 0.75rem;
   width: 100%;
   height: 100%;
+
+  @media screen and (max-width: 1919px) {
+    justify-content: space-between;
+  }
 }
 
 .anomalies__chart-wrapper {
@@ -235,6 +244,11 @@ const chartOptions = computed<ApexOptions>(() => ({
   min-width: 0;
   overflow: hidden;
   max-height: 9.25rem;
+  max-width: 12.5rem;
+
+  @media screen and (max-width: 1919px) {
+    max-width: unset;
+  }
 }
 
 .anomalies__domains-list {
