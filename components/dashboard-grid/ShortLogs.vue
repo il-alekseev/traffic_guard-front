@@ -51,11 +51,16 @@ const getTimeByLogItem = (timestamp: string): string => {
   flex-direction: column;
   gap: 0;
   max-width: 29rem;
-  max-height: 12.5rem;
+  max-height: 14rem;
   overflow-y: auto;
+
+  @media screen and (min-width: 1921px) {
+    max-width: 100%;
+  }
 
   @media screen and (max-width: 1919px) {
     max-width: unset;
+    max-height: 11.5rem;
   }
 
   &::-webkit-scrollbar {

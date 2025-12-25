@@ -76,6 +76,12 @@ export interface DashboardDeviceRequestsSplineChart {
   }
 }
 
+export interface DashboardProhActivityResponse {
+  count: number,
+  data: number[],
+  time_since: string
+}
+
 export type DashboardProhActivity = number[][];
 
 export interface DashboardState {
@@ -85,7 +91,7 @@ export interface DashboardState {
   requests: DashboardRequests,
   anomalies: DashboardAnomalies | null,
   logs: Log[] | null,
-  proh_activity: DashboardProhActivity | null,
+  proh_activity: DashboardProhActivityResponse | null,
 }
 
 export interface DashboardActions {

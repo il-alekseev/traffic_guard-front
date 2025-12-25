@@ -192,7 +192,12 @@
             <p class="error-data">{{ fetchError.proh_activity }}</p>
           </template>
           <template v-else-if="dashboardData.proh_activity" #DashboardStatistic>
-            <HeatmapGraph :height="dashboardGraphHeight.HeatmapGraph" :days="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']" :months="['Янв', 'Фев', 'Мар', 'Апр',  'Май', 'Июн',  'Июл', 'Авг',  'Сен', 'Окт',  'Дек']" :values="dashboardData.proh_activity" />
+            <HeatmapGraph
+              :values="dashboardData.proh_activity.data"
+              :height="dashboardGraphHeight.HeatmapGraph" 
+              :days="['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']" 
+              :months="['Янв', 'Фев', 'Мар', 'Апр',  'Май', 'Июн',  'Июл', 'Авг',  'Сен', 'Окт',  'Дек']" 
+            />
           </template>
           <template v-else-if="!dashboardData.logs || dashboardData.logs.length == 0" #EmptyData>
             <p class="empty-data">Данные отсутствуют</p>
@@ -313,6 +318,7 @@ const REQUESTS_COUNT = 10;
 const REQUESTS_BY_DEVICE_COUNT = 5;
 const LOGS_PAGE = 1;
 const LOGS_LIMIT = 20;
+const YEAR = new Date().getFullYear().toString();
 
 const dashboardStore = useDashboardStore();
 const logsStore = useLogsStore();
@@ -363,7 +369,7 @@ const rootFontSize = useRootFontSize();
 
 const dashboardGraphHeight = computed(() => ({
   DashboardAnomalies: rootFontSize.value * 16.25 + 'px',
-  HeatmapGraph: rootFontSize.value * 9.625 + 'px',
+  HeatmapGraph: rootFontSize.value * 11.5 + 'px',
   RequestGraph: rootFontSize.value * 5.625 + 'px',
   DashboardTrafficChart: rootFontSize.value * 8.25 + 'px',
   RequestsSplineChart: rootFontSize.value * 8.25 + 'px',
@@ -469,7 +475,7 @@ const fetchDashboardData = async () => {
           fetchError.value.logs = error.message;
         }),
 
-      dashboardStore.fetchProhActivity(from, to, hostname)
+      dashboardStore.fetchProhActivity(YEAR, hostname)
         .then(() => {
           loading.value.proh_activity = false;
         })
@@ -878,14 +884,44 @@ watch(
 }
 
 @media screen and (min-width: 1921px) {
+  .dashboard-grid {
+    max-width: 130rem;
+  }
+
   .dashboard__trafic {
-    max-width: 64rem;
+    max-width: 100%;
     width: 100%;
   }
 
   .dashboard__proh-activity {
-    max-width: 131rem;
+    max-width: 100%;
     width: 100%;
+  }
+
+  .dashboard__requests {
+    max-width: 49%;
+    width: 100%;
+  }
+
+  .dashboard__request {
+    max-width: 49%;
+    width: 100%;
+  }
+
+  .dashboard__top-categories {
+    width: 24.65%;
+  }
+
+  .dashboard__top-detections {
+    width: 24.65%;
+  }
+
+  .dashboard__anomalies {
+    width: 49.5%;
+  }
+
+  .dashboard__logs {
+    width: 49.5%;
   }
 }
 
@@ -966,7 +1002,6 @@ watch(
     width: 49%;
   }
 }
-
 
 @media screen and (max-width: 780px) {
   .dashboard__trafic {

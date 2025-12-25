@@ -3,7 +3,7 @@ import { useNuxtApp } from "#app";
 import type { defaultResponse } from "~/types/api";
 import { useUserStore } from "./user";
 import { getTokenHeaders } from "~/helpers";
-import type { DashboardAnomalies, DashboardProhActivity, DashboardRequestObj, DashboardRequests, DashboardRequestsType, DashboardState, DashboardTraffic, TopCategories, TopDetections } from "~/types/dashboard";
+import type { DashboardAnomalies, DashboardProhActivity, DashboardProhActivityResponse, DashboardRequestObj, DashboardRequests, DashboardRequestsType, DashboardState, DashboardTraffic, TopCategories, TopDetections } from "~/types/dashboard";
 
 
 export const useDashboardStore = defineStore("dashboard", {
@@ -309,7 +309,7 @@ export const useDashboardStore = defineStore("dashboard", {
       }
     },
 
-    async fetchProhActivity(from: string = 'now-10m', to: string = 'now', hostname?: string): Promise<DashboardProhActivity> {
+    async fetchProhActivity(year: string, hostname?: string): Promise<DashboardProhActivityResponse> {
       const userStore = useUserStore();
       try {
         await userStore.ensureValidToken();
@@ -333,12 +333,11 @@ export const useDashboardStore = defineStore("dashboard", {
         const { $api } = useNuxtApp();
 
         const params: Record<string, string | number> = {
-          from,
-          to,
+          year,
           ...(hostname ? { hostname } : {}),
         };
 
-        const result = await $api.get<DashboardProhActivity>('/analytics/dashboards/proh_activity', {
+        const result = await $api.get<DashboardProhActivityResponse>('/analytics/dashboards/proh-activity', {
           params,
           ...getTokenHeaders(token)
         });

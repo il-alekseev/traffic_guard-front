@@ -298,6 +298,21 @@ const chartOptions = computed<ApexOptions>(() => ({
   text-overflow: ellipsis;
 }
 
+@media screen and (min-width: 1921px) {
+  .anomalies {
+    max-width: 100%;
+  }
+
+  .anomalies__container {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .anomalies__domains-wrapper {
+    max-width: 35rem;
+  }
+}
+
 @media (max-width: 768px) {
   .anomalies__container {
     flex-direction: column;
