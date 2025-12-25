@@ -17,10 +17,9 @@ import VueApexCharts from 'vue3-apexcharts'
 import type { ApexOptions } from 'apexcharts'
 import { computed } from 'vue';
 import { formatCompactNumber } from '~/helpers';
-import type { Categories } from '~/types/categories';
 
 const props = defineProps<{
-  data: { name: Categories; value: number; color: string }[];
+  data: { name: string; value: number; color: string }[];
   height: string
 }>();
 
