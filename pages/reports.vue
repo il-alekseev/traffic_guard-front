@@ -90,6 +90,18 @@
         :deviceName="reportDataByDevice.hostname"
       />
 
+      <AnomaliesRating
+        v-if="reportData && reportData.top_anomalies_page.device_anomaly"
+        ref="anomaliesRatingPageRef"
+        :data="reportData.top_anomalies_page.device_anomaly"
+      />
+
+      <CategoriesRating
+        v-if="reportData && reportData.top_categories_page.categories"
+        ref="categoriesRatingAllNGFWPageRef"
+        :data="reportData.top_categories_page.categories"
+      />
+
       <CategoriesRating
         v-if="reportDataByDevice && reportDataByDevice.categories_page.categories"
         ref="categoriesRatingPageRef"
@@ -114,6 +126,7 @@ import AnalyticsTableAllNGFW from '~/components/report/AnalyticsTableAllNGFW.vue
 import AnomaliesTableAllNGFW from '~/components/report/AnomaliesTableAllNGFW.vue';
 import AnalyticsByDevice from '~/components/report/AnalyticsByDevice.vue'
 import AnomaliesTableByDevice from '~/components/report/AnomaliesTableByDevice.vue';
+import AnomaliesRating from '~/components/report/AnomaliesRating.vue';
 import CategoriesRating from '~/components/report/CategoriesRating.vue';
 
 
@@ -192,7 +205,7 @@ const getReport = async (formData: ReportFormData) => {
       
       await downloadReport(); 
       formLoading.value = false;
-      formSucces.value = true;
+      reportDataByDevice.value = null;
     } catch (error: any) {
       formLoading.value = false;
       formError.value = error;
@@ -206,7 +219,7 @@ const getReport = async (formData: ReportFormData) => {
       
       await downloadReport();
       formLoading.value = false;
-      formSucces.value = true;
+      reportData.value = null;
     } catch (error: any) {
       formLoading.value = false;
       formError.value = error;
@@ -218,6 +231,8 @@ const welcomePageRef = ref<InstanceType<typeof WelcomePage> | null>(null);
 const activityPageRef = ref<InstanceType<typeof ActivityPage> | null>(null);
 const analyticsPageRef = ref<InstanceType<typeof AnalyticsTableAllNGFW> | null>(null);
 const anomaliesPageRef = ref<InstanceType<typeof AnomaliesTableAllNGFW> | null>(null);
+const anomaliesRatingPageRef = ref<InstanceType<typeof AnomaliesRating> | null>(null);
+const categoriesRatingAllNGFWPageRef = ref<InstanceType<typeof CategoriesRating> | null>(null);
 
 const analiticsByDevicePageRef = ref<InstanceType<typeof AnalyticsByDevice> | null>(null);
 const anomaliesByDevicePageRef = ref<InstanceType<typeof AnomaliesTableByDevice> | null>(null);
@@ -248,6 +263,8 @@ const downloadReport = async () => {
       if (activityPageRef.value) pages.push({ ref: activityPageRef.value.$el, name: 'Activity' })
       if (analyticsPageRef.value)pages.push({ ref: analyticsPageRef.value.$el, name: 'Analytics' })
       if (anomaliesPageRef.value) pages.push({ ref: anomaliesPageRef.value.$el, name: 'Anomalies' })
+      if (anomaliesRatingPageRef.value) pages.push({ ref: anomaliesRatingPageRef.value.$el, name: 'Anomalies Rating' })
+      if (categoriesRatingAllNGFWPageRef.value) pages.push({ ref: categoriesRatingAllNGFWPageRef.value.$el, name: 'Categories Rating' })
     }
 
 
@@ -255,7 +272,7 @@ const downloadReport = async () => {
       const page = pages[i]
 
       const canvas = await html2canvas(page.ref, {
-        scale: 3,
+        scale: 2,
         useCORS: true,
         logging: false,
       })
