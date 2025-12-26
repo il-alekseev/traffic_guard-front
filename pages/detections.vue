@@ -477,7 +477,6 @@ watch(dateRange, () => {
   display: flex;
   flex-direction: column;
   overflow-x: auto;
-  min-height: calc(100vh - 21rem);
 }
 
 .resources-grid {
@@ -576,7 +575,7 @@ watch(dateRange, () => {
 }
 
 .detectios__pagination {
-  margin-top: auto;
+  margin-top: 1rem;
 }
 
 @media screen and (max-width: 1919px) {
@@ -584,16 +583,10 @@ watch(dateRange, () => {
     max-width: 49%;
     width: 49%;
   }
-
-  .detections-data {
-    min-height: calc(100vh - 20rem);
-  }
 }
 
 @media screen and (max-width: 1440px) {
-  .detections-data {
-    min-height: calc(100vh - 13rem);
-  }
+
 }
 
 

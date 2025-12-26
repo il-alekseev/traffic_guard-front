@@ -143,12 +143,9 @@ const columns = [
 ];
 const currentPage = ref(1);
 const itemsPerPage = ref(11);
-const tableMetaData = ref<{ total: number; pages: number } | null>(null);
-const totalSessions = computed(() =>
-  tableMetaData.value ? tableMetaData.value.total : sessions.value.length
-);
-const totalPages = computed(() =>
-  tableMetaData.value ? tableMetaData.value.pages : 1
+const totalSessions = ref();
+const totalPages = computed(() => 
+  Math.ceil((totalSessions.value || 0) / (itemsPerPage.value || 1))
 );
 
 const fetchSessions = async () => {
@@ -172,7 +169,7 @@ const fetchSessions = async () => {
 
     if (result) {
       sessions.value = result.data;
-      tableMetaData.value = result.meta;
+      totalSessions.value = result.total;
     } else {
       sessions.value = [];
     }
