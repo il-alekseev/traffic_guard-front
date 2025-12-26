@@ -296,7 +296,11 @@ const downloadReport = async () => {
       
     }
 
-    const fileName = `report_${new Date().toISOString().split('T')[0]}.pdf`
+
+    let fileName = `report_${new Date().toISOString().split('T')[0]}.pdf`
+    if (reportDataDeviceName.value) {
+      fileName = `report_${reportDataDeviceName.value.toLowerCase()}_${new Date().toISOString().split('T')[0]}.pdf`
+    }
     pdf.save(fileName)
     
   } catch (error) {
