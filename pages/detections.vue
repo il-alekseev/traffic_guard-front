@@ -584,11 +584,4 @@ watch(dateRange, () => {
     width: 49%;
   }
 }
-
-@media screen and (max-width: 1440px) {
-
-}
-
-
-
 </style>
