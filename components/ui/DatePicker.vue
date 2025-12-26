@@ -227,20 +227,21 @@ const selectPeriod = (period: string) => {
   isPeriodMenuOpen.value = false
   
   const today = new Date()
-  const start = new Date(today)
-  let end = new Date(today)
+  let start = new Date(today)
+  const end = new Date(today);
   
   switch (period) {
     case 'День':
+      start = new Date(today.setDate(today.getDate() - 1));
       break
     case 'Неделя':
-      end = new Date(today.setDate(today.getDate() + 7))
+      start = new Date(today.setDate(today.getDate() - 7))
       break
     case 'Месяц':
-      end = new Date(today.setMonth(today.getMonth() + 1))
+      start = new Date(today.setMonth(today.getMonth() - 1))
       break
     case 'Год':
-      end = new Date(today.setFullYear(today.getFullYear() + 1))
+      start = new Date(today.setFullYear(today.getFullYear() - 1))
       break
   }
   
