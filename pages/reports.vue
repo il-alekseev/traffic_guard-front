@@ -128,6 +128,7 @@ import AnalyticsByDevice from '~/components/report/AnalyticsByDevice.vue'
 import AnomaliesTableByDevice from '~/components/report/AnomaliesTableByDevice.vue';
 import AnomaliesRating from '~/components/report/AnomaliesRating.vue';
 import CategoriesRating from '~/components/report/CategoriesRating.vue';
+import { normalizeEndDate, normalizeStartDate } from '~/helpers';
 
 
 definePageMeta({
@@ -197,7 +198,7 @@ const getReport = async (formData: ReportFormData) => {
 
   if (formData.deviceSelection === 'specific' && formData.selectedDevice) {
     try {
-      const reportDataResponse = await reportStore.fetchReportByDevice(new Date(formData.dateFrom)?.toISOString(), new Date(formData.dateTo)?.toISOString(), formData.selectedDevice);
+      const reportDataResponse = await reportStore.fetchReportByDevice(normalizeStartDate(new Date(formData.dateFrom)).toISOString(), normalizeEndDate(new Date(formData.dateTo)).toISOString(), formData.selectedDevice);
       reportDataByDevice.value = reportDataResponse;
       reportDataDeviceName.value = formData.selectedDevice;
       setReportConfig(reportDataByDevice.value.from, reportDataByDevice.value.to, reportDataByDevice.value.hostname);
@@ -212,7 +213,7 @@ const getReport = async (formData: ReportFormData) => {
     }
   } else {
     try {
-      const reportDataResponse = await reportStore.fetchReportAllDevices(new Date(formData.dateFrom)?.toISOString(), new Date(formData.dateTo)?.toISOString());
+      const reportDataResponse = await reportStore.fetchReportAllDevices(normalizeStartDate(new Date(formData.dateFrom)).toISOString(), normalizeEndDate(new Date(formData.dateTo)).toISOString());
       reportData.value = reportDataResponse;
       setReportConfig(reportData.value.from, reportData.value.to);
       formSucces.value = true;

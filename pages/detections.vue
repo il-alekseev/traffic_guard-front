@@ -95,7 +95,7 @@ import FilterForm, { type DetectionsFilter } from '~/components/filters/Detectio
 import ReloadIcon from "~/assets/img/reload.svg"
 import FilterIcon from "~/assets/img/filter-icon.svg"
 import ArrowLeftIcon from "~/assets/img/arrow-left.svg"
-import { getCurrentDateWithOffset, isCategory, isValidDateString } from '~/helpers';
+import { getCurrentDateWithOffset, isCategory, isValidDateString, normalizeEndDate, normalizeStartDate } from '~/helpers';
 import type { Categories } from '~/types/categories';
 import DetectionsChipFilter from '~/components/filters/DetectionsChipFilter.vue';
 
@@ -339,11 +339,11 @@ const initFiltersFromUrl = () => {
   
   dateRange.value.from = isValidDateString(fromStr)
     ? new Date(fromStr!)
-    : getCurrentDateWithOffset(-1, 'd');
+    : normalizeStartDate(getCurrentDateWithOffset(-1, 'd'));
 
   dateRange.value.to = isValidDateString(toStr)
     ? new Date(toStr!)
-    : getCurrentDateWithOffset();
+    : normalizeEndDate(getCurrentDateWithOffset());
 };
 
 const updateUrlParams = () => {
@@ -403,8 +403,8 @@ watch(
 );
 
 const dateRange = ref<{ from: Date | null; to: Date | null }>({
-  from: getCurrentDateWithOffset(-1, 'd'),
-  to: getCurrentDateWithOffset()
+  from: normalizeStartDate(getCurrentDateWithOffset(-1, 'd')),
+  to: normalizeEndDate(getCurrentDateWithOffset())
 })
 
 const loadingCardActs = ref<boolean[]>([])
