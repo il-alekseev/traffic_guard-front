@@ -52,10 +52,10 @@
     <div class="resource-card__section">
       <div class="resource-card__label">Host</div>
       <div class="resource-card__host">
-        <div v-if="item.location !== 'private'" class="resource-card__flag-icon-block">
-          <EmojiFlag :code="item.location.substring(0, 2).toLowerCase()" />
+        <div v-if="item?.location !== 'private' && item?.location" class="resource-card__flag-icon-block">
+          <EmojiFlag :code="item?.location.substring(0, 2).toLowerCase()" />
         </div>
-        <span class="resource-card__description resource-card__description-location">{{ item.location }}</span>
+        <span class="resource-card__description resource-card__description-location">{{ item?.location }}</span>
         <a :href="`https://${item.ip}`" class="resource-card__ip">{{ item.ip }}</a>
       </div>
       <div class="resource-card__meta">
@@ -401,6 +401,7 @@ const handleMouseLeave = () => {
     justify-content: space-between;
     padding-top: 0.75rem;
     border-top: 1px solid #E4E4E7;
+    margin-top: auto;
   }
 
   &__status {

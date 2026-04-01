@@ -68,7 +68,7 @@ const logout = () => {
 <style>
 .dashboard {
   min-height: 100vh;
-  
+  overflow-x: hidden;
 }
 
 .dashboard__container {
@@ -78,7 +78,8 @@ const logout = () => {
 }
 
 .dashboard__main {
-  width: 80%;
+  min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -86,6 +87,9 @@ const logout = () => {
 
 .dashboard__content {
   flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   background-color: #F4F4F5;
   border-top-left-radius: 28px;
   padding: 2rem;
