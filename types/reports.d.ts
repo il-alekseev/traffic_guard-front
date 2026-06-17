@@ -59,7 +59,7 @@ export interface AnomalyStatItem {
 
 export interface AnomalyReportItem {
   hostname: string;
-  anomaly_stat: AnomalyStatItem,
+  anomaly_stat: AnomalyStatItem[],
 }
 
 export interface ReportCategoryItem {
