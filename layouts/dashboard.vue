@@ -67,13 +67,13 @@ const logout = () => {
 
 <style>
 .dashboard {
-  min-height: 100vh;
-  overflow-x: hidden;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .dashboard__container {
   display: flex;
-  min-height: 100%;
+  height: 100%;
   position: relative;
 }
 
@@ -88,6 +88,7 @@ const logout = () => {
 .dashboard__content {
   flex: 1;
   min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   background-color: #F4F4F5;

@@ -276,6 +276,10 @@ const downloadReport = async () => {
         scale: 2,
         useCORS: true,
         logging: false,
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: page.ref.scrollWidth,
+        windowHeight: page.ref.scrollHeight,
       })
 
       const imgData = canvas.toDataURL('image/png')
