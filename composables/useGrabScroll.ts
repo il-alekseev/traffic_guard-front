@@ -62,6 +62,8 @@ export function useGrabScroll(scrollRef: Ref<HTMLElement | null>) {
 
   function cleanupDocumentListeners() {
     cancelPendingRaf();
+    // document недоступен при SSR — watch(immediate) дёргает cleanup ещё на сервере
+    if (typeof document === 'undefined') return;
     document.removeEventListener('pointermove', onPointerMove, POINTER_MOVE_OPTS);
     document.removeEventListener('pointerup', onPointerUp);
     document.removeEventListener('pointercancel', onPointerUp);
